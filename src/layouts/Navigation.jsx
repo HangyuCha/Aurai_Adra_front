@@ -1,0 +1,57 @@
+// src/layouts/Navigation.jsx
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.png';
+
+export default function Navigation() {
+  const navigate = useNavigate();
+  const [nickname, setNickname] = useState('');
+  const [hasToken, setHasToken] = useState(false);
+
+  useEffect(() => {
+    setNickname(localStorage.getItem('nickname') || '');
+    setHasToken(!!localStorage.getItem('accessToken'));
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    alert('로그아웃 되었습니다.');
+    navigate('/');
+    window.location.reload();
+  };
+
+  return (
+    <nav className="navbar">
+      <div className="bar">
+        {/* 좌측 */}
+        <div className="nav-left">
+          <Link to="/me" className="btn-pill font-jua">나의 정보</Link>
+          <Link to="/settings" className="btn-pill font-jua">설정</Link>
+        </div>
+
+        {/* 중앙 로고 → 홈 */}
+        <Link to="/" aria-label="홈으로" className="nav-center">
+          <div className="nav-logo">
+            <img src={logo} alt="아드라" />
+          </div>
+        </Link>
+
+        {/* 우측 */}
+        <div className="nav-right">
+          <div className="btn-pill font-jua">
+            {hasToken && nickname ? `“${nickname}” 으로 로그인 됨` : '로그인되지 않음'}
+          </div>
+
+          {hasToken ? (
+            <button onClick={handleLogout} className="btn-pill font-jua">로그아웃</button>
+          ) : (
+            // ✅ 버튼 클릭 시 /login으로 이동
+            <button onClick={() => navigate('/login')} className="btn-pill font-jua">
+              로그인
+            </button>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+}
