@@ -1,33 +1,42 @@
-// src/App.jsx  ← 로딩 화면은 네비/푸터 없이, 나머지는 Layout으로 감싸기
-import React from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+// src/App.jsx
+import React, { useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Layout from './layouts/Layout.jsx';
 import LoginPage from './pages/Login/Login.jsx';
 import LoadingPage from './pages/Loading/loading.jsx';
+import SignupPage from './pages/Signup/Signup.jsx';
 
-export default function App() {
-  const { pathname } = useLocation();
-  const isLoading = pathname === '/loading';
-
-  if (isLoading) {
-    return (
-      <Routes>
-        <Route path="/loading" element={<LoadingPage />} />
-        <Route path="*" element={<Navigate to="/loading" replace />} />
-      </Routes>
-    );
-  }
-
-  return (
-    <Layout>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        {/* 필요 시 다른 페이지 라우트 추가 */}
-        <Route path="*" element={<Navigate to="/loading" replace />} />
-      </Routes>
-    </Layout>
-  );
+// 홈(/) 진입 시 로딩 1회만 보여주는 게이트
+function EntryRoute() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const saw = sessionStorage.getItem('sawLoading');
+    if (saw) {
+      navigate('/login', { replace: true });
+    } else {
+      navigate('/loading', { replace: true });
+    }
+  }, [navigate]);
+  return null;
 }
 
+export default function App() {
+  return (
+    <Routes>
+      {/* 홈 → 게이트에서 로딩 여부 판단 */}
+      <Route path="/" element={<EntryRoute />} />
 
-// 박성진 시도
+      {/* 로딩은 레이아웃 없이 */}
+      <Route path="/loading" element={<LoadingPage />} />
+
+      {/* 나머지는 레이아웃 포함 (헤더/푸터 보임) */}
+      <Route element={<Layout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+      </Route>
+
+      {/* 기타 경로는 로그인으로 */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  );
+}

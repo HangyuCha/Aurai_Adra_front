@@ -1,13 +1,15 @@
-// src/layouts/Layout.jsx  ← 교체
+// src/layouts/Layout.jsx
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 import Navigation from './Navigation.jsx';
 import Footer from './Footer.jsx';
 
-export default function Layout({ children }) {
+export default function Layout() {
   return (
     <div className="app-shell">
       <Navigation />
       <main className="app-main">
-        {children}
+        <Outlet /> {/* 🔑 자식 라우트들이 여기 렌더됨 */}
       </main>
       <Footer />
     </div>
