@@ -30,4 +30,4 @@ export default function App() {
 }
 
 
-// 박성진 시도
+// 이중연 시도
