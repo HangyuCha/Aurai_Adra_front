@@ -10,7 +10,7 @@ import FindInfoPage from './pages/Find/Findinfo.jsx';
 import FindInfoResultPage from './pages/Find/FindInfoResult.jsx'; // ✅ Step2
 
 function EntryRoute() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   useEffect(() => {
     const saw = sessionStorage.getItem('sawLoading');
     navigate(saw ? '/login' : '/loading', { replace: true });
@@ -23,6 +23,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<EntryRoute />} />
       <Route path="/loading" element={<LoadingPage />} />
+
 
       {/* ✅ 레이아웃 하위는 '상대 경로'로 */}
       <Route element={<Layout />}>
@@ -39,3 +40,6 @@ export default function App() {
     </Routes>
   );
 }
+
+// 이중연 시도
+
