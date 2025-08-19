@@ -19,14 +19,25 @@ export default function FindInfoPage() {
     if (error) setError("");
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    if (!filled) return setError("모든 항목을 입력해 주세요.");
-    // TODO: 여기서 실제 조회 API 호출 가능
-    console.log("정보 찾기 요청:", form);
-    alert("입력하신 정보로 계정 찾기를 진행합니다."); // 임시
-    navigate("/login", { replace: true }); // 필요 시 다른 경로로 변경
-  };
+const onSubmit = (e) => {
+  e.preventDefault();
+  if (!filled) return setError("모든 항목을 입력해 주세요.");
+
+  // TODO: 실제 API로 별칭/비밀번호(또는 재설정 링크) 조회
+  const demoNickname = `${form.name.trim()}님`;
+  const demoPassword = "demo-1234";
+
+  // ✅ Step2로 값 전달
+  navigate("/find/step2", {
+    replace: false,
+    state: {
+      name: form.name,
+      birth: form.birth,
+      nickname: demoNickname,
+      password: demoPassword,
+    },
+  });
+};
 
   return (
     <div className={styles.fi_wrap}>
