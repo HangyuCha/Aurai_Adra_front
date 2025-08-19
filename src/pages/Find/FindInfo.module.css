@@ -1,0 +1,88 @@
+/* src/pages/Find/FindInfo.module.css */
+.fi_wrap {
+  width: 100%;
+  background: #F3F3F3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70svh;
+  padding: 40px 16px;
+}
+
+.fi_form {
+  width: min(560px, 92%);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;            /* 동일 간격 */
+}
+
+.fi_title {
+  margin: 0 0 4px 0;
+  text-align: center;
+  font-size: clamp(42px, 6vw, 56px);
+  line-height: 1.2;
+  font-family: 'Jua', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.fi_field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fi_label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.fi_input {
+  width: 100%;
+  height: 52px;
+  padding: 0 14px;
+  border: 1px solid #696969;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  font-size: 16px;
+  background: #fff;
+  color: #111;
+  outline: none;
+}
+
+.fi_input:focus {
+  border-color: #333;
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+}
+
+.fi_error {
+  min-height: 18px;
+  color: #d92d20;
+  font-size: 14px;
+  margin-top: -6px;
+}
+
+.fi_submit {
+  align-self: center;
+  width: min(357.15px, 90%);
+  height: 96px;
+  border: none;
+  border-radius: 30px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 48px;
+  line-height: 40px;
+  font-family: 'Jua', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  color: #000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+  transition: transform .05s ease, box-shadow .15s ease, opacity .15s ease;
+}
+
+.fi_submit:hover { box-shadow: 0 8px 18px rgba(0,0,0,0.18); }
+.fi_submit:active { transform: translateY(1px); }
+.fi_submit:disabled { opacity: .5; cursor: not-allowed; }
+
+@media (min-width: 768px) {
+  .fi_form { gap: 22px; }
+}
