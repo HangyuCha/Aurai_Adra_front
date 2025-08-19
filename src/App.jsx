@@ -6,6 +6,7 @@ import LoginPage from './pages/Login/Login.jsx';
 import LoadingPage from './pages/Loading/loading.jsx';
 import SignupPage from './pages/Signup/Signup.jsx';
 import SignupExtraPage from './pages/Signup/SignupStep2.jsx'; // 2단계
+import FindInfoPage from './pages/Find/Findinfo.jsx';
 
 function EntryRoute() {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ export default function App() {
         <Route path="signup" element={<SignupPage />} />
         <Route path="signup/extra" element={<SignupExtraPage />} />
         {/* 레이아웃 영역 내에서만 잡히는 catch-all */}
+        <Route path="find" element={<FindInfoPage />} />
+        {/* ✅ 정보 찾기 */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Route>
     </Routes>

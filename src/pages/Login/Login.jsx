@@ -1,4 +1,3 @@
-// src/pages/auth/LoginPage.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
@@ -95,7 +94,8 @@ export default function LoginPage() {
 
         <nav className="links" aria-label="보조 링크">
           <Link className="link" to="/signup" id="signup-link">회원가입</Link>
-          <Link className="link" to="/login/find" id="find-link">정보찾기</Link>
+          {/* ✅ 라우트에 맞춰 수정 */}
+          <Link className="link" to="/find" id="find-link">정보찾기</Link>
         </nav>
       </section>
     </main>

@@ -1,7 +1,7 @@
 // src/pages/Find/FindInfo.jsx
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./FindInfo.module.css";
+import styles from "./Findinfo.module.css";
 
 export default function FindInfoPage() {
   const [form, setForm] = useState({ name: "", birth: "" });
