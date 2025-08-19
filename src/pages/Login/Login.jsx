@@ -1,5 +1,7 @@
+// src/pages/auth/LoginPage.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import logo from '../../assets/logo.png';
 
 export default function LoginPage() {
@@ -26,16 +28,31 @@ export default function LoginPage() {
     return ok;
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    // 데모 동작: 로그인 정보 저장 후 홈으로
-    localStorage.setItem('nickname', nickname.trim());
-    localStorage.setItem('accessToken', 'demo-token');
-    alert(`환영합니다, ${nickname.trim()}님!`);
-    navigate('/');
-    window.location.reload();
+    try {
+      // 백엔드 로그인 API 호출
+      const response = await axios.post('http://localhost:8080/api/users/login', {
+        nickname: nickname.trim(),
+        password: password,
+      });
+
+      console.log('로그인 성공:', response.data);
+      alert('로그인에 성공했습니다!');
+
+      // 백엔드에서 받은 토큰을 localStorage에 저장
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('nickname', nickname.trim());
+
+      navigate('/');
+      window.location.reload();
+
+    } catch (error) {
+      console.error('로그인 실패:', error.response.data);
+      alert('로그인 실패: ' + (error.response?.data?.accessToken || '알 수 없는 오류'));
+    }
   };
 
   return (
@@ -94,8 +111,7 @@ export default function LoginPage() {
 
         <nav className="links" aria-label="보조 링크">
           <Link className="link" to="/signup" id="signup-link">회원가입</Link>
-          {/* ✅ 라우트에 맞춰 수정 */}
-          <Link className="link" to="/find" id="find-link">정보찾기</Link>
+          <Link className="link" to="/login/find" id="find-link">정보찾기</Link>
         </nav>
       </section>
     </main>
