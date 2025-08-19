@@ -1,18 +1,28 @@
-import React, { useState } from "react";
-import styles from "./Signup.module.css"; // ✅ CSS Module
+// src/pages/Signup/Signup.jsx
+import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./Signup.module.css";
 
 export default function Signup({ onNext }) {
   const [form, setForm] = useState({ name: "", birth: "", gender: "" });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
   };
 
+  const isFilled = useMemo(
+    () => form.name.trim() && form.birth && form.gender,
+    [form]
+  );
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isFilled) return;
+    // 2단계로 이동하며 1단계 값 전달
+    navigate("/signup/extra", { state: { ...form } });
     if (onNext) onNext(form);
-    else console.log("Signup form:", form);
   };
 
   return (
@@ -20,7 +30,6 @@ export default function Signup({ onNext }) {
       <form className={styles.su_form} onSubmit={handleSubmit}>
         <h1 className={styles.su_title}>나의 정보</h1>
 
-        {/* 이름 */}
         <div className={styles.su_field}>
           <label htmlFor="name" className={styles.su_label}>이름</label>
           <input
@@ -35,7 +44,6 @@ export default function Signup({ onNext }) {
           />
         </div>
 
-        {/* 생년월일 */}
         <div className={styles.su_field}>
           <label htmlFor="birth" className={styles.su_label}>생년월일</label>
           <input
@@ -49,7 +57,6 @@ export default function Signup({ onNext }) {
           />
         </div>
 
-        {/* 성별 */}
         <div className={styles.su_field}>
           <label htmlFor="gender" className={styles.su_label}>성별</label>
           <select
@@ -68,7 +75,14 @@ export default function Signup({ onNext }) {
           </select>
         </div>
 
-        <button type="submit" className={styles.su_nextBtn}>다음 →</button>
+        <button
+          type="submit"
+          className={styles.su_nextBtn}
+          disabled={!isFilled}
+          aria-disabled={!isFilled}
+        >
+          다음 →
+        </button>
       </form>
     </div>
   );
