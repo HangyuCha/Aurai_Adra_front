@@ -8,12 +8,13 @@ import SignupPage from './pages/Signup/Signup.jsx';
 import SignupExtraPage from './pages/Signup/SignupStep2.jsx'; // 2단계
 import FindInfoPage from './pages/Find/Findinfo.jsx';
 import FindInfoResultPage from './pages/Find/FindInfoResult.jsx'; // ✅ Step2
+import Home from './pages/Home/Home.jsx';
 
 function EntryRoute() {
   const navigate = useNavigate(); 
   useEffect(() => {
     const saw = sessionStorage.getItem('sawLoading');
-    navigate(saw ? '/login' : '/loading', { replace: true });
+    navigate(saw ? '/home' : '/loading', { replace: true });
   }, [navigate]);
   return null;
 }
@@ -27,6 +28,7 @@ export default function App() {
 
       {/* ✅ 레이아웃 하위는 '상대 경로'로 */}
       <Route element={<Layout />}>
+        <Route path="home" element={<Home />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
         <Route path="signup/extra" element={<SignupExtraPage />} />
@@ -35,7 +37,7 @@ export default function App() {
         {/* ✅ 정보 찾기 */}
           <Route path="find/step2" element={<FindInfoResultPage />} /> 
         {/* ✅ 추가 */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
     </Routes>
   );
