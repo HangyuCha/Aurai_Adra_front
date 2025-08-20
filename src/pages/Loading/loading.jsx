@@ -36,7 +36,8 @@ export default function LoadingPage() {
       t1 = setTimeout(() => {
         setFade(true);
         t2 = setTimeout(() => {
-          navigate('/login', { replace: true });
+          const token = localStorage.getItem('accessToken');
+          navigate(token ? '/home' : '/login', { replace: true });
         }, FADE_MS);
       }, DELAY);
     })();
