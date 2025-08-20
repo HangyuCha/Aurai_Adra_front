@@ -46,8 +46,12 @@ export default function LoginPage() {
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('nickname', nickname.trim());
 
-      navigate('/');
-      window.location.reload();
+  // 로딩 스플래시를 다시 보지 않도록 플래그 설정
+  sessionStorage.setItem('sawLoading', '1');
+  // 로그인 상태 갱신 이벤트 (Navigation 반영)
+  window.dispatchEvent(new Event('auth-change'));
+  // 로그인 성공 시 바로 홈으로 이동
+  navigate('/home', { replace: true });
 
     } catch (error) {
       console.error('로그인 실패:', error.response.data);

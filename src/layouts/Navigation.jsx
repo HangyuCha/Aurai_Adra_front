@@ -1,23 +1,34 @@
 // src/layouts/Navigation.jsx
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
 export default function Navigation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [nickname, setNickname] = useState('');
   const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
-    setNickname(localStorage.getItem('nickname') || '');
-    setHasToken(!!localStorage.getItem('accessToken'));
-  }, []);
+    const sync = () => {
+      setNickname(localStorage.getItem('nickname') || '');
+      setHasToken(!!localStorage.getItem('accessToken'));
+    };
+    sync(); // run on mount & on route change
+    window.addEventListener('storage', sync);
+    window.addEventListener('auth-change', sync);
+    return () => {
+      window.removeEventListener('storage', sync);
+      window.removeEventListener('auth-change', sync);
+    };
+  }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('nickname');
     alert('로그아웃 되었습니다.');
-    navigate('/');
-    window.location.reload();
+  window.dispatchEvent(new Event('auth-change'));
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -30,7 +41,7 @@ export default function Navigation() {
         </div>
 
         {/* 중앙 로고 → 홈 */}
-        <Link to="/" aria-label="홈으로" className="nav-center">
+  <Link to={hasToken ? '/home' : '/'} aria-label="홈으로" className="nav-center">
           <div className="nav-logo">
             <img src={logo} alt="아드라" />
           </div>
