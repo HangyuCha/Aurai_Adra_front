@@ -31,13 +31,26 @@ export default function Navigation() {
     navigate('/login', { replace: true });
   };
 
+  const goSettings = () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('권한이 없습니다.');
+      return;
+    }
+    navigate('/settings');
+  };
+
+
   return (
     <nav className="navbar">
       <div className="bar">
         {/* 좌측 */}
         <div className="nav-left">
           <Link to="/me" className="btn-pill font-jua">나의 정보</Link>
-          <Link to="/settings" className="btn-pill font-jua">설정</Link>
+          {/* ✅ 설정: 로그인 가드 */}
+          <button type="button" onClick={goSettings} className="btn-pill font-jua">
+            설정
+          </button>
         </div>
 
         {/* 중앙 로고 → 홈 */}

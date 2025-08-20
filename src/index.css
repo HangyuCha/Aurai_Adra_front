@@ -225,4 +225,12 @@ input:focus{ border-color: var(--ring); box-shadow: 0 0 0 4px rgba(138,56,245,.1
   .loading-logo, .loading-canvas{ transition:none; }
 }
 
+html { --fz-base: 16px; }
+html[data-font="small"] { --fz-base: 14px; }
+html[data-font="medium"] { --fz-base: 16px; }
+html[data-font="large"] { --fz-base: 18px; }
+body { font-size: var(--fz-base); }
+.btn-pill, .link, .links, .navbar, .title, .site-footer,
+label, input, button, select, textarea,
+.font-jua, .primary-btn { font-size: inherit; }
 
