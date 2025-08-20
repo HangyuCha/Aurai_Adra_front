@@ -1,0 +1,222 @@
+/* 전체 레이아웃: 화면 넓게 사용 + 여백 */
+.wrap{
+  width:100%;
+  background:#F3F3F3;
+  min-height:70svh;
+  padding:16px 24px 56px;
+}
+
+/* 우측 상단 돌아가기 버튼 줄 */
+.topRow{
+  max-width:1280px;
+  margin:0 auto;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.backBtn{
+  background:#59A3FF;
+  color:#fff;
+  border:0;
+  border-radius:12px;
+  padding:8px 14px;
+  cursor:pointer;
+  font-family:'Jua', system-ui, sans-serif;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+
+/* 제목: 네비 아래 좌측 정렬 */
+.title{
+  max-width:1280px;
+  margin:14px auto 24px;
+  font-size:40px;
+  line-height:40px;
+  font-family:'Jua', system-ui, sans-serif;
+  text-shadow:0 4px 4px rgba(0,0,0,.25);
+}
+
+/* 공통 섹션 */
+.section{
+  max-width:1280px;
+  margin:0 auto 44px;
+}
+.sectionTitle{
+  display:inline-block;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:4px 4px 4px rgba(0,0,0,.25);
+  padding:12px 18px;
+  font-size:28px;
+  font-family:'Jua', system-ui, sans-serif;
+  margin-bottom:14px;
+}
+
+/* ===== 글자 크기 조정 ===== */
+.scaleArea{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin:8px 0 12px;
+}
+.scaleLabel{
+  font-family:'Jua', system-ui, sans-serif;
+  font-size:18px;
+}
+
+.range{
+  appearance:none;
+  -webkit-appearance:none;
+  flex:1;
+  height:4px;
+  background:#111;
+  border-radius:4px;
+  outline:none;
+}
+.range::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:#ddd;
+  border:4px solid #fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+  margin-top:-11px;
+}
+.range::-moz-range-thumb{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:#ddd;
+  border:4px solid #fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+
+/* 작게/중간/크게 버튼 */
+.scaleButtons{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:12px;
+}
+.scaleBtn{
+  background:#D9D9D9;
+  border:0;
+  border-radius:9999px;
+  padding:10px 16px;
+  cursor:pointer;
+  font-size:18px;
+  font-family:'Jua', system-ui, sans-serif;
+  box-shadow:4px 4px 4px rgba(0,0,0,.25);
+  transition:transform .08s ease, box-shadow .15s ease, background .15s ease;
+}
+.scaleBtn:hover{ transform: translateY(-1px); }
+.active{ background:#59A3FF; color:#fff; }
+
+/* (옵션) 가운데 텍스트가 필요할 경우 사용 */
+.scaleMid{ font-size:26px; font-family:'Jua', system-ui, sans-serif; }
+
+/* ===== 목소리 변경 ===== */
+.voiceRow{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:16px;
+  margin-top:6px;
+}
+.voiceBtn{
+  width:100%;
+  height:52px;
+  background:#E9E9E9;
+  border:0;
+  border-radius:10px;
+  box-shadow:4px 4px 4px rgba(0,0,0,.25);
+  font-size:24px;
+  font-family:'Jua', system-ui, sans-serif;
+  cursor:pointer;
+  transition:transform .08s ease, box-shadow .15s ease, background .15s ease;
+}
+.voiceBtn:hover{ transform: translateY(-1px); }
+.voiceBtn.active{ background:#59A3FF; color:#fff; }
+
+/* ===== 비밀번호 바꾸기 ===== */
+.pwForm{
+  display:grid;
+  grid-template-columns: 200px 1fr;
+  column-gap:18px;
+  row-gap:14px;
+  align-items:center;
+}
+.lbl{
+  font-size:18px;
+  font-family:'Jua', system-ui, sans-serif;
+}
+.input{
+  width:100%;
+  height:40px;
+  border:1px solid #696969;
+  border-radius:10px;
+  background:#fff;
+  box-shadow:0 4px 4px rgba(0,0,0,.25);
+  padding:0 12px;
+  font-size:16px;
+}
+.confirmRow{
+  grid-column: 2 / 3;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.primary{
+  height:40px;
+  padding:0 16px;
+  border:0;
+  border-radius:30px;
+  background:#59A3FF;
+  color:#fff;
+  cursor:pointer;
+  font-size:16px;
+  font-family:'Jua', system-ui, sans-serif;
+  box-shadow:0 4px 10px rgba(0,0,0,.18);
+
+  /* ✅ '확인'이 세로로 깨지지 않도록 */
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  word-break:keep-all;
+  min-width:80px;
+  line-height:1.2;
+}
+.error{
+  grid-column: 2 / 3;
+  min-height:18px;
+  color:#d92d20;
+  font-size:14px;
+  margin-top:6px;
+}
+
+/* ===== 건의사항 버튼 ===== */
+.ghost{
+  height:44px;
+  padding:0 16px;
+  border:0;
+  border-radius:30px;
+  background:#fff;
+  box-shadow:0 4px 10px rgba(0,0,0,.18);
+  font-size:18px;
+  font-family:'Jua', system-ui, sans-serif;
+  cursor:pointer;
+
+  /* 가운데 정렬 */
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* 반응형 보정 */
+@media (max-width: 720px){
+  .pwForm{
+    grid-template-columns: 1fr;
+  }
+  .lbl{ margin-top:6px; }
+  .confirmRow{ grid-column:auto; }
+}
