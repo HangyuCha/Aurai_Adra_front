@@ -13,13 +13,12 @@
 /* 이전 SVG 배경 제거: 모든 아이콘을 PNG로 사용. 필요 시 개별 variant 클래스에서 조정 가능 */
 .gpt .iconSvg path{stroke:#fff;}
 .appLabel{width:118px;height:38px;background:#fff;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:38px;font-family:'Jua',sans-serif;}
-.dock{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);display:flex;gap:12px;}
-.dockItem{width:38px;height:38px;border-radius:10px;background:#fff;box-shadow:4px 4px 4px rgba(0,0,0,.25);}
-.dock_message,.dock_phone{background:linear-gradient(180deg,#5AF575 0%,#08BD2B 100%);}
-.dock_camera{background:linear-gradient(180deg,#EFEFEF 0%,#929296 100%);}
-.dock_kakao{background:#FAE100;}
-.dock_gpt{background:#fff;}
-.dock_prepare{background:#fff;}
+.dock{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:12px;}
+.dockItem{width:38px;height:38px;border-radius:10px;background:transparent;box-shadow:none;padding:0;overflow:hidden;}
+/* Dock variant 배경 제거 (PNG 자체 배경 사용) */
+.dock_message,.dock_phone,.dock_camera,.dock_kakao,.dock_gpt,.dock_prepare{background:transparent;}
+/* 준비중(prepare) 아이콘만 흰색 배경 */
+.dock_prepare{background:#ffffff;box-shadow:4px 4px 4px rgba(0,0,0,.25);}
 @media (max-width:1100px){.homeGridRow{gap:40px;}.appCard{width:158px;height:156px;}.homeIcon{width:110px;height:110px;}}
 @media (max-width:900px){.homeGrid{gap:40px;}.homeGridRow{flex-wrap:wrap;justify-content:center;}}
 @media (max-width:640px){.heroLogo{width:220px;height:220px;}.homeGrid{margin-top:32px;}.heroLogoImg{max-width:85%;max-height:85%;}}
@@ -31,15 +30,16 @@
 	.appCard{width:158px;height:154px;padding-top:14px;}
 	.homeIcon{width:108px;height:108px;}
 	.appLabel{height:36px;line-height:36px;font-size:17px;}
-	.dock{bottom:24px;}
+	.dock{bottom:14px;}
 }
 @media (max-height:780px){
 	.heroLogo{width:220px;height:220px;}
 	.appCard{width:150px;height:146px;}
 	.homeIcon{width:100px;height:100px;}
 	.homePage{padding:20px 20px 64px;}
-	.dock{bottom:20px;}
+	.dock{bottom:12px;}
 }
 
 /* PNG 아이콘 (문자 등) 공통 스타일 */
 .iconImg{position:absolute;inset:0;width:68%;height:68%;margin:auto;display:block;object-fit:contain;user-select:none;-webkit-user-drag:none;}
+.dockIconImg{width:100%;height:100%;object-fit:contain;display:block;}
