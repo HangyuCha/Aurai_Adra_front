@@ -14,6 +14,7 @@ import SuggestionPage from './pages/Suggestion/Suggestion.jsx';
 import WritePage from './pages/Write/Write.jsx';
 import SuggestionDetailPage from './pages/SuggestionDetail/SuggestionDetail.jsx';
 import MyInfoPage from './pages/MyInfo/myinfo.jsx';
+import MissionShare from './pages/MissionShare/MissionShare.jsx'; // 추가
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -67,6 +68,7 @@ export default function App() {
         <Route path="suggestion/write" element={<WritePage />} />
         <Route path="suggestion/:id" element={<SuggestionDetailPage />} />
         <Route path="/me" element={<MyInfoPage />} />
+        <Route path="/mission-share" element={<MissionShare />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
     </Routes>

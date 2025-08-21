@@ -1,145 +1,99 @@
-/* 레이아웃에 종속되지 않게 독립 레이어로 */
+/* 페이지 래퍼 */
 .stage {
   position: relative;
   width: 100%;
-  /* app-main이 padding-top을 주고 있으니 여기선 마진 불필요 */
+  padding-bottom: 160px; /* footer와 겹침 방지 */
 }
 
-/* 디자인 캔버스(절대 배치 기준) */
+/* 디자인 캔버스(가운데) */
 .canvas {
   position: relative;
-  width: 100%;
-  min-height: max(1014px, 70vh);
+  width: 1440px;
+  min-height: 1014px;
+  margin: 0 auto;
 }
 
-/* 배경들 */
+/* 배경 */
 .bgMain {
-  position: absolute;
-  left: 0; top: 0;
-  width: 1440px;
-  height: 1014px;
+  position: absolute; inset: 0 auto auto 0;
+  width: 1440px; height: 1014px;
   background: #F3F3F3;
 }
-.bgTopBar {
-  position: absolute;
-  left: 0; top: 0;
-  width: 1440px;
-  height: 64px;
-  background: #D9D9D9;
-}
-
-/* 공통 pill */
-.pill {
-  position: absolute;
-  height: 28px;
-  padding: 8px 15px;
-  background: #fff;
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 4px 4px 4px rgba(0,0,0,.25);
-  font-family: 'Jua', system-ui, -apple-system, sans-serif;
-  font-size: 20px;
-  line-height: 40px;
-  color: #000;
-}
-.pillLeft1 { left: 33px; top: 18px; width: 110px; }
-.pillLeft2 { left: 171px; top: 18px; width: 85px; }
-.pillRightLogin { right: 240px; top: 18px; width: 230px; }
-.pillRightLogout { right: 24px; top: 18px; width: 120px; }
+/* 회색 상단 바는 제거 */
+.bgTopBar { display: none; }
 
 /* 타이틀 */
 .title {
-  position: absolute;
-  left: 33px; top: 84px;
-  font-family: 'Jua', system-ui, -apple-system, sans-serif;
-  font-size: 40px;
-  line-height: 40px;
-  color: #000;
+  position: absolute; left: 33px; top: 84px;
+  font-family: 'Jua', sans-serif;
+  font-size: 40px; line-height: 40px; color: #000;
   text-shadow: 0 4px 4px rgba(0,0,0,.25);
 }
 
-/* 라벨/값 공통 */
-.label, .value {
-  position: absolute;
-  font-family: 'Jua', system-ui, -apple-system, sans-serif;
-  color: #000;
-  text-shadow: 0 4px 4px rgba(0,0,0,.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.label { font-size: 60px; }
-.value { font-size: 60px; }
-
-/* 별칭 */
-.labelNick { left: 753px; top: 307px; }
-.valueNick { left: 959px; top: 307px; }
-
-/* 나이 */
-.labelAge { left: 753px; top: 474px; }
-.valueAge { left: 1050px; top: 474px; }
-
-/* 큰 아바타 */
+/* 왼쪽 캐릭터 */
 .bigAvatar {
-  position: absolute;
-  left: 104px; top: 200px;
-  width: 409px; height: 614px;
-  object-fit: contain;
+  position: absolute; left: 104px; top: 200px;
+  width: 409px; height: 614px; object-fit: contain;
   box-shadow: 0 4px 4px rgba(0,0,0,.5);
   background: transparent;
 }
 
-/* 미션 자랑하기 버튼 */
-.shareBtn {
+/* 오른쪽 정보 패널: 별칭/나이/버튼을 한 컬럼으로 */
+.infoPanel {
   position: absolute;
-  left: 753px; top: 732px;
-  width: 626px; height: 82px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 4px 4px 4px rgba(0,0,0,.25);
-  display: inline-flex;
+  left: 720px;   /* 필요시 미세 조정 */
+  top: 260px;    /* 필요시 미세 조정 */
+  width: 650px;  /* 정보 영역 너비 */
+  display: flex;
+  flex-direction: column;
+  gap: 68px;     /* 행 간격(별칭-나이) */
+}
+
+/* 행: 라벨 ▪ 값 */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 28px 1fr; /* 라벨, 구분점, 값 */
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-family: 'Jua', system-ui, -apple-system, sans-serif;
+  column-gap: 40px;
+}
+.label, .value {
+  font-family: 'Jua', sans-serif;
   font-size: 60px;
   color: #000;
+  text-shadow: 0 4px 4px rgba(0,0,0,.25);
+  text-align: left;
+}
+.divider {
+  width: 24px; height: 24px; background: #000; border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.25);
+  justify-self: center;
 }
 
-/* 구분선 */
-.divider { position: absolute; width: 70px; height: 54px; padding: 14px 25px; overflow: hidden; }
-.divider::before { content: ""; display: block; width: 100%; height: 24px; background: #000; }
-.divider1 { left: 843px; top: 300px; }
-.divider2 { left: 843px; top: 467px; }
-
-/* 회원 탈퇴 */
-.withdraw {
-  position: absolute;
-  left: 1013px; top: 847px;
-  font-family: 'Jua', system-ui, -apple-system, sans-serif;
-  font-size: 20px;
-  color: #000;
-  text-shadow: 4px 4px 4px rgba(0,0,0,.25);
-}
-
-/* 별칭과 나이 전체를 감싸는 컨테이너 */
-.infoBox {
+/* 패널 하단 액션: 나이 밑에 바로 배치됨 */
+.panelActions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* 또는 center */
-  /* height: 100%; <= 이 줄 삭제! */
-  width: 100%;
-  margin-top: 40px;
+  gap: 18px;
 }
 
-/* 별칭, 나이 값 스타일 */
-.valueNick, .valueAge {
-  text-align: center;
-  font-size: 60px;
-  color: #111; /* 글자색이 배경색과 겹치지 않게 */
-  margin: 0;
-  padding: 0;
+/* 큰 흰색 pill 버튼 */
+.sharePrimary {
+  background: #fff; color: #111; border: none; cursor: pointer;
+  border-radius: 22px;
+  box-shadow: 8px 8px 16px rgba(0,0,0,.15);
+  font-family: 'Jua', sans-serif; font-weight: 400;
+  width: 100%;               /* 패널 너비에 맞춤 */
+  height: 96px;
+  font-size: 64px;
 }
+
+/* 아래 작은 텍스트 버튼 */
+.withdrawLink {
+  background: transparent; border: none; cursor: pointer;
+  color: #111; font-family: 'Jua', sans-serif; font-size: 28px;
+  text-shadow: 4px 4px 4px rgba(0,0,0,.25);
+}
+
+/* 이전 절대 배치 라벨/값 스타일은 더 이상 사용하지 않음(충돌 방지) */
+/* .labelNick, .valueNick, .labelAge, .valueAge, .divider1, .divider2 등 제거 */
