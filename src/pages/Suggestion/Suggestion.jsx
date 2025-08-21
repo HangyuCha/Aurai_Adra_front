@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './suggestion.module.css';
 import { useNavigate } from 'react-router-dom';
+import { getSuggestions } from '../../lib/suggestions.js';
 
 export default function SuggestionPage() {
   const navigate = useNavigate();
-  const items = Array.from({ length: 8 });
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    setItems(getSuggestions());
+  }, []);
   return (
     <div className={styles.wrap}>
       <div className={styles.topBar}>
@@ -13,8 +17,19 @@ export default function SuggestionPage() {
       </div>
       <div className={styles.panel}>
         <ul className={styles.list} aria-label="건의 목록">
-          {items.map((_, i) => (
-            <li key={i} className={styles.item} />
+          {items.length === 0 && (
+            <li className={styles.empty}>등록된 건의가 없습니다.</li>
+          )}
+          {items.map(item => (
+            <li
+              key={item.id}
+              className={styles.itemBtn}
+            >
+              <button type="button" onClick={() => navigate(`/suggestion/${item.id}`)} className={styles.itemBtnInner}>
+                <span className={styles.itemTitle}>{item.title}</span>
+                <span className={styles.itemMeta}>{item.author}</span>
+              </button>
+            </li>
           ))}
         </ul>
         <div className={styles.writeRow}>
