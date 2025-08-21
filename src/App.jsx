@@ -12,6 +12,7 @@ import Home from './pages/Home/Home.jsx';
 import SettingsPage from './pages/Settings/setting.jsx';
 import SuggestionPage from './pages/Suggestion/Suggestion.jsx';
 import WritePage from './pages/Write/Write.jsx';
+import SuggestionDetailPage from './pages/SuggestionDetail/SuggestionDetail.jsx';
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -63,6 +64,7 @@ export default function App() {
   {/* ✅ 설정 */}
   <Route path="suggestion" element={<SuggestionPage />} />
   <Route path="suggestion/write" element={<WritePage />} />
+  <Route path="suggestion/:id" element={<SuggestionDetailPage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
     </Routes>

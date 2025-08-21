@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './write.module.css';
 import { useNavigate } from 'react-router-dom';
+import { addSuggestion } from '../../lib/suggestions.js';
 
 export default function WritePage() {
   const navigate = useNavigate();
@@ -14,8 +15,9 @@ export default function WritePage() {
       alert('제목과 내용을 입력해 주세요.');
       return;
     }
-    alert('임시 저장되었습니다 (API 연동 예정)');
-    navigate('/suggestion');
+  const author = localStorage.getItem('nickname') || '익명';
+  const item = addSuggestion({ title, content, author });
+  navigate(`/suggestion/${item.id}`);
   };
 
   return (
