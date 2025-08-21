@@ -3,18 +3,29 @@
 .title{margin:0;font-family:'Jua',sans-serif;font-size:40px;line-height:40px;font-weight:400;text-shadow:0 4px 4px rgba(0,0,0,.25);}
 .backBtn{background:#59A3FF;color:#fff;font-family:'Jua',sans-serif;font-size:22px;line-height:1;border:0;border-radius:42px;padding:8px 28px;cursor:pointer;box-shadow:4px 4px 4px rgba(0,0,0,.25);}
 .panel{margin-top:60px;background:#E1E1E1;border-radius:50px;padding:56px 55px 120px;position:relative;}
+.panel{margin-top:60px;background:#E1E1E1;border-radius:50px;padding:56px 55px 120px;position:relative;--suggestion-right-gap:5px;}
 .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:40px;}
-.item{height:65px;background:#fff;border-radius:15px;box-shadow:4px 4px 4px rgba(0,0,0,.25);}
+.item{height:65px;background:#fff;border-radius:15px;box-shadow:0 4px 4px rgba(0,0,0,.25);}
+.itemBtn{list-style:none;}
+.itemBtnInner{all:unset;display:flex;align-items:center;justify-content:space-between;width:calc(100% - var(--suggestion-right-gap));height:65px;padding:0 48px;background:#fff;border-radius:15px;box-shadow:0 4px 4px rgba(0,0,0,.25);cursor:pointer;font-family:'Jua',sans-serif;box-sizing:border-box;}
+.itemBtnInner:focus-visible{outline:4px solid #59A3FF;}
+.itemTitle{font-size:20px;}
+.itemMeta{font-size:18px;opacity:.8;}
+.empty{height:120px;display:flex;align-items:center;justify-content:center;font-family:'Jua',sans-serif;font-size:20px;color:#555;}
 .writeRow{position:absolute;left:0;right:0;bottom:40px;display:flex;justify-content:center;}
 .writeBtn{background:#ACACAC;color:#fff;font-family:'Jua',sans-serif;font-size:22px;border:0;border-radius:42px;padding:8px 34px;cursor:pointer;box-shadow:4px 4px 4px rgba(0,0,0,.25);}
 @media (max-width:900px){
-  .panel{padding:48px 40px 110px;border-radius:40px;}
+  .panel{padding:48px 40px 110px;border-radius:40px;--suggestion-right-gap:4px;}
+  .list{padding:0;}
   .title{font-size:34px;}
   .item{height:60px;}
+  .itemBtnInner{padding:0 40px;max-width:100%;}
 }
 @media (max-width:600px){
-  .panel{padding:40px 32px 104px;border-radius:34px;}
+  .panel{padding:40px 32px 104px;border-radius:34px;--suggestion-right-gap:2px;}
+  .list{padding:0;}
   .title{font-size:30px;}
   .item{height:56px;}
   .backBtn,.writeBtn{font-size:20px;padding:8px 22px;}
+  .itemBtnInner{padding:0 28px;}
 }
