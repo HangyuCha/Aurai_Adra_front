@@ -1,0 +1,197 @@
+/* src/pages/MyInfo/myinfo.module.css */
+
+.stage{
+  /* margin-top: 64px;  <-- 지우세요 */
+  padding-bottom: 24px;   /* 여유만 약간 */
+}
+
+.container{
+  position: relative;
+  width: 100%;
+  min-height: 1014px;   /* 디자인 기준 높이(원하면 더 크게/반응형으로 변경 가능) */
+}
+
+/* 배경 레이어 */
+.bg{
+  position: absolute;
+  inset: 0;
+  background: #F3F3F3;
+  z-index: 0;
+}
+
+.title,
+.label, .value,
+.bigAvatar,
+.shareBtn, .divider1, .divider2,
+.withdraw{
+  position: absolute;
+  z-index: 1;
+}
+
+/* 공용 pill */
+.pill {
+  position: absolute;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 8px 15px;
+  height: 27.95px;
+}
+
+.pillText {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  color: #000;
+  font-size: 20px;
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+  line-height: 40px;
+  word-wrap: break-word;
+}
+
+/* 개별 위치 */
+.loginBadge { left: 1086px; top: 17.66px; width: 201px; }
+.myInfoPill { left: 33px; top: 18.39px; width: 110px; }
+.settingsPill { left: 171px; top: 18.39px; width: 85px; }
+.logoutPill { left: 1312px; top: 17.66px; width: 101px; height: 28.69px; }
+
+/* 버튼 리셋 */
+.btnReset { all: unset; cursor: pointer; }
+
+/* 홈으로 버튼 */
+.homeBtn {
+  position: absolute;
+  left: 1297px;
+  top: 81px;
+  width: 128px;
+  height: 30.75px;
+  background: #59A3FF;
+  border-radius: 41.5px;
+  border: 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+  font-size: 25px;
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+  line-height: 40px;
+}
+
+/* 타이틀 */
+.title {
+  left: 33px;
+  top: 84px;
+  position: absolute;
+  color: #000;
+  font-size: 40px;
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+  line-height: 40px;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+/* 라벨/값 공통 */
+.label, .value {
+  position: absolute;
+  color: #000;
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+  line-height: 40px;
+  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+}
+
+.label { font-size: 60px; }
+.value { font-size: 60px; }
+
+/* 별칭 */
+.labelNickname { left: 753px; top: 307px; }
+.valueNickname { left: 959px; top: 307px; }
+
+/* 나이 */
+.labelAge { left: 753px; top: 474px; }
+.valueAge { left: 1050px; top: 474px; }
+
+/* 큰 아바타 */
+.bigAvatar {
+  width: 409px;
+  height: 614px;
+  left: 104px;
+  top: 200px;
+  position: absolute;
+  object-fit: cover;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.5);
+  background: #fff;
+}
+
+/* 미션 자랑하기 */
+.shareBtn {
+  width: 626px;
+  height: 82px;
+  left: 753px;
+  top: 732px;
+  position: absolute;
+  background: #ffffff;
+  box-shadow: 4px 4px 4px rgba(0,0,0,0.25);
+  border-radius: 10px;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 13px 63px;
+  gap: 10px;
+}
+
+.shareBtnText {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  color: #000;
+  font-size: 60px;
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+  line-height: 40px;
+  word-wrap: break-word;
+}
+
+/* 구분선 두 개 */
+.divider1, .divider2 {
+  width: 70px;
+  height: 54px;
+  padding: 14px 25px;
+  position: absolute;
+  overflow: hidden;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.divider1 { left: 843px; top: 300px; }
+.divider2 { left: 843px; top: 467px; }
+
+.dividerBar { height: 24px; width: 100%; background: #000; }
+
+/* 회원 탈퇴 */
+.withdraw {
+  left: 1013px;
+  top: 847px;
+  position: absolute;
+  color: #000;
+  font-size: 20px;
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+  line-height: 40px;
+  text-shadow: 4px 4px 4px rgba(0,0,0,0.25);
+}
+
+
