@@ -177,7 +177,7 @@ export default function SettingsPage() {
 
       {/* 건의사항 */}
       <section className={styles.section}>
-      <button type="button" className={styles.ghost} onClick={() => navigate('/feedback')}>
+  <button type="button" className={styles.ghost} onClick={() => navigate('/suggestion')}>
       건의사항
       </button>
       </section>
