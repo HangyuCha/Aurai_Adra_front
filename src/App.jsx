@@ -10,6 +10,8 @@ import FindInfoPage from './pages/Find/Findinfo.jsx';
 import FindInfoResultPage from './pages/Find/FindInfoResult.jsx'; // ✅ Step2
 import Home from './pages/Home/Home.jsx';
 import SettingsPage from './pages/Settings/setting.jsx';
+import SuggestionPage from './pages/Suggestion/Suggestion.jsx';
+import WritePage from './pages/Write/Write.jsx';
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -58,7 +60,9 @@ export default function App() {
           <Route path="find/step2" element={<FindInfoResultPage />} /> 
         {/* ✅ 추가 */}
          <Route path="settings" element={<SettingsPage />} />
-        {/* ✅ 설정 */}
+  {/* ✅ 설정 */}
+  <Route path="suggestion" element={<SuggestionPage />} />
+  <Route path="suggestion/write" element={<WritePage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
     </Routes>
