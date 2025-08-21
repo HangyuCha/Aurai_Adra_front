@@ -1,120 +1,81 @@
-/* src/pages/MyInfo/myinfo.module.css */
-
-.stage{
-  /* margin-top: 64px;  <-- 지우세요 */
-  padding-bottom: 24px;   /* 여유만 약간 */
-}
-
-.container{
+/* 레이아웃에 종속되지 않게 독립 레이어로 */
+.stage {
   position: relative;
   width: 100%;
-  min-height: 1014px;   /* 디자인 기준 높이(원하면 더 크게/반응형으로 변경 가능) */
+  /* app-main이 padding-top을 주고 있으니 여기선 마진 불필요 */
 }
 
-/* 배경 레이어 */
-.bg{
+/* 디자인 캔버스(절대 배치 기준) */
+.canvas {
+  position: relative;
+  width: 100%;
+  min-height: max(1014px, 70vh);
+}
+
+/* 배경들 */
+.bgMain {
   position: absolute;
-  inset: 0;
+  left: 0; top: 0;
+  width: 1440px;
+  height: 1014px;
   background: #F3F3F3;
-  z-index: 0;
 }
-
-.title,
-.label, .value,
-.bigAvatar,
-.shareBtn, .divider1, .divider2,
-.withdraw{
+.bgTopBar {
   position: absolute;
-  z-index: 1;
+  left: 0; top: 0;
+  width: 1440px;
+  height: 64px;
+  background: #D9D9D9;
 }
 
-/* 공용 pill */
+/* 공통 pill */
 .pill {
   position: absolute;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+  height: 28px;
   padding: 8px 15px;
-  height: 27.95px;
-}
-
-.pillText {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  color: #000;
-  font-size: 20px;
-  font-family: 'Jua', sans-serif;
-  font-weight: 400;
-  line-height: 40px;
-  word-wrap: break-word;
-}
-
-/* 개별 위치 */
-.loginBadge { left: 1086px; top: 17.66px; width: 201px; }
-.myInfoPill { left: 33px; top: 18.39px; width: 110px; }
-.settingsPill { left: 171px; top: 18.39px; width: 85px; }
-.logoutPill { left: 1312px; top: 17.66px; width: 101px; height: 28.69px; }
-
-/* 버튼 리셋 */
-.btnReset { all: unset; cursor: pointer; }
-
-/* 홈으로 버튼 */
-.homeBtn {
-  position: absolute;
-  left: 1297px;
-  top: 81px;
-  width: 128px;
-  height: 30.75px;
-  background: #59A3FF;
-  border-radius: 41.5px;
-  border: 0;
-  cursor: pointer;
-
-  display: flex;
+  background: #fff;
+  border-radius: 10px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  color: #fff;
-  font-size: 25px;
-  font-family: 'Jua', sans-serif;
-  font-weight: 400;
+  box-shadow: 4px 4px 4px rgba(0,0,0,.25);
+  font-family: 'Jua', system-ui, -apple-system, sans-serif;
+  font-size: 20px;
   line-height: 40px;
+  color: #000;
 }
+.pillLeft1 { left: 33px; top: 18px; width: 110px; }
+.pillLeft2 { left: 171px; top: 18px; width: 85px; }
+.pillRightLogin { right: 240px; top: 18px; width: 230px; }
+.pillRightLogout { right: 24px; top: 18px; width: 120px; }
 
 /* 타이틀 */
 .title {
-  left: 33px;
-  top: 84px;
   position: absolute;
-  color: #000;
+  left: 33px; top: 84px;
+  font-family: 'Jua', system-ui, -apple-system, sans-serif;
   font-size: 40px;
-  font-family: 'Jua', sans-serif;
-  font-weight: 400;
   line-height: 40px;
-  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  color: #000;
+  text-shadow: 0 4px 4px rgba(0,0,0,.25);
 }
 
 /* 라벨/값 공통 */
 .label, .value {
   position: absolute;
+  font-family: 'Jua', system-ui, -apple-system, sans-serif;
   color: #000;
-  font-family: 'Jua', sans-serif;
-  font-weight: 400;
-  line-height: 40px;
-  text-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  text-shadow: 0 4px 4px rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 .label { font-size: 60px; }
 .value { font-size: 60px; }
 
 /* 별칭 */
-.labelNickname { left: 753px; top: 307px; }
-.valueNickname { left: 959px; top: 307px; }
+.labelNick { left: 753px; top: 307px; }
+.valueNick { left: 959px; top: 307px; }
 
 /* 나이 */
 .labelAge { left: 753px; top: 474px; }
@@ -122,76 +83,63 @@
 
 /* 큰 아바타 */
 .bigAvatar {
-  width: 409px;
-  height: 614px;
-  left: 104px;
-  top: 200px;
   position: absolute;
-  object-fit: cover;
-  box-shadow: 0 4px 4px rgba(0,0,0,0.5);
-  background: #fff;
+  left: 104px; top: 200px;
+  width: 409px; height: 614px;
+  object-fit: contain;
+  box-shadow: 0 4px 4px rgba(0,0,0,.5);
+  background: transparent;
 }
 
-/* 미션 자랑하기 */
+/* 미션 자랑하기 버튼 */
 .shareBtn {
-  width: 626px;
-  height: 82px;
-  left: 753px;
-  top: 732px;
   position: absolute;
-  background: #ffffff;
-  box-shadow: 4px 4px 4px rgba(0,0,0,0.25);
+  left: 753px; top: 732px;
+  width: 626px; height: 82px;
+  background: #fff;
   border-radius: 10px;
-
+  box-shadow: 4px 4px 4px rgba(0,0,0,.25);
   display: inline-flex;
-  justify-content: center;
   align-items: center;
-  padding: 13px 63px;
+  justify-content: center;
   gap: 10px;
-}
-
-.shareBtnText {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  color: #000;
+  font-family: 'Jua', system-ui, -apple-system, sans-serif;
   font-size: 60px;
-  font-family: 'Jua', sans-serif;
-  font-weight: 400;
-  line-height: 40px;
-  word-wrap: break-word;
+  color: #000;
 }
 
-/* 구분선 두 개 */
-.divider1, .divider2 {
-  width: 70px;
-  height: 54px;
-  padding: 14px 25px;
-  position: absolute;
-  overflow: hidden;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 10px;
-}
-
+/* 구분선 */
+.divider { position: absolute; width: 70px; height: 54px; padding: 14px 25px; overflow: hidden; }
+.divider::before { content: ""; display: block; width: 100%; height: 24px; background: #000; }
 .divider1 { left: 843px; top: 300px; }
 .divider2 { left: 843px; top: 467px; }
 
-.dividerBar { height: 24px; width: 100%; background: #000; }
-
 /* 회원 탈퇴 */
 .withdraw {
-  left: 1013px;
-  top: 847px;
   position: absolute;
-  color: #000;
+  left: 1013px; top: 847px;
+  font-family: 'Jua', system-ui, -apple-system, sans-serif;
   font-size: 20px;
-  font-family: 'Jua', sans-serif;
-  font-weight: 400;
-  line-height: 40px;
-  text-shadow: 4px 4px 4px rgba(0,0,0,0.25);
+  color: #000;
+  text-shadow: 4px 4px 4px rgba(0,0,0,.25);
 }
 
+/* 별칭과 나이 전체를 감싸는 컨테이너 */
+.infoBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* 또는 center */
+  /* height: 100%; <= 이 줄 삭제! */
+  width: 100%;
+  margin-top: 40px;
+}
 
+/* 별칭, 나이 값 스타일 */
+.valueNick, .valueAge {
+  text-align: center;
+  font-size: 60px;
+  color: #111; /* 글자색이 배경색과 겹치지 않게 */
+  margin: 0;
+  padding: 0;
+}

@@ -89,18 +89,24 @@ export default function Login() {
     ev.preventDefault();
     if (!validate()) return;
 
+    // 임시로 gender, ageRange를 하드코딩(테스트용)
+    const gender = 'male';
+    const ageRange = '40s';
+
     try {
       const { data } = await axios.post('http://localhost:8080/api/users/login', {
         nickname: nickname.trim(),
         password,
+        gender,
+        ageRange,
       });
 
       const accessToken = data?.accessToken;
-      let { ageRange, gender, nickname: nnFromRes } = pickUserFields(data);
+      let { ageRange: resAgeRange, gender: resGender, nickname: nnFromRes } = pickUserFields(data);
       const finalNickname = nnFromRes || nickname.trim();
 
       const filled = await fetchProfileIfNeeded(accessToken, {
-        ageRange, gender, nickname: finalNickname,
+        ageRange: resAgeRange, gender: resGender, nickname: finalNickname,
       }, finalNickname);
 
       saveAuthToStorage(accessToken, filled.nickname, filled.ageRange, filled.gender);

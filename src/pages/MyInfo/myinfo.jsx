@@ -21,15 +21,16 @@ const avatarMap = {
 
 const parseAgeRange = (ar) => {
   const a = (ar || '').toString().trim();
+  if (/^\d{2}대$/.test(a)) return { display: a, band: a.replace('대', '') };
   const m = a.match(/^(\d{2})s$/i);
   if (m) return { display: `${m[1]}대`, band: m[1] };
-  if (/^\d{2}대$/.test(a)) return { display: a, band: a.replace('대', '') };
+  if (/^\d{2}$/.test(a)) return { display: `${a}대`, band: a };
   return { display: '—', band: '' };
 };
 const parseGender = (gd) => {
   const g = (gd || '').toString().trim().toLowerCase();
-  if (g.startsWith('m') || g === '남' || g === '남성') return 'M';
-  if (g.startsWith('f') || g === '여' || g === '여성') return 'F';
+  if (g === 'm' || g === 'male' || g === '남' || g === '남성') return 'M';
+  if (g === 'f' || g === 'female' || g === '여' || g === '여성') return 'F';
   return '';
 };
 
@@ -50,7 +51,12 @@ export default function MyInfoPage() {
       return;
     }
     const nn = localStorage.getItem('nickname') || '';
-    const ar = localStorage.getItem('ageRange') || '';
+    // ageRange, age, signup_ageRange 순서로 우선순위
+    const ar =
+      localStorage.getItem('ageRange') ||
+      localStorage.getItem('age') ||
+      localStorage.getItem('signup_ageRange') ||
+      '';
     const gd =
       localStorage.getItem('gender') ||
       localStorage.getItem('signup_gender') ||
@@ -82,15 +88,6 @@ export default function MyInfoPage() {
       <div className={styles.canvas}>
         {/* 배경 레이어 */}
         <div className={styles.bgMain} />
-        <div className={styles.bgTopBar} />
-
-        {/* 상단 pill 들 (네비 안겹치게: 표시용만) */}
-        <div className={`${styles.pill} ${styles.pillLeft1}`}>나의 정보</div>
-        <div className={`${styles.pill} ${styles.pillLeft2}`}>설정</div>
-        <div className={`${styles.pill} ${styles.pillRightLogin}`}>
-          {nickname ? `‘${nickname}’ 으로 로그인 됨` : '로그인되지 않음'}
-        </div>
-        <div className={`${styles.pill} ${styles.pillRightLogout}`}>로그아웃</div>
 
         {/* 타이틀 */}
         <div className={styles.title}>나의 정보</div>
