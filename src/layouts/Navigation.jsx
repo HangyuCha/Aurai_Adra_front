@@ -1,4 +1,3 @@
-// src/layouts/Navigation.jsx
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
@@ -14,7 +13,7 @@ export default function Navigation() {
       setNickname(localStorage.getItem('nickname') || '');
       setHasToken(!!localStorage.getItem('accessToken'));
     };
-    sync(); // run on mount & on route change
+    sync();
     window.addEventListener('storage', sync);
     window.addEventListener('auth-change', sync);
     return () => {
@@ -26,11 +25,14 @@ export default function Navigation() {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('nickname');
+    localStorage.removeItem('age');
+    localStorage.removeItem('gender');
     alert('로그아웃 되었습니다.');
-  window.dispatchEvent(new Event('auth-change'));
+    window.dispatchEvent(new Event('auth-change'));
     navigate('/login', { replace: true });
   };
 
+  // ✅ 설정과 동일 포맷의 가드
   const goSettings = () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -40,21 +42,34 @@ export default function Navigation() {
     navigate('/settings');
   };
 
+  // ✅ 나의 정보 가드
+  const goMe = () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      alert('권한이 없습니다.');
+      return;
+    }
+    navigate('/me');
+  };
 
   return (
     <nav className="navbar">
       <div className="bar">
         {/* 좌측 */}
         <div className="nav-left">
-          <Link to="/me" className="btn-pill font-jua">나의 정보</Link>
-          {/* ✅ 설정: 로그인 가드 */}
+          {/* ⛳ Link → 버튼으로 바꿔서 가드 적용 */}
+          <button type="button" onClick={goMe} className="btn-pill font-jua">
+            나의 정보
+          </button>
+
+          {/* 설정: 로그인 가드 */}
           <button type="button" onClick={goSettings} className="btn-pill font-jua">
             설정
           </button>
         </div>
 
         {/* 중앙 로고 → 홈 */}
-  <Link to={hasToken ? '/home' : '/'} aria-label="홈으로" className="nav-center">
+        <Link to={hasToken ? '/home' : '/'} aria-label="홈으로" className="nav-center">
           <div className="nav-logo">
             <img src={logo} alt="아드라" />
           </div>
@@ -69,10 +84,7 @@ export default function Navigation() {
           {hasToken ? (
             <button onClick={handleLogout} className="btn-pill font-jua">로그아웃</button>
           ) : (
-            // ✅ 버튼 클릭 시 /login으로 이동
-            <button onClick={() => navigate('/login')} className="btn-pill font-jua">
-              로그인
-            </button>
+            <button onClick={() => navigate('/login')} className="btn-pill font-jua">로그인</button>
           )}
         </div>
       </div>

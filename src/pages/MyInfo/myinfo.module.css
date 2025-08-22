@@ -1,0 +1,99 @@
+/* 페이지 래퍼 */
+.stage {
+  position: relative;
+  width: 100%;
+  padding-bottom: 160px; /* footer와 겹침 방지 */
+}
+
+/* 디자인 캔버스(가운데) */
+.canvas {
+  position: relative;
+  width: 1440px;
+  min-height: 1014px;
+  margin: 0 auto;
+}
+
+/* 배경 */
+.bgMain {
+  position: absolute; inset: 0 auto auto 0;
+  width: 1440px; height: 1014px;
+  background: #F3F3F3;
+}
+/* 회색 상단 바는 제거 */
+.bgTopBar { display: none; }
+
+/* 타이틀 */
+.title {
+  position: absolute; left: 33px; top: 84px;
+  font-family: 'Jua', sans-serif;
+  font-size: 40px; line-height: 40px; color: #000;
+  text-shadow: 0 4px 4px rgba(0,0,0,.25);
+}
+
+/* 왼쪽 캐릭터 */
+.bigAvatar {
+  position: absolute; left: 104px; top: 200px;
+  width: 409px; height: 614px; object-fit: contain;
+  box-shadow: 0 4px 4px rgba(0,0,0,.5);
+  background: transparent;
+}
+
+/* 오른쪽 정보 패널: 별칭/나이/버튼을 한 컬럼으로 */
+.infoPanel {
+  position: absolute;
+  left: 720px;   /* 필요시 미세 조정 */
+  top: 260px;    /* 필요시 미세 조정 */
+  width: 650px;  /* 정보 영역 너비 */
+  display: flex;
+  flex-direction: column;
+  gap: 68px;     /* 행 간격(별칭-나이) */
+}
+
+/* 행: 라벨 ▪ 값 */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 28px 1fr; /* 라벨, 구분점, 값 */
+  align-items: center;
+  column-gap: 40px;
+}
+.label, .value {
+  font-family: 'Jua', sans-serif;
+  font-size: 60px;
+  color: #000;
+  text-shadow: 0 4px 4px rgba(0,0,0,.25);
+  text-align: left;
+}
+.divider {
+  width: 24px; height: 24px; background: #000; border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.25);
+  justify-self: center;
+}
+
+/* 패널 하단 액션: 나이 밑에 바로 배치됨 */
+.panelActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* 큰 흰색 pill 버튼 */
+.sharePrimary {
+  background: #fff; color: #111; border: none; cursor: pointer;
+  border-radius: 22px;
+  box-shadow: 8px 8px 16px rgba(0,0,0,.15);
+  font-family: 'Jua', sans-serif; font-weight: 400;
+  width: 100%;               /* 패널 너비에 맞춤 */
+  height: 96px;
+  font-size: 64px;
+}
+
+/* 아래 작은 텍스트 버튼 */
+.withdrawLink {
+  background: transparent; border: none; cursor: pointer;
+  color: #111; font-family: 'Jua', sans-serif; font-size: 28px;
+  text-shadow: 4px 4px 4px rgba(0,0,0,.25);
+}
+
+/* 이전 절대 배치 라벨/값 스타일은 더 이상 사용하지 않음(충돌 방지) */
+/* .labelNick, .valueNick, .labelAge, .valueAge, .divider1, .divider2 등 제거 */
