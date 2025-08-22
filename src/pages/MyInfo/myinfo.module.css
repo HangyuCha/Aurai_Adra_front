@@ -95,5 +95,54 @@
   text-shadow: 4px 4px 4px rgba(0,0,0,.25);
 }
 
-/* 이전 절대 배치 라벨/값 스타일은 더 이상 사용하지 않음(충돌 방지) */
-/* .labelNick, .valueNick, .labelAge, .valueAge, .divider1, .divider2 등 제거 */
+/* 확인 모달 */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  width: clamp(320px, 60vw, 520px);
+  padding: 28px 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  text-align: center;
+  font-family: 'Jua', sans-serif;
+}
+.modalTitle {
+  font-size: 26px;
+  margin-bottom: 18px;
+}
+.modalMsg {
+  font-size: 20px;
+  color: #333;
+}
+.modalActions {
+  margin-top: 22px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.btnYes {
+  background: #e85d5d;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
+.btnNo {
+  background: #aaa;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
