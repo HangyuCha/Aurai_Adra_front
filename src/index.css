@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 
+/* --- 모든 버튼 호버 효과 --- */
+button, .btn-pill {
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+button:hover, .btn-pill:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
 /* --- Reset (맨 위에 추가/유지) --- */
 *{ box-sizing: border-box; }
 html, body, #root{ height:100%; }
@@ -176,14 +186,9 @@ input:focus{ border-color: var(--ring); box-shadow: 0 0 0 4px rgba(138,56,245,.1
 .navbar .nav-right a,
 .navbar .nav-right button {
   cursor: pointer;
-  transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
 }
 
-.navbar .btn-pill:hover { transform: translateY(-1px); }
-.navbar .btn-pill:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(0,0,0,.2); }
-
 /* 중앙 로고도 호버 시 살짝 반응 */
-.navbar .nav-center:hover .nav-logo { transform: scale(1.02); }
 .navbar .nav-logo { transition: transform .15s ease, box-shadow .2s ease; }
 
 
