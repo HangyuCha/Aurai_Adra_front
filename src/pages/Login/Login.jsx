@@ -16,6 +16,7 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // 임시 로그인 성공 처리
+    localStorage.setItem('accessToken', 'dummy-token-for-testing'); // 임시 토큰 발급
     alert('로그인 되었습니다.');
     navigate('/home');
   };
