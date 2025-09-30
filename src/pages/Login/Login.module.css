@@ -62,11 +62,6 @@
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.loginButton:hover {
-  background-color: #333333;
 }
 
 .links {

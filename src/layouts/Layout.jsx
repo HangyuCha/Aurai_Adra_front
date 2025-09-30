@@ -1,14 +1,20 @@
 // src/layouts/Layout.jsx
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Navigation from './Navigation.jsx';
 
 export default function Layout() {
+  const location = useLocation();
+  // 로딩과 스타트 페이지에서는 네비게이션 바를 숨깁니다.
+  const showNavigation = !['/loading', '/start'].includes(location.pathname);
+
   return (
     <div className="app-shell">
-      <Navigation />
+      {showNavigation && <Navigation />}
       <main className="app-main">
-        <Outlet /> {/* 🔑 자식 라우트들이 여기 렌더됨 */}
+        <div className="page-content">
+          <Outlet /> {/* 🔑 자식 라우트들이 여기 렌더됨 */}
+        </div>
       </main>
     </div>
   );

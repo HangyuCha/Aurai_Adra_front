@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Layout from './layouts/Layout.jsx';
+import StartPage from './pages/Start/Start.jsx';
 import LoginPage from './pages/Login/Login.jsx';
 import LoadingPage from './pages/Loading/loading.jsx';
 import SignupPage from './pages/Signup/Signup.jsx';
@@ -41,11 +42,11 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<EntryRoute />} />
-      <Route path="/loading" element={<LoadingPage />} />
-
 
       {/* ✅ 레이아웃 하위는 '상대 경로'로 */}
       <Route element={<Layout />}>
+        <Route path="loading" element={<LoadingPage />} />
+        <Route path="start" element={<StartPage />} />
         <Route
           path="home"
           element={
@@ -60,9 +61,9 @@ export default function App() {
         {/* 레이아웃 영역 내에서만 잡히는 catch-all */}
         <Route path="find" element={<FindInfoPage />} />
         {/* ✅ 정보 찾기 */}
-          <Route path="find/step2" element={<FindInfoResultPage />} /> 
+        <Route path="find/step2" element={<FindInfoResultPage />} />
         {/* ✅ 추가 */}
-         <Route path="settings" element={<SettingsPage />} />
+        <Route path="settings" element={<SettingsPage />} />
         {/* ✅ 설정 */}
         <Route path="suggestion" element={<SuggestionPage />} />
         <Route path="suggestion/write" element={<WritePage />} />
