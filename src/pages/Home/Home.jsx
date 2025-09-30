@@ -87,20 +87,6 @@ export default function Home() {
         </div>
       </div>
 
-      <div className={styles.dock}>
-        {[
-          { key: 'message', src: messageIcon, label: '문자' },
-          { key: 'phone', src: phoneIcon, label: '전화' },
-          { key: 'camera', src: cameraIcon, label: '카메라' },
-          { key: 'gpt', src: gptIcon, label: 'GPT' },
-          { key: 'kakao', src: kakaoIcon, label: '카카오톡' },
-          { key: 'prepare', src: prepareIcon, label: '준비중' }
-        ].map(icon => (
-          <div key={icon.key} className={`${styles.dockItem} ${styles[`dock_${icon.key}`] || ''}`} aria-label={icon.label}>
-            <img src={icon.src} alt={icon.label} className={styles.dockIconImg} />
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
