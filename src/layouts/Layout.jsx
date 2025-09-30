@@ -2,7 +2,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navigation from './Navigation.jsx';
-import Footer from './Footer.jsx';
 
 export default function Layout() {
   return (
@@ -11,7 +10,6 @@ export default function Layout() {
       <main className="app-main">
         <Outlet /> {/* 🔑 자식 라우트들이 여기 렌더됨 */}
       </main>
-      <Footer />
     </div>
   );
 }

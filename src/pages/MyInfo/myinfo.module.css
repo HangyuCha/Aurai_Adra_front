@@ -2,7 +2,7 @@
 .stage {
   position: relative;
   width: 100%;
-  padding-bottom: 160px; /* footer와 겹침 방지 */
+  padding-bottom: 160px; /* 하단 여백 확보 */
 }
 
 /* 디자인 캔버스(가운데) */
