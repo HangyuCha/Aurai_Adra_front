@@ -36,20 +36,6 @@ body{
   margin: 0 auto;
 }
 
-/* --- 푸터(풀폭) --- */
-.site-footer{
-  background:#1f2937; color:#d1d5db;
-  border-top:1px solid rgba(255,255,255,.08);
-  width:100%;
-  margin:0;
-  padding:12px 12px;
-}
-.footer-inner{
-  max-width:1440px;
-  margin:0 auto;
-  display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;
-}
-
 /* --- 기존 유틸/컴포넌트 --- */
 .font-jua{ font-family:'Jua', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif; }
 .btn-pill{
@@ -64,13 +50,6 @@ body{
 .nav-center{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:inline-flex; }
 .nav-logo{ width:48px; height:48px; border-radius:50%; background:#fff; overflow:hidden; box-shadow:4px 4px 4px rgba(0,0,0,.25); display:grid; place-items:center; }
 .nav-logo img{ width:100%; height:100%; object-fit:cover; }
-
-.footer-brand{ display:flex; align-items:center; gap:8px; font-size:14px; }
-.footer-logo{ width:20px; height:20px; border-radius:4px; object-fit:cover; opacity:.75; filter:saturate(80%); }
-.footer-mails{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; font-size:12px; }
-.footer-mails a{ color:inherit; text-decoration:none; opacity:.9; }
-.footer-mails a:hover{ opacity:1; color:#fff; text-decoration:underline; }
-
 
 /* ===== 로그인 페이지 전용 스타일 (src/index.css 맨 아래에 추가) ===== */
 
@@ -235,7 +214,7 @@ html[data-font="small"] { --fz-base: 14px; }
 html[data-font="medium"] { --fz-base: 16px; }
 html[data-font="large"] { --fz-base: 18px; }
 body { font-size: var(--fz-base); }
-.btn-pill, .link, .links, .navbar, .title, .site-footer,
+.btn-pill, .link, .links, .navbar, .title,
 label, input, button, select, textarea,
 .font-jua, .primary-btn { font-size: inherit; }
 
