@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import backStyles from '../../components/BackButton/BackButton.module.css';
 import styles from './setting.module.css';
 
 const SIZE_FROM_SLIDER = ['small', 'medium', 'large']; // JS 배열 (as const 제거)
@@ -72,13 +73,20 @@ export default function SettingsPage() {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.topRow}>
-        <button type="button" className={styles.backBtn} onClick={() => navigate(-1)}>
-          돌아가기
-        </button>
+      {/* 로컬 Back 버튼 (전역과 동일한 스타일) */}
+      <div style={{ position:'sticky', top:0, zIndex:20, paddingTop:'4px', marginBottom:'8px', display:'flex', justifyContent:'flex-end' }}>
+        <button
+          type="button"
+          className={backStyles.backBtn}
+          onClick={() => {
+            if (window.history.length <= 2) { navigate('/home', { replace: true }); return; }
+            navigate(-1);
+          }}
+          aria-label="이전 페이지로 돌아가기"
+        >돌아가기</button>
       </div>
 
-      <h1 className={styles.title}>설정</h1>
+  <h1 className={styles.title}>설정</h1>
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>글자 크기 조정</h2>

@@ -38,10 +38,12 @@ function AppIcon({ name, icon, path }) {
 
 export default function Home() {
   return (
-    <div className={styles.iconGrid}>
-      {icons.map((item) => (
-        <AppIcon key={item.name} {...item} />
-      ))}
+    <div className={styles.homeCenter}>
+      <div className={styles.iconGrid}>
+        {icons.map((item) => (
+          <AppIcon key={item.name} {...item} />
+        ))}
+      </div>
     </div>
   );
 }

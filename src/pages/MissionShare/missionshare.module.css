@@ -1,18 +1,18 @@
 .wrap {
   width: 100%;
-  min-height: 100vh;
-  background: #f3f3f3;
   position: relative;
-  padding-bottom: 140px; /* 하단 여백 확보 */
+  /* 자연 흐름으로 쌓이게 (외부 page-content 자체가 스크롤) */
+  background: transparent;
 }
 .captureArea {
-  width: 900px;
-  margin: 60px auto 0;
-  background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 4px 16px #0002;
-  padding: 48px 32px 80px 32px;
+  width: 100%;
+  max-width: 900px;
+  margin: 48px auto 120px; /* 상단/하단 여백 */
+  padding: 32px 16px 120px; /* 내부 패딩만 유지 */
   position: relative;
+  background: transparent; /* 내부 흰 박스 제거 */
+  box-shadow: none;
+  border-radius: 0;
 }
 .title {
   font-size: 40px;

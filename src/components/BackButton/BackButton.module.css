@@ -1,0 +1,36 @@
+.backBtn {
+  background:#59A3FF;
+  color:#fff;
+  border:0;
+  border-radius:12px; /* settings 페이지 스타일 반영 */
+  padding:8px 14px;   /* settings 페이지와 동일 패딩 */
+  cursor:pointer;
+  font-family:'Jua', system-ui, sans-serif;
+  font-size:18px;     /* settings 버튼 크기와 맞춤 */
+  line-height:1.1;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:background .15s ease, transform .12s ease, box-shadow .18s ease;
+}
+.backBtn:hover { background:#4A96F5; }
+.backBtn:active { transform:translateY(1px); box-shadow:0 1px 3px rgba(0,0,0,.25); }
+.backBtn:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+
+/* 흰색 틀 내부 상단 고정(스크롤 시 유지) */
+.insideWrap {
+  position:sticky;
+  top:0; /* page-content padding 안쪽 */
+  z-index:10; /* 콘텐츠 위 */
+  display:inline-block;
+  margin-bottom:12px;
+}
+
+/* 상단 고정 배치용 래퍼 (페이지 스크롤과 독립) */
+:global(.back-button-fixed){
+  position:fixed;
+  top:20px;
+  left:20px;
+  z-index:1100; /* 프로필 버튼(1000)보다 위 */
+}

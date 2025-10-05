@@ -8,6 +8,16 @@
   flex-wrap: wrap;
 }
 
+/* 세로 중앙 정렬 래퍼 */
+.homeCenter {
+  flex: 1 1 auto;
+  width: 100%;
+  display: flex;
+  align-items: center; /* 세로 중앙 */
+  justify-content: center; /* 가로 중앙 */
+  min-height: 100%; /* page-content 높이 채우기 */
+}
+
 .appItem {
   display: flex;
   flex-direction: column;
