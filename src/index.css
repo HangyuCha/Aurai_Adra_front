@@ -20,7 +20,7 @@ body{
   overflow:hidden;
 }
 /* 전역 고정 돌아가기 버튼 위치 (모듈 :global 보강) */
-.back-button-fixed{ position:fixed; top:20px; left:20px; z-index:1500; }
+/* .back-button-fixed{ position:fixed; top:20px; left:20px; z-index:1500; }  // (미사용) 전역 BackButton 제거 */
 /* 루트 컨테이너들도 전체 높이 고정 */
 .app-shell, .app-main { height:100%; }
 

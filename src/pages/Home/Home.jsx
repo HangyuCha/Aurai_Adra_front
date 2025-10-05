@@ -1,31 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import messageIcon from '../../assets/message.png';
 import phoneIcon from '../../assets/phone.png';
 import gptIcon from '../../assets/gpt.png';
 import kakaoIcon from '../../assets/kakao.png';
 
-// 아이콘 데이터
+// 아이콘 데이터 (현재는 이동 비활성화)
 const icons = [
-  { name: '문자', icon: messageIcon, path: '/mission-share' },
-  { name: '전화', icon: phoneIcon, path: '/study-start' },
-  { name: 'GPT', icon: gptIcon, path: '#' },
-  { name: '카카오톡', icon: kakaoIcon, path: '#' },
+  { name: '문자', icon: messageIcon },
+  { name: '전화', icon: phoneIcon },
+  { name: 'GPT', icon: gptIcon },
+  { name: '카카오톡', icon: kakaoIcon },
 ];
 
 // 아이콘 컴포넌트
-function AppIcon({ name, icon, path, index, start }) {
-  const navigate = useNavigate();
-  const handleClick = () => {
-    if (path && path !== '#') {
-      navigate(path);
-    } else {
-      // 준비중인 기능 알림 등
-      alert('준비 중인 기능입니다.');
-    }
-  };
-
+function AppIcon({ name, icon, index, start }) {
   return (
     <div
       className={[
@@ -33,7 +22,7 @@ function AppIcon({ name, icon, path, index, start }) {
         start ? styles.appear : '',
       ].join(' ')}
       style={start ? { '--delay': `${index * 70}ms` } : undefined}
-      onClick={handleClick}
+      /* 클릭 동작 비활성 (향후 기능 연결 예정) */
     >
       <div className={styles.iconWrapper}>
         <img src={icon} alt={name} className={styles.icon} />
