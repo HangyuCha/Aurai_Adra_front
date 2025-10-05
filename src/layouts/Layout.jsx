@@ -27,7 +27,7 @@ export default function Layout() {
       {showProfileButton && <ProfileButton />}
       <main className="app-main">
         <div className={pageClasses}>
-                {showBackButton && <BackButton variant="fixed" />}
+                {showBackButton && <BackButton />}
           <Outlet /> {/* 🔑 자식 라우트들이 여기 렌더됨 */}
         </div>
       </main>

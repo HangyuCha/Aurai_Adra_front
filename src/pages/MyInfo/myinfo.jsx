@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './myinfo.module.css';
-import backStyles from '../../components/BackButton/BackButton.module.css';
+import BackButton from '../../components/BackButton/BackButton';
 
 import avatar20M from '../../assets/20M.png';
 import avatar20F from '../../assets/20F.png';
@@ -93,17 +93,7 @@ export default function MyInfoPage() {
 
   return (
     <div className={styles.stage}>
-      <div style={{ position:'sticky', top:0, zIndex:20, display:'flex', justifyContent:'flex-end', paddingTop:'4px', marginBottom:'8px', paddingRight:'80px' }}>
-        <button
-          type="button"
-          className={backStyles.backBtn}
-          onClick={() => {
-            if (window.history.length <= 2) { navigate('/home', { replace: true }); return; }
-            navigate(-1);
-          }}
-          aria-label="이전 페이지로 돌아가기"
-        >돌아가기</button>
-      </div>
+  <BackButton to="/home" replace />
       <div className={styles.canvas}>
         <div className={styles.bgMain} />
         <div className={styles.title}>나의 정보</div>

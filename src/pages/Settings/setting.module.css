@@ -1,9 +1,10 @@
 /* 전체 레이아웃: 화면 넓게 사용 + 여백 */
 .wrap{
   width:100%;
-  background:#F3F3F3;
+  /* 배경 제거: 상위 레이아웃의 기본 흰색 사용 */
+  background:transparent;
   min-height:70svh;
-  padding:16px 24px 56px;
+  padding:8px 16px 40px; /* 여백 살짝 축소 */
 }
 
 
@@ -20,8 +21,9 @@
 
 /* 공통 섹션 */
 .section{
-  max-width:1280px;
-  margin:0 auto 44px;
+  /* 중앙 제한 제거: 폭 제약 없애려면 max-width 주석 */
+  /* max-width:1280px; */
+  margin:0 0 44px;
 }
 .sectionTitle{
   display:inline-block;
@@ -188,6 +190,7 @@
   font-size:18px;
   font-family:'Jua', system-ui, sans-serif;
   cursor:pointer;
+  margin-top:-10px; /* 위로 10px 올림 */
 
   /* 가운데 정렬 */
   display:inline-flex;

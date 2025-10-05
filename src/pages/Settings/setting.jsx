@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import backStyles from '../../components/BackButton/BackButton.module.css';
+import BackButton from '../../components/BackButton/BackButton';
 import styles from './setting.module.css';
 
 const SIZE_FROM_SLIDER = ['small', 'medium', 'large']; // JS 배열 (as const 제거)
@@ -73,18 +73,8 @@ export default function SettingsPage() {
 
   return (
     <div className={styles.wrap}>
-      {/* 로컬 Back 버튼 (전역과 동일한 스타일) */}
-      <div style={{ position:'sticky', top:0, zIndex:20, paddingTop:'4px', marginBottom:'8px', display:'flex', justifyContent:'flex-end' }}>
-        <button
-          type="button"
-          className={backStyles.backBtn}
-          onClick={() => {
-            if (window.history.length <= 2) { navigate('/home', { replace: true }); return; }
-            navigate(-1);
-          }}
-          aria-label="이전 페이지로 돌아가기"
-        >돌아가기</button>
-      </div>
+      {/* 재사용 BackButton */}
+  <BackButton to="/home" replace />
 
   <h1 className={styles.title}>설정</h1>
 
@@ -184,10 +174,13 @@ export default function SettingsPage() {
       </section>
 
       {/* 건의사항 */}
-      <section className={styles.section}>
-  <button type="button" className={styles.ghost} onClick={() => navigate('/suggestion')}>
-      건의사항
-      </button>
+      <section className={styles.section} style={{ paddingBottom:'32px', marginBottom:'60px' }}>
+        <button
+          type="button"
+          className={styles.ghost}
+          style={{ marginTop:'0', marginBottom:'8px' }}
+          onClick={() => navigate('/suggestion')}
+        >건의사항</button>
       </section>
     </div>
   );
