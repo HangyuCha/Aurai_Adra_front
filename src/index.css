@@ -54,6 +54,10 @@ body{
   min-height:0;
 }
 
+/* intro 전용: 내부 패딩 제거하여 배경 이미지를 틀 전체에 맞춤 */
+.page-content.no-pad { padding:0; background:transparent; }
+.page-content.no-pad > *:last-child { margin-bottom:0 !important; }
+
 /* 스크롤이 필요한 페이지만 별도 클래스 적용 */
 .page-content.scrollable { overflow-y:auto; overflow-x:hidden; }
 /* 전역 오른쪽 정렬 돌아가기 버튼 행 */

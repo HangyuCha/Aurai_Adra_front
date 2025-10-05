@@ -10,6 +10,7 @@ import SignupExtraPage from './pages/Signup/SignupStep2.jsx'; // 2단계
 import FindInfoPage from './pages/Find/Findinfo.jsx';
 import FindInfoResultPage from './pages/Find/FindInfoResult.jsx'; // ✅ Step2
 import Home from './pages/Home/Home.jsx';
+import PostLogin from './pages/PostLogin/PostLogin.jsx';
 import SettingsPage from './pages/Settings/setting.jsx';
 import SuggestionPage from './pages/Suggestion/Suggestion.jsx';
 import WritePage from './pages/Write/Write.jsx';
@@ -47,6 +48,14 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="loading" element={<LoadingPage />} />
         <Route path="start" element={<StartPage />} />
+        <Route
+          path="intro" /* 로그인 직후 노출될 새 페이지 */
+          element={
+            <PrivateRoute>
+              <PostLogin />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="home"
           element={
