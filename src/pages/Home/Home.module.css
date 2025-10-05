@@ -25,10 +25,26 @@
   cursor: pointer;
   text-align: center;
   transition: transform 0.2s ease;
+  opacity: 0;
+  transform: translateY(18px) scale(.94);
 }
 
 .appItem:hover {
   transform: translateY(-5px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appItem { opacity:1 !important; transform:none !important; }
+}
+
+/* 진입 애니메이션 (stagger) */
+.appear {
+  animation: appIn .55s var(--delay, 0ms) cubic-bezier(.4,.2,.2,1) forwards;
+}
+@keyframes appIn {
+  0% { opacity:0; transform: translateY(18px) scale(.94); }
+  60% { opacity:1; transform: translateY(-4px) scale(1.02); }
+  100% { opacity:1; transform: translateY(0) scale(1); }
 }
 
 .iconWrapper {

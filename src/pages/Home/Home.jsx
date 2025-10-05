@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import messageIcon from '../../assets/message.png';
@@ -15,7 +15,7 @@ const icons = [
 ];
 
 // 아이콘 컴포넌트
-function AppIcon({ name, icon, path }) {
+function AppIcon({ name, icon, path, index, start }) {
   const navigate = useNavigate();
   const handleClick = () => {
     if (path && path !== '#') {
@@ -27,7 +27,14 @@ function AppIcon({ name, icon, path }) {
   };
 
   return (
-    <div className={styles.appItem} onClick={handleClick}>
+    <div
+      className={[
+        styles.appItem,
+        start ? styles.appear : '',
+      ].join(' ')}
+      style={start ? { '--delay': `${index * 70}ms` } : undefined}
+      onClick={handleClick}
+    >
       <div className={styles.iconWrapper}>
         <img src={icon} alt={name} className={styles.icon} />
       </div>
@@ -37,11 +44,16 @@ function AppIcon({ name, icon, path }) {
 }
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const t = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(t);
+  }, []);
   return (
     <div className={styles.homeCenter}>
-      <div className={styles.iconGrid}>
-        {icons.map((item) => (
-          <AppIcon key={item.name} {...item} />
+      <div className={styles.iconGrid} data-animate={mounted || undefined}>
+        {icons.map((item, i) => (
+          <AppIcon key={item.name} index={i} start={mounted} {...item} />
         ))}
       </div>
     </div>
