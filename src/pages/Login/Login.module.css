@@ -1,20 +1,11 @@
-.page {
+.loginContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  background-color: #f0f2f5;
-  overflow: hidden;
-}
-
-.loginCard {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
-  text-align: center;
+  margin: 0 auto;
 }
 
 .title {
@@ -22,6 +13,7 @@
   font-weight: bold;
   margin-bottom: 30px;
   color: #1c1e21;
+  text-align: center;
 }
 
 .form {

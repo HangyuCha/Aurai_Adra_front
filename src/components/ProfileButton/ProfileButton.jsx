@@ -1,14 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './ProfileButton.module.css';
 import profileIcon from '../../assets/profilebutton.png';
 
 export default function ProfileButton() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    setIsOpen(false);
+    navigate('/login');
   };
 
   // Close dropdown if clicked outside
@@ -18,9 +25,9 @@ export default function ProfileButton() {
         setIsOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [dropdownRef]);
 
@@ -37,6 +44,9 @@ export default function ProfileButton() {
           <Link to="/settings" className={styles.dropdownItem} onClick={() => setIsOpen(false)}>
             설정
           </Link>
+          <button onClick={handleLogout} className={styles.dropdownItem}>
+            로그아웃
+          </button>
         </div>
       )}
     </div>
