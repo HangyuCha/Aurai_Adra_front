@@ -22,7 +22,7 @@ export default function Login() {
   };
 
   return (
-    <>
+    <div className={styles.loginContainer}>
       <h1 className={styles.title}>Login</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.field}>
@@ -31,17 +31,11 @@ export default function Login() {
         <div className={styles.field}>
           <input type="password" id="password" name="password" placeholder="비밀번호" className={styles.input} required />
         </div>
-        <button type="submit" className={styles.loginButton}>
-          회춘하기
-        </button>
+        <button type="submit" className={styles.loginButton}>회춘하기</button>
       </form>
       <div className={styles.links}>
-        <button type="button" onClick={() => navigate('/signup')} className={styles.link}>
-          회원가입
-        </button>
-        <button type="button" onClick={() => navigate('/find')} className={styles.link}>
-          정보찾기
-        </button>
+        <button type="button" onClick={() => navigate('/signup')} className={styles.link}>회원가입</button>
+        <button type="button" onClick={() => navigate('/find')} className={styles.link}>정보찾기</button>
       </div>
       <div className={styles.socialLogin}>
         <button type="button" className={styles.kakaoButton}>
@@ -49,7 +43,7 @@ export default function Login() {
           카카오톡으로 로그인
         </button>
       </div>
-    </>
+    </div>
   );
 }
 

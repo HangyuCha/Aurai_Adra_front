@@ -47,6 +47,17 @@ body{
   overflow: auto; /* 컨텐츠가 많을 경우 내부 스크롤 */
 }
 
+/* 내부 실제 콘텐츠 폭 제한 (약 10cm ≈ 378~380px) */
+.inner-narrow {
+  width: 100%;
+  max-width: 380px; /* ≈ 10cm (96dpi 기준 1in=2.54cm -> 10cm≈3.937in -> *96 ≈ 378px) */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 더 넓은 양식(예: 글쓰기 등) 별도 확장 필요 시 새 클래스 추가 가능 */
+
 /* 마지막 요소가 하단 테두리에 붙어 보이지 않도록 동일한 공간 확보 */
 .page-content > *:last-child { margin-bottom: 20px; }
 
