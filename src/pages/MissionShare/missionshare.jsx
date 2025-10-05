@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 // import 경로의 대소문자 주의
 import styles from './MissionShare.module.css';
@@ -7,7 +6,6 @@ import styles from './MissionShare.module.css';
 export default function MissionShare() {
   const [modalOpen, setModalOpen] = useState(false);
   const captureRef = useRef(null);
-  const navigate = useNavigate();
 
   const handleCapture = async () => {
     if (!captureRef.current) return;
@@ -21,11 +19,6 @@ export default function MissionShare() {
 
   return (
     <div className={styles.wrap}>
-      {/* 네비게이션 바로 아래 우측 상단 뒤로가기 */}
-      <button className={styles.backBtn} onClick={() => navigate(-1)}>
-        돌아가기
-      </button>
-
       <div ref={captureRef} className={styles.captureArea}>
         <div className={styles.title}>미션 자랑하기</div>
 

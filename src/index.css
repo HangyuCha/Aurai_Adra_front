@@ -2,25 +2,83 @@
 
 /* --- 모든 버튼 호버 효과 --- */
 button, .btn-pill {
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease;
 }
 
 button:hover, .btn-pill:hover {
   transform: scale(1.05);
-  filter: brightness(1.1);
+  filter: brightness(0.9);
 }
 
 /* --- Reset (맨 위에 추가/유지) --- */
 *{ box-sizing: border-box; }
 html, body, #root{ height:100%; }
 body{
-  margin:0; overflow-x:hidden; background:#F3F3F3;
+  margin:0; background:#F3F3F3;
   font-family: 'Jua', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  /* 페이지 자체 스크롤 제거, 내부 흰 틀에만 스크롤 주기 */
+  overflow:hidden;
 }
+/* 전역 고정 돌아가기 버튼 위치 (모듈 :global 보강) */
+.back-button-fixed{ position:fixed; top:20px; left:20px; z-index:1500; }
+/* 루트 컨테이너들도 전체 높이 고정 */
+.app-shell, .app-main { height:100%; }
 
 /* --- 레이아웃 --- */
 .app-shell{ display:flex; flex-direction:column; min-height:100vh; }
-.app-main{ flex:1 0 auto; padding:32px 16px; background:#F3F3F3; } /* ← 추가 */
+.app-main{
+  flex:1 0 auto;
+  padding:20px;
+  background:#f0f2f5;
+  display:flex;
+  justify-content:center;
+  align-items:stretch;
+  /* 이미 height:100% (부모가 viewport) */
+  min-height:0; /* flex overflow 이슈 방지 */
+}
+
+/* 모든 페이지에 적용될 흰색 컨텐츠 박스 */
+.page-content {
+  width:100%;
+  height:100%;
+  background:#ffffff;
+  border-radius:15px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+  padding:20px;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:stretch;
+  overflow:hidden; /* 기본은 스크롤 없음 */
+  min-height:0;
+}
+
+/* 스크롤이 필요한 페이지만 별도 클래스 적용 */
+.page-content.scrollable { overflow-y:auto; overflow-x:hidden; }
+/* 전역 오른쪽 정렬 돌아가기 버튼 행 */
+/* 전역 back 버튼 fixed 방식으로 전환 (global-back-row 미사용) */
+/* .page-content.has-back{ padding-top:90px; } */
+/* .global-back-row{ position:absolute; top:20px; left:20px; z-index:1200; display:flex; } */
+
+/* 홈 페이지: 스크롤 숨김 (내용이 짧을 때 불필요한 스크롤 제거) */
+/* no-scroll 클래스는 의미적으로 유지 (기본이 hidden 이라 영향 없음) */
+
+/* 설정 페이지 전용 내부 스크롤 제거됨 (settings-scroll 클래스 삭제) */
+
+/* 내부 실제 콘텐츠 폭 제한 (약 10cm ≈ 378~380px) */
+.inner-narrow {
+  width: 100%;
+  max-width: 380px; /* ≈ 10cm (96dpi 기준 1in=2.54cm -> 10cm≈3.937in -> *96 ≈ 378px) */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 더 넓은 양식(예: 글쓰기 등) 별도 확장 필요 시 새 클래스 추가 가능 */
+
+/* 마지막 요소가 하단 테두리에 붙어 보이지 않도록 동일한 공간 확보 */
+.page-content > *:last-child { margin-bottom: 20px; }
 
 /* --- 헤더(풀폭) --- */
 .navbar{
@@ -174,16 +232,14 @@ input:focus{ border-color: var(--ring); box-shadow: 0 0 0 4px rgba(138,56,245,.1
 /* src/index.css (맨 아래 추가) */
 /* ===== 로딩 페이지 ===== */
 .loading-page{
-  min-height:100svh;
+  width: 100%;
+  height: 100%;
   display:grid;
   place-items:center;
-  padding:16px;
-  background:#ffffff;
 }
 .loading-canvas{
-  width:min(1440px,100%);
-  height:min(1014px, calc(100vh - 32px));
-  border:1px solid #F3F3F3;
+  width:100%;
+  height:100%;
   background:#fff;
   position:relative;
   display:grid;

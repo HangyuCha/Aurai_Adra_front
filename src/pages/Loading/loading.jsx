@@ -37,7 +37,7 @@ export default function LoadingPage() {
         setFade(true);
         t2 = setTimeout(() => {
           const token = localStorage.getItem('accessToken');
-          navigate(token ? '/home' : '/login', { replace: true });
+          navigate(token ? '/home' : '/start', { replace: true });
         }, FADE_MS);
       }, DELAY);
     })();
@@ -50,10 +50,8 @@ export default function LoadingPage() {
   }, [navigate]);
 
   return (
-    <main className="loading-page">
-      <div className={`loading-canvas ${ready ? 'is-ready' : ''} ${fade ? 'fade-out' : ''}`}>
-        <img ref={imgRef} className="loading-logo" src={logo} alt="앱 로고" />
-      </div>
-    </main>
+    <div className={`loading-canvas ${ready ? 'is-ready' : ''} ${fade ? 'fade-out' : ''}`}>
+      <img ref={imgRef} className="loading-logo" src={logo} alt="앱 로고" />
+    </div>
   );
 }

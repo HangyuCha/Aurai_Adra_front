@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './myinfo.module.css';
+import BackButton from '../../components/BackButton/BackButton';
 
 import avatar20M from '../../assets/20M.png';
 import avatar20F from '../../assets/20F.png';
@@ -92,6 +93,7 @@ export default function MyInfoPage() {
 
   return (
     <div className={styles.stage}>
+  <BackButton to="/home" replace />
       <div className={styles.canvas}>
         <div className={styles.bgMain} />
         <div className={styles.title}>나의 정보</div>
