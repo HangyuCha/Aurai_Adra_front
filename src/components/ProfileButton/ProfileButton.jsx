@@ -13,9 +13,10 @@ export default function ProfileButton() {
   };
 
   const handleLogout = () => {
+    // 토큰 제거 후 초기 진입 플로우 (loading -> start -> login) 재실행
     localStorage.removeItem('accessToken');
     setIsOpen(false);
-    navigate('/login');
+    navigate('/loading', { replace: true });
   };
 
   // Close dropdown if clicked outside
