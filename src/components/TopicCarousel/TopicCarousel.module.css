@@ -1,4 +1,4 @@
-.carousel { width:100%; display:flex; flex-direction:column; gap:28px; align-items:center; position:relative; /* 카드 높이 & 색상 변수 도입 */ --card-min-height:300px; --accent-start:#59A3FF; --accent-end:#326bcc; --accent-radial:rgba(89,163,255,.35); --accent-outline:#59A3FF; --accent-border-active:#b9d9ff; --card-bg2:#eef6ff; --card-active-mid:#e5f2ff; --card-active-end:#f2fbff; --score-bg:#e0edfa; --score-fill-start:#59A3FF; --score-fill-end:#326bcc; --score-text:#1d5088; }
+.carousel { width:100%; display:flex; flex-direction:column; gap:28px; align-items:center; position:relative; /* 카드 높이 & 색상 변수 도입 */ --card-min-height:300px; --accent-start:#59A3FF; --accent-end:#326bcc; --accent-radial:rgba(89,163,255,.35); --accent-outline:#59A3FF; --accent-border-active:#b9d9ff; --card-bg2:#eef6ff; --card-active-mid:#e5f2ff; --card-active-end:#f2fbff; --score-bg:#e0edfa; --score-fill-start:#59A3FF; --score-fill-end:#326bcc; --score-text:#1d5088; /* 완료 상태 테마 변수 (코랄 계열) */ --complete-pill-bg:#fff2ef; --complete-pill-border:#ffcfc3; --complete-pill-text:#c24424; --complete-icon-bg-start:#FF8F6A; --complete-icon-bg-end:#FF5A35; }
 /* practice(연습) 변형: 초록 계열 */
 .practice { --accent-start:#31C073; --accent-end:#1A8F52; --accent-radial:rgba(49,192,115,.35); --accent-outline:#1FA062; --accent-border-active:#b8ecd9; --card-bg2:#e8f9f0; --card-active-mid:#dff4ea; --card-active-end:#eefdf6; --score-bg:#d6f2e6; --score-fill-start:#31C073; --score-fill-end:#1A8F52; --score-text:#14623d; }
 /* 좌우 네비 버튼을 절대 배치 */
@@ -37,9 +37,11 @@
 .statusArea { margin-top:28px; display:flex; align-items:center; gap:12px; }
 .statusBadge { font-family:'Jua',system-ui,sans-serif; letter-spacing:.5px; font-size:var(--fs-16); padding:6px 16px 7px; border-radius:999px; border:1px solid #cfd6dd; background:#f2f5f8; color:#39454f; display:inline-flex; align-items:center; gap:8px; transition:background .4s, color .4s, border-color .4s; }
 .statusDot { width:12px; height:12px; border-radius:50%; background:#b5c1cb; transition:background .35s, box-shadow .5s, transform .5s; box-shadow:0 0 0 0 rgba(0,0,0,0); position:relative; }
-.done .statusBadge { background:#f2f5f8; border-color:#cfd6dd; color:#39454f; box-shadow:none; }
-/* 완료된 점: 고정 빨강 */
-.done .statusDot { background:#ff3b30; transform:scale(1); box-shadow:none; }
+.done .statusBadge { background:var(--complete-pill-bg); border-color:var(--complete-pill-border); color:var(--complete-pill-text); box-shadow:0 2px 6px -2px rgba(180,70,40,.25); }
+/* 미완료 점은 그대로, 완료 시 체크 아이콘 사용하므로 .statusDot 빨강 규칙 제거 */
+.statusCheck { width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; background:linear-gradient(135deg,var(--complete-icon-bg-start),var(--complete-icon-bg-end)); color:#fff; font-size:12px; font-weight:700; box-shadow:0 0 0 2px #fff inset,0 2px 4px -1px rgba(0,0,0,.25); }
+.statusCheck svg { width:12px; height:12px; display:block; }
+.statusDoneText { font-weight:700; letter-spacing:.5px; }
 /* 강제 적용 (다른 캐스케이드 충돌 대비) */
 .item.done .statusDot { background:#ff3b30 !important; }
 .pendingText { opacity:.75; }

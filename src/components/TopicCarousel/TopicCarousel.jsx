@@ -122,8 +122,16 @@ export default function TopicCarousel({ topics = [], onSelect, variant, scores, 
                 {variant !== 'practice' && (
                   <div className={styles.statusArea} aria-label={completed ? '학습 완료' : '미완료'}>
                     <div className={styles.statusBadge}>
-                      <span className={styles.statusDot} />
-                      {completed ? '완료됨' : <span className={styles.pendingText}>미완료</span>}
+                      {completed ? (
+                        <span className={styles.statusCheck} aria-hidden="true">
+                          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.4 11.2 3.2 8l1.12-1.12 2.08 2.08 5.28-5.28L12.8 4.8 6.4 11.2Z" fill="currentColor" />
+                          </svg>
+                        </span>
+                      ) : (
+                        <span className={styles.statusDot} aria-hidden="true" />
+                      )}
+                      {completed ? <span className={styles.statusDoneText}>완료됨</span> : <span className={styles.pendingText}>미완료</span>}
                     </div>
                   </div>
                 )}
