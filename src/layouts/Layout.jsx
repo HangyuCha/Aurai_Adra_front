@@ -12,7 +12,8 @@ export default function Layout() {
   const isHome = location.pathname === '/home';
   const isIntro = location.pathname === '/intro';
   // 스크롤 필요한 경로 목록 (필요 시 확장)
-  const scrollablePaths = ['/settings', '/mission-share', '/me'];
+  // 내부 스크롤이 정말 필요한 페이지만 지정 (settings는 제거)
+  const scrollablePaths = ['/mission-share', '/me'];
   const isScrollable = scrollablePaths.some(p => location.pathname.startsWith(p));
 
   const pageClasses = [

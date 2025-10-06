@@ -52,73 +52,77 @@ export default function SettingsPage() {
 
   return (
     <div className={styles.wrap}>
-      {/* 재사용 BackButton */}
-  <BackButton to="/home" replace />
+      <BackButton to="/home" replace />
+      <div className={styles.inner}>
+        <header className={styles.head}>
+          <h1 className={styles.title}>설정</h1>
+        </header>
 
-  <h1 className={styles.title}>설정</h1>
+        <section className={`${styles.section} ${styles.card}`}>
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle}>글자 크기</h2>
+          </div>
+          <div className={styles.scaleArea}>
+            <label className={styles.scaleLabel} htmlFor="fontRange">작게</label>
+            <input
+              id="fontRange"
+              className={styles.range}
+              type="range"
+              min="0"
+              max="2"
+              step="1"
+              value={slider}
+              onChange={onSlider}
+              aria-valuemin={0}
+              aria-valuemax={2}
+              aria-valuenow={slider}
+              aria-label="글자 크기 조절"
+            />
+            <span className={styles.scaleLabel}>크게</span>
+          </div>
+          <div className={styles.scaleButtons}>
+            <button
+              type="button"
+              className={`${styles.scaleBtn} ${styles.sizeSmall} ${fontSize === 'small' ? styles.active : ''}`}
+              onClick={() => { setSlider(0); applyFontSize('small'); }}
+              aria-pressed={fontSize === 'small'}
+            >작게</button>
+            <button
+              type="button"
+              className={`${styles.scaleBtn} ${styles.sizeMedium} ${fontSize === 'medium' ? styles.active : ''}`}
+              onClick={() => { setSlider(1); applyFontSize('medium'); }}
+              aria-pressed={fontSize === 'medium'}
+            >중간</button>
+            <button
+              type="button"
+              className={`${styles.scaleBtn} ${styles.sizeLarge} ${fontSize === 'large' ? styles.active : ''}`}
+              onClick={() => { setSlider(2); applyFontSize('large'); }}
+              aria-pressed={fontSize === 'large'}
+            >크게</button>
+          </div>
+        </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>글자 크기 조정</h2>
+        <section className={`${styles.section} ${styles.card}`}>
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle}>목소리</h2>
+          </div>
+          <div className={styles.voiceToggle} role="group" aria-label="목소리 선택">
+            <button
+              type="button"
+              className={`${styles.voiceChip} ${voice === 'male' ? styles.active : ''}`}
+              onClick={() => setVoice('male')}
+              aria-pressed={voice === 'male'}
+            >아들</button>
+            <button
+              type="button"
+              className={`${styles.voiceChip} ${voice === 'female' ? styles.active : ''}`}
+              onClick={() => setVoice('female')}
+              aria-pressed={voice === 'female'}
+            >딸</button>
+          </div>
+        </section>
 
-        <div className={styles.scaleArea}>
-        <span className={styles.scaleLabel}>작게</span>
-        <input className={styles.range}
-        type="range"
-        min="0"
-        max="2"
-        step="1"
-        value={slider}
-        onChange={onSlider}
-        aria-label="글자 크기 조절"
-        />
-    <span className={styles.scaleLabel}>크게</span>
-    </div>
-
-    {/* ✅ 작게/중간/크게 전부 버튼으로 클릭 가능 */}
-    <div className={styles.scaleButtons}>
-    <button
-      type="button"
-      className={`${styles.scaleBtn} ${fontSize === 'small' ? styles.active : ''}`}
-      onClick={() => { setSlider(0); applyFontSize('small'); }}
-      aria-pressed={fontSize === 'small'}
-    >작게</button>
-
-    <button
-      type="button"
-      className={`${styles.scaleBtn} ${fontSize === 'medium' ? styles.active : ''}`}
-      onClick={() => { setSlider(1); applyFontSize('medium'); }}
-      aria-pressed={fontSize === 'medium'}
-    >중간</button>
-
-    <button
-      type="button"
-      className={`${styles.scaleBtn} ${fontSize === 'large' ? styles.active : ''}`}
-      onClick={() => { setSlider(2); applyFontSize('large'); }}
-      aria-pressed={fontSize === 'large'}
-    >크게</button>
       </div>
-    </section>
-
-      {/* 목소리 변경 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>목소리 변경</h2>
-        <div className={styles.voiceRow}>
-          <button
-            type="button"
-            className={`${styles.voiceBtn} ${voice === 'male' ? styles.active : ''}`}
-            onClick={() => setVoice('male')}
-          >아들</button>
-          <button
-            type="button"
-            className={`${styles.voiceBtn} ${voice === 'female' ? styles.active : ''}`}
-            onClick={() => setVoice('female')}
-          >딸</button>
-        </div>
-      </section>
-
-      {/* 비밀번호 변경 기능은 전용 페이지로 이동 */}
-
-      {/* 건의사항 버튼은 프로필 드롭다운으로 이동 */}
     </div>
   );
 }
