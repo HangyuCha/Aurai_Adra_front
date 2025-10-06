@@ -41,6 +41,7 @@ export default function MyInfoPage() {
   const [ageDisplay, setAgeDisplay] = useState('—');
   const [ageBand, setAgeBand] = useState('');
   const [gender, setGender] = useState('');
+  const [learningAge, setLearningAge] = useState('');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -48,11 +49,14 @@ export default function MyInfoPage() {
     const nn = localStorage.getItem('nickname') || '';
     const ar = localStorage.getItem('ageRange') || localStorage.getItem('age') || localStorage.getItem('signup_ageRange') || '';
     const gd = localStorage.getItem('gender') || localStorage.getItem('signup_gender') || '';
+    const la = localStorage.getItem('learningAge') || '';
     const age = parseAgeRange(ar);
     setNickname(nn);
     setAgeDisplay(age.display);
     setAgeBand(age.band);
     setGender(parseGender(gd));
+    // 학습 나이(배움 나이) 값이 없으면 기본적으로 동일 나이 표시
+    setLearningAge(la || age.display);
   }, []);
   useEffect(() => { readFromStorage(); }, [readFromStorage]);
 
@@ -95,32 +99,40 @@ export default function MyInfoPage() {
     <div className={styles.stage}>
   <BackButton to="/home" replace />
       <div className={styles.canvas}>
-        <div className={styles.bgMain} />
         <div className={styles.title}>나의 정보</div>
-
-        <img className={styles.bigAvatar} src={avatarSrc} alt="avatar"
-             onError={(e)=>{ e.currentTarget.src = avatarDefault; }} />
-
-        <section className={styles.infoPanel}>
-          <div className={styles.row}>
-            <div className={styles.label}>별칭</div>
-            <span className={styles.divider} />
-            <div className={styles.value}>{nickname || '—'}</div>
-          </div>
-          <div className={styles.row}>
-            <div className={styles.label}>나이</div>
-            <span className={styles.divider} />
-            <div className={styles.value}>{ageDisplay}</div>
-          </div>
-          <div className={styles.panelActions}>
-            <button className={styles.sharePrimary} onClick={() => navigate('/mission-share')}>미션 자랑하기</button>
-            <div className={styles.inlineActions}>
-              <button className={styles.withdrawLink} onClick={()=> navigate('/password-change')}>비밀번호 바꾸기</button>
-              <span className={styles.vertBar}>|</span>
-              <button className={styles.withdrawLink} onClick={() => setConfirmOpen(true)}>회원 탈퇴하기</button>
+        <div className={styles.profileCluster}>
+          <div className={styles.avatarBox}>
+            <img className={styles.bigAvatar} src={avatarSrc} alt="avatar"
+                 onError={(e)=>{ e.currentTarget.src = avatarDefault; }} />
+            <div className={styles.avatarBadge}>
+              <span>{ageDisplay !== '—' ? ageDisplay : '나이 미입력'}</span>
             </div>
           </div>
-        </section>
+          <section className={styles.infoPanel}>
+            <div className={styles.metaList}>
+              <div className={styles.metaItem}>
+                <div className={styles.metaLabel}>별칭</div>
+                <div className={styles.metaValue}>{nickname || '—'}</div>
+              </div>
+              <div className={styles.metaItem}>
+                <div className={styles.metaLabel}>나의 나이</div>
+                <div className={styles.metaValue}>{ageDisplay}</div>
+              </div>
+              <div className={styles.metaItem}>
+                <div className={styles.metaLabel}>배움 나이</div>
+                <div className={styles.metaValue}>{learningAge || '—'}</div>
+              </div>
+            </div>
+            <div className={styles.panelActions}>
+              <button className={styles.sharePrimary} onClick={() => navigate('/mission-share')}>미션 자랑하기</button>
+              <div className={styles.inlineActions}>
+                <button className={styles.withdrawLink} onClick={()=> navigate('/password-change')}>비밀번호 바꾸기</button>
+                <span className={styles.vertBar}>|</span>
+                <button className={styles.withdrawLink} onClick={() => setConfirmOpen(true)}>회원 탈퇴하기</button>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
 
       {confirmOpen && (

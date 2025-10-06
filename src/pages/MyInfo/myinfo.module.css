@@ -2,13 +2,24 @@
 .stage {
   position: relative;
   width: 100%;
-  padding: 24px 0 40px; /* 상단/하단 여백 확대 */
+  padding: 32px 0 56px; /* 더 여유 있게 */
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
   height: 100%;
   box-sizing: border-box;
+  overflow: hidden;
 }
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent; /* 연한 회색 제거 */
+  z-index: 0;
+  pointer-events: none;
+}
+/* 아주 미세한 노이즈 질감 */
+.stage::after { display:none; }
 
 /* 로컬 돌아가기 버튼 래퍼 */
 .headBack {
@@ -33,16 +44,16 @@
 .canvas {
   position: relative;
   width: 100%;
-  max-width: 1240px; /* 더 넓게 */
+  max-width: 1180px; /* 약간 줄여 집중도 상승 */
   margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 52px; /* 여유 있는 간격 */
-  padding: 16px 40px 8px; /* 내부 여백 확대 */
+  flex-direction: column;
+  gap: 32px;
+  padding: 0 48px 0;
   box-sizing: border-box;
   min-height: 0;
   flex: 1 1 auto;
+  z-index: 1;
 }
 
 /* 배경 */
@@ -53,88 +64,136 @@
 
 /* 타이틀 */
 .title {
-  flex: 0 0 100%;
-  margin: 0 0 8px;
+  flex: 0 0 auto;
+  margin: 0 0 4px;
   font-family: 'Jua', sans-serif;
-  font-size: clamp(28px, 3vw, 36px);
-  line-height: 1.1; color: #000;
-  text-shadow: 0 3px 4px rgba(0,0,0,.25);
+  font-size: clamp(30px, 3vw, 40px);
+  line-height: 1.05;
+  color: #111; /* 단색 */
+  letter-spacing: .5px;
+  position: relative;
 }
 
-/* 왼쪽 캐릭터 */
+/* 프로필 클러스터 (아바타 + 정보) */
+/* 프로필 클러스터 (아바타 + 정보) : 글래스 카드 버전 복구 */
+.profileCluster {
+  display: flex;
+  gap: 48px;
+  align-items: stretch;
+  position: relative;
+  backdrop-filter: blur(14px) saturate(1.2);
+  background: #ffffff; /* 완전 흰색 - 내부 색조 제거 */
+  border: 1px solid rgba(255,255,255,.55);
+  box-shadow: 0 12px 32px -4px rgba(34,42,56,.18), 0 2px 6px rgba(0,0,0,.08);
+  padding: 42px 48px 46px;
+  border-radius: 36px;
+  overflow: hidden; /* 내부 그라데이션 클리핑 */
+}
+.profileCluster::before {
+  content: none; /* 그라데이션 제거 */
+}
+.profileCluster::after { content:none; }
+/* 내용이 그라데이션 위로 오도록 */
+.profileCluster > * { position:relative; z-index:1; }
+/* 프레임 제거로 before 레이어 사용 안 함 */
+.profileCluster::before { display:none; }
+
+.avatarBox { position: relative; display:flex; }
 .bigAvatar {
   position: relative;
-  width: clamp(220px, 28%, 340px); /* 다시 크게 */
+  width: clamp(320px, 34vw, 440px); /* 더 크게 */
   aspect-ratio: 2/3;
   object-fit: contain;
-  box-shadow: 0 6px 14px rgba(0,0,0,.25);
-  background: transparent;
-  border-radius: 12px;
+  border-radius: 0; /* 카드 라운드 제거 */
+  box-shadow: none; /* 그림자 제거로 카드 느낌 제거 */
+  background: transparent; /* 내부 추가 톤 제거 */
+}
+.avatarBadge {
+  position: absolute;
+  bottom: 10px; left: 12px;
+  background: #222; /* 단색 */
+  color: #fff;
+  font-family: 'Jua', sans-serif;
+  font-size: 18px;
+  padding: 6px 14px 7px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.28);
+  letter-spacing: .5px;
+  display:flex; align-items:center; gap:6px;
 }
 
-/* 오른쪽 정보 패널: 별칭/나이/버튼을 한 컬럼으로 */
+/* 정보 패널 → 재정렬 */
 .infoPanel {
   position: relative;
-  flex: 1 1 520px;
-  min-width: 420px;
-  max-width: 720px;
+  flex: 1 1 auto;
+  min-width: 380px;
+  max-width: 640px;
   display: flex;
   flex-direction: column;
-  gap: 56px;
-  padding-top: 12px;
+  gap: 40px;
+  padding-top: 4px;
 }
 
+/* 메타 리스트 */
+.metaList { display: flex; flex-direction: column; gap: 24px; }
+.metaItem { display: flex; flex-direction: column; gap: 6px; }
+.metaLabel {
+  font-size: 14px; font-family: 'Jua', sans-serif; letter-spacing: 1px;
+  color: #555; text-transform: uppercase; position:relative; padding-left:10px;
+}
+.metaLabel::before { content:''; position:absolute; left:0; top:50%; width:4px; height:4px; background:#ff7a34; border-radius:50%; transform:translateY(-50%); }
+.metaValue { font-family:'Jua', sans-serif; font-size: clamp(42px,4vw,60px); line-height:1.06; color:#111; text-shadow:0 2px 4px rgba(0,0,0,.18); }
+
+/* 이전 row 스타일 사용 X → 호환 위해 유지 (미사용 시 제거 가능) */
+
+/* (중복되던 .bigAvatar 정의 제거됨) */
+
+/* 오른쪽 정보 패널: 별칭/나이/버튼을 한 컬럼으로 */
+/* (구) infoPanel 정의는 위에서 재정의 */
+
 /* 행: 라벨 ▪ 값 */
-.row {
-  display: grid;
-  grid-template-columns: 1fr 20px 1fr;
-  align-items: center;
-  column-gap: 36px;
-}
-.label, .value {
-  font-family: 'Jua', sans-serif;
-  font-size: clamp(34px, 3.6vw, 56px); /* 다시 크게 */
-  color: #000;
-  text-shadow: 0 4px 6px rgba(0,0,0,.25);
-  text-align: left;
-  overflow-wrap: anywhere;
-}
-.divider {
-  width: 18px; height: 18px; background: #000; border-radius: 4px;
-  box-shadow: 0 3px 6px rgba(0,0,0,.25);
-  justify-self: center;
-}
+/* (구) row / label / divider 제거 → 필요 시 추후 삭제 */
 
 /* 패널 하단 액션: 나이 밑에 바로 배치됨 */
 .panelActions {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 12px;
+  gap: 18px;
 }
 
 /* 큰 흰색 pill 버튼 */
 .sharePrimary {
-  background: #fff; color: #111; border: none; cursor: pointer;
-  border-radius: 24px;
-  box-shadow: 6px 6px 14px rgba(0,0,0,.18);
+  background: #ffffff;
+  color: #111; border: 1px solid rgba(255,255,255,.6); cursor: pointer;
+  border-radius: 26px;
+  box-shadow: 0 8px 22px -6px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.06);
   font-family: 'Jua', sans-serif; font-weight: 400;
   width: 100%;
-  height: 80px;
-  font-size: clamp(36px, 3.4vw, 48px);
+  height: 78px;
+  font-size: clamp(34px, 3.2vw, 46px);
   display:flex; align-items:center; justify-content:center;
+  position: relative; overflow:hidden;
+  transition: transform .28s cubic-bezier(.16,.8,.24,1), box-shadow .3s;
 }
+.sharePrimary::after { content:none; }
+.sharePrimary:hover { transform: translateY(-4px); box-shadow: 0 14px 30px -8px rgba(0,0,0,.22), 0 4px 10px rgba(0,0,0,.08); }
+.sharePrimary:active { transform: translateY(-1px); }
 
 /* 아래 작은 텍스트 버튼 */
 .withdrawLink {
   background: transparent; border: none; cursor: pointer;
-  color: #111; font-family: 'Jua', sans-serif; font-size: 20px;
-  text-shadow: 3px 3px 6px rgba(0,0,0,.25);
+  color: #333; font-family: 'Jua', sans-serif; font-size: 18px;
+  text-shadow: 0 2px 4px rgba(0,0,0,.18);
   align-self: center;
-  padding: 2px 4px; /* 포인터 영역 살짝 확대 */
+  padding: 2px 6px; /* 포인터 영역 살짝 확대 */
   text-decoration: none;
-  transition: color .18s ease;
+  transition: color .18s ease, background .25s;
+  border-radius: 8px;
+  position: relative;
 }
+.withdrawLink:hover, .withdrawLink:focus-visible { color:#d12c2c; text-decoration: underline; outline:none; }
+.inlineActions .withdrawLink:first-of-type:hover, .inlineActions .withdrawLink:first-of-type:focus-visible { color:#222; }
 
 .withdrawLink:hover, .withdrawLink:focus-visible {
   color: #d12c2c; /* 살짝 강조 (적당한 붉은톤) */
@@ -148,43 +207,39 @@
 }
 
 /* 인라인 텍스트 액션 (비밀번호 변경 | 회원 탈퇴) */
-.inlineActions {
-  display: flex;
-  align-items: center;
-  gap: 14px; /* 버튼과 구분자 사이 간격 */
-  align-self: center;
-  margin-top: 4px;
-}
-.vertBar {
-  font-family: 'Jua', sans-serif;
-  font-size: 20px;
-  color: #111;
-  text-shadow: 3px 3px 6px rgba(0,0,0,.25);
-  user-select: none;
-  line-height: 1;
-  transform: translateY(-1px); /* 시각적 중앙 정렬 미세 조정 */
-}
+.inlineActions { display:flex; align-items:center; gap:18px; align-self:center; margin-top:4px; }
+.vertBar { font-family:'Jua', sans-serif; font-size:18px; color:#888; user-select:none; line-height:1; transform:translateY(-1px); }
 
 /* 더 작은 높이/폭 대응 */
-@media (max-width: 960px) {
-  .canvas { gap: 40px; padding: 12px 28px 8px; }
-  .infoPanel { gap: 40px; min-width: 360px; }
-  .label, .value { font-size: clamp(30px, 5vw, 50px); }
-  .sharePrimary { height:72px; font-size: clamp(32px, 4.2vw, 44px); }
+@media (max-width: 1080px) { .profileCluster { gap:40px; padding:38px 40px 42px; } }
+@media (max-width: 920px) { .profileCluster { flex-direction: column; align-items:center; text-align:center; gap:38px; }
+  .infoPanel { max-width:100%; min-width:0; }
+  .avatarBox { justify-content:center; }
+  .metaList { align-items:center; }
+  .metaItem { align-items:center; }
+  .metaLabel { padding-left:0; }
+  .metaLabel::before { display:none; }
+  .avatarBadge { left:50%; transform:translateX(-50%); bottom:12px; }
 }
 @media (max-width: 640px) {
-  .canvas { gap: 32px; padding: 8px 16px 8px; }
-  .bigAvatar { width: clamp(180px, 60%, 260px); }
-  .infoPanel { flex: 1 1 100%; min-width: 100%; }
-  .row { column-gap: 20px; }
-  .label, .value { font-size: clamp(28px, 7vw, 46px); }
-  .sharePrimary { height:68px; font-size: clamp(30px, 6.5vw, 44px); }
+  .canvas { padding: 0 20px; }
+  .profileCluster { padding:34px 30px 38px; border-radius:30px; gap:34px; }
+  .bigAvatar { width: clamp(300px, 80vw, 440px); }
+  .sharePrimary { height:72px; font-size: clamp(30px,6vw,42px); }
+  .metaValue { font-size: clamp(38px,8.4vw,54px); }
+}
+@media (max-height: 820px) {
+  .stage { padding: 24px 0 44px; }
+  .profileCluster { padding:38px 42px; }
+  .sharePrimary { height:74px; }
+  .metaValue { font-size: clamp(36px,3.4vw,52px); }
 }
 @media (max-height: 820px) {
   .stage { padding: 16px 0 28px; }
   .canvas { gap: 40px; }
   .infoPanel { gap: 40px; }
-  .bigAvatar { width: clamp(200px, 26%, 300px); }
+  /* 축소 높이 환경에서도 확대된 아바타 유지 */
+  .bigAvatar { width: clamp(300px, 34vw, 440px); }
   .sharePrimary { height:70px; font-size: clamp(30px, 3vw, 42px); }
   .label, .value { font-size: clamp(28px, 3vw, 44px); }
 }
