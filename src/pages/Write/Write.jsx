@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './write.module.css';
 import { useNavigate } from 'react-router-dom';
 import { addSuggestion } from '../../lib/suggestions.js';
+import BackButton from '../../components/BackButton/BackButton';
 
 export default function WritePage() {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function WritePage() {
 
   return (
     <div className={styles.wrap}>
+  <BackButton variant="fixed" to="/home" />
       <div className={styles.topBar}>
         <h1 className={styles.heading}>건의사항</h1>
       </div>
@@ -34,7 +36,8 @@ export default function WritePage() {
               <span className={styles.metaInline}>작성자: {nickname}</span>
             </div>
             <div className={styles.actions}>
-              <button type="button" className={styles.secondary} onClick={() => navigate(-1)}>돌아가기</button>
+              {/* 내부 페이지 흐름용 돌아가기: 직전 페이지(목록 혹은 상세)로 */}
+              <button type="button" className={styles.secondary} onClick={() => navigate(-1)}>뒤로가기</button>
               <button type="submit" className={styles.primary}>저장</button>
             </div>
           </div>

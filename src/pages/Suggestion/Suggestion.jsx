@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './suggestion.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getSuggestions } from '../../lib/suggestions.js';
+import BackButton from '../../components/BackButton/BackButton';
 
 export default function SuggestionPage() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function SuggestionPage() {
   }, []);
   return (
     <div className={styles.wrap}>
+  <BackButton variant="fixed" to="/home" />
       <div className={styles.topBar}>
         <h1 className={styles.title}>건의사항</h1>
       </div>
