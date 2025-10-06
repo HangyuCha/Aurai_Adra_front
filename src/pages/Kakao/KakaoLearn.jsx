@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './Kakao.module.css';
 import BackButton from '../../components/BackButton/BackButton';
+import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import kakaoTopics from './KakaoTopics.js';
 
 export default function KakaoLearn() {
@@ -12,16 +13,7 @@ export default function KakaoLearn() {
         <h1 className={styles.kakaoTitle}>카카오톡 배우기</h1>
         <p className={styles.kakaoDesc}>카카오톡의 기본 화면과 주요 기능을 차근차근 익혀보세요.</p>
       </header>
-      <ul className={styles.optionsGrid}>
-  {kakaoTopics.map(opt => (
-          <li key={opt.key} className={styles.optionItem}>
-            <button type="button" className={styles.optionBtn} onClick={() => handleSelect(opt)} aria-label={`${opt.title} 학습`}> 
-              <span className={styles.optionTitle}>{opt.title}</span>
-              <span className={styles.optionText}>{opt.text}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+  <TopicCarousel topics={kakaoTopics} onSelect={handleSelect} completions={{ ui:true, friend:false, room:false, media:false, setting:false }} />
     </div>
   );
 }

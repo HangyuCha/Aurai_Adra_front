@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Sms.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import smsTopics from './SmsTopics.js';
+import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 // import { useNavigate } from 'react-router-dom';
 
 export default function SmsLearn() {
@@ -18,16 +19,7 @@ export default function SmsLearn() {
         <h1 className={styles.smsTitle}>문자 배우기</h1>
         <p className={styles.smsDesc}>문자를 통해 기본 소통을 익힐 수 있는 5가지 학습 주제를 선택해 주세요.</p>
       </header>
-      <ul className={styles.optionsGrid}>
-  {smsTopics.map(opt => (
-          <li key={opt.key} className={styles.optionItem}>
-            <button type="button" className={styles.optionBtn} onClick={() => handleSelect(opt)} aria-label={`${opt.title} 학습 열기`}>
-              <span className={styles.optionTitle}>{opt.title}</span>
-              <span className={styles.optionText}>{opt.text}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+  <TopicCarousel topics={smsTopics} onSelect={handleSelect} completions={{ greeting:true, thanks:false, ask:false, schedule:false, emotion:false }} />
     </div>
   );
 }
