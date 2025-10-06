@@ -18,6 +18,14 @@ import SuggestionDetailPage from './pages/SuggestionDetail/SuggestionDetail.jsx'
 import MyInfoPage from './pages/MyInfo/myinfo.jsx';
 import PasswordChangePage from './pages/PasswordChange/PasswordChange.jsx';
 import MissionShare from './pages/MissionShare/MissionShare.jsx'; // 추가
+import SmsLearn from './pages/Sms/SmsLearn.jsx';
+import SmsPractice from './pages/Sms/SmsPractice.jsx';
+import CallLearn from './pages/Call/CallLearn.jsx';
+import CallPractice from './pages/Call/CallPractice.jsx';
+import GptLearn from './pages/Gpt/GptLearn.jsx';
+import GptPractice from './pages/Gpt/GptPractice.jsx';
+import KakaoLearn from './pages/Kakao/KakaoLearn.jsx';
+import KakaoPractice from './pages/Kakao/KakaoPractice.jsx';
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -81,6 +89,14 @@ export default function App() {
   {/* 상대 경로로 수정하여 Layout (BackButton, ProfileButton) 적용 */}
   <Route path="me" element={<MyInfoPage />} />
   <Route path="mission-share" element={<MissionShare />} />
+  <Route path="sms/learn" element={<SmsLearn />} />
+  <Route path="sms/practice" element={<SmsPractice />} />
+  <Route path="call/learn" element={<CallLearn />} />
+  <Route path="call/practice" element={<CallPractice />} />
+  <Route path="gpt/learn" element={<GptLearn />} />
+  <Route path="gpt/practice" element={<GptPractice />} />
+  <Route path="kakao/learn" element={<KakaoLearn />} />
+  <Route path="kakao/practice" element={<KakaoPractice />} />
   <Route path="password-change" element={<PasswordChangePage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>

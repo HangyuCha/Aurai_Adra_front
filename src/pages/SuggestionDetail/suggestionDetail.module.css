@@ -12,20 +12,21 @@
 .heading{margin:0;font-family:'Jua',sans-serif;font-size:clamp(var(--fs-32),4.8vw,var(--fs-36));line-height:1.05;font-weight:400;text-shadow:0 4px 4px rgba(0,0,0,.25);} 
 .actions{display:flex;gap:12px;}
 .primary,.secondary,.backList{font-family:'Jua',sans-serif;font-size:var(--fs-18);border:0;border-radius:34px;padding:11px 30px;cursor:pointer;box-shadow:4px 4px 6px rgba(0,0,0,.22);background:#ACACAC;color:#fff;transition:transform .15s ease,box-shadow .25s ease,background .25s ease;}
-.primary:hover,.secondary:hover,.backList:hover{transform:translateY(-3px);} .primary:active,.secondary:active,.backList:active{transform:translateY(0);}
-.primary{background:#59A3FF;}
+.primary{background:linear-gradient(135deg,#59A3FF,#326bcc);}
+.primary:hover{transform:translateY(-3px);}
+.primary:active{transform:translateY(0);}
 .secondary{background:#ACACAC;}
 
 /* 새롭게 구분되는 수정/삭제 버튼 */
-.editBtn{font-family:'Jua',sans-serif;font-size:var(--fs-18);border:0;border-radius:34px;padding:11px 30px;cursor:pointer;box-shadow:4px 4px 6px rgba(0,0,0,.22);background:#4D8EF0;color:#fff;transition:transform .15s ease,box-shadow .25s ease,background .25s ease;}
-.editBtn:hover{transform:translateY(-3px);}
+.editBtn{font-family:'Jua',sans-serif;font-size:var(--fs-18);border:0;border-radius:34px;padding:11px 30px;cursor:pointer;box-shadow:4px 4px 6px rgba(0,0,0,.22);background:linear-gradient(135deg,#59A3FF,#326bcc);color:#fff;transition:transform .15s ease,box-shadow .25s ease,background .25s ease;}
+.editBtn:hover{transform:translateY(-3px);} 
 .editBtn:active{transform:translateY(0);}
 /* 편집 모드 전환 시 색상 변경(저장 상태 시각화) */
 .editing{background:#34B27D !important;}
 
-.deleteBtn{font-family:'Jua',sans-serif;font-size:var(--fs-18);border:0;border-radius:34px;padding:11px 30px;cursor:pointer;box-shadow:4px 4px 6px rgba(0,0,0,.22);background:#E15757;color:#fff;transition:transform .15s ease,box-shadow .25s ease,background .25s ease;}
-.deleteBtn:hover{transform:translateY(-3px);background:#d04444;}
-.deleteBtn:active{transform:translateY(0);background:#c53838;}
+.deleteBtn{font-family:'Jua',sans-serif;font-size:var(--fs-18);border:0;border-radius:34px;padding:11px 30px;cursor:pointer;box-shadow:4px 4px 6px rgba(0,0,0,.22);background:linear-gradient(135deg,#ff6b6b,#d62828);color:#fff;transition:transform .15s ease,box-shadow .25s ease,background .25s ease;}
+.deleteBtn:hover{transform:translateY(-3px);}
+.deleteBtn:active{transform:translateY(0);}
 
 .editBtn:focus-visible,.deleteBtn:focus-visible,.primary:focus-visible,.backList:focus-visible{outline:4px solid #59A3FF; outline-offset:2px;}
 
@@ -36,12 +37,12 @@
 .modalMsg { font-size:var(--fs-18); margin:0 0 20px; line-height:1.4; color:#333; }
 .modalActions { display:flex; gap:12px; justify-content:center; }
 .btnYes, .btnNo { font-family:'Jua',sans-serif; font-size:var(--fs-18); border:0; border-radius:14px; padding:12px 26px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,.18); transition:transform .15s ease, box-shadow .25s ease, background .25s ease; color:#fff; }
-.btnYes { background:#E15757; }
-.btnYes:hover { transform:translateY(-3px); background:#d04444; }
-.btnYes:active { transform:translateY(0); background:#c53838; }
-.btnNo { background:#888; }
-.btnNo:hover { transform:translateY(-3px); background:#777; }
-.btnNo:active { transform:translateY(0); background:#666; }
+.btnYes { background:linear-gradient(135deg,#ff6b6b,#d62828); }
+.btnYes:hover { transform:translateY(-3px); }
+.btnYes:active { transform:translateY(0); }
+.btnNo { background:linear-gradient(135deg,#59A3FF,#326bcc); }
+.btnNo:hover { transform:translateY(-3px); }
+.btnNo:active { transform:translateY(0); }
 .btnYes:focus-visible, .btnNo:focus-visible { outline:4px solid #59A3FF; outline-offset:2px; }
 .meta{font-size:var(--fs-16);font-family:'Jua',sans-serif;opacity:.8;}
 .lbl{font-family:'Jua',sans-serif;font-size:var(--fs-20);}

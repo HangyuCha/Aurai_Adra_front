@@ -15,7 +15,8 @@
 .itemMeta{font-size:var(--fs-18);opacity:.8;}
 .empty{height:120px;display:flex;align-items:center;justify-content:center;font-family:'Jua',sans-serif;font-size:var(--fs-20);color:#555;}
 .writeRowFixed{display:flex;justify-content:center;margin-top:22px;padding-bottom:0;}
-.writeBtn{background:#ACACAC;color:#fff;font-family:'Jua',sans-serif;font-size:var(--fs-20);border:0;border-radius:34px;padding:10px 30px;cursor:pointer;box-shadow:4px 4px 6px rgba(0,0,0,.22);transition:transform .15s ease;}
+.writeBtn{background:linear-gradient(135deg,#59A3FF,#326bcc);color:#fff;font-family:'Jua',sans-serif;font-size:var(--fs-20);border:0;border-radius:34px;padding:10px 30px;cursor:pointer;box-shadow:4px 4px 6px rgba(0,0,0,.22);transition:transform .15s ease, box-shadow .25s ease;}
+.writeBtn:hover{transform:translateY(-3px); box-shadow:0 10px 24px -6px rgba(0,0,0,.25);}
 .writeBtn:hover{transform:translateY(-3px);}
 @media (max-width:1200px){
   .panel{padding:20px;}

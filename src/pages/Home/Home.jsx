@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 import messageIcon from '../../assets/message.png';
 import phoneIcon from '../../assets/phone.png';
@@ -14,7 +15,7 @@ const icons = [
 ];
 
 // 스타일: Hover 시 '배우기 / 연습하기' 액션 노출 (스타일 A 제거됨)
-function AppIconActions({ name, icon, desc, index, start }) {
+function AppIconActions({ name, icon, desc, index, start, onAction }) {
   return (
     <li
       className={[
@@ -31,8 +32,8 @@ function AppIconActions({ name, icon, desc, index, start }) {
           <span className={styles.appName}>{name}</span>
         </div>
         <div className={styles.altActions} aria-hidden="true">
-          <button type="button" className={styles.actionBtn} data-kind="learn">배우기</button>
-          <button type="button" className={styles.actionBtn} data-kind="practice">연습하기</button>
+          <button type="button" className={styles.actionBtn} data-kind="learn" onClick={() => onAction?.('learn', name)}>배우기</button>
+          <button type="button" className={styles.actionBtn} data-kind="practice" onClick={() => onAction?.('practice', name)}>연습하기</button>
         </div>
       </div>
     </li>
@@ -41,6 +42,25 @@ function AppIconActions({ name, icon, desc, index, start }) {
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const navigate = useNavigate();
+  const handleAction = (mode, appName) => {
+    switch (appName) {
+      case '문자':
+        navigate(mode === 'learn' ? '/sms/learn' : '/sms/practice');
+        break;
+      case '전화':
+        navigate(mode === 'learn' ? '/call/learn' : '/call/practice');
+        break;
+      case 'GPT':
+        navigate(mode === 'learn' ? '/gpt/learn' : '/gpt/practice');
+        break;
+      case '카카오톡':
+        navigate(mode === 'learn' ? '/kakao/learn' : '/kakao/practice');
+        break;
+      default:
+        break;
+    }
+  };
   useEffect(() => {
     const t = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(t);
@@ -50,11 +70,11 @@ export default function Home() {
       <section className={styles.homeHero} aria-labelledby="homeTitle">
         <header className={styles.heroHead}>
           <h1 id="homeTitle" className={styles.heroTitle}>무엇을 시작할까요?</h1>
-          <p className={styles.heroSub}>곧 사용할 수 있는 기능들이에요. 지금은 구성만 미리 만나보세요.</p>
+          <p className={styles.heroSub}>배우고 싶은 앱에 손을 올려주세요 !</p>
         </header>
         <ul className={[styles.iconGrid, styles.iconGridAlt].join(' ')} aria-label="기능 목록 (배우기/연습하기 선택)" data-animate={mounted || undefined}>
           {icons.map((item, i) => (
-            <AppIconActions key={item.name + '-alt'} index={i} start={mounted} {...item} />
+            <AppIconActions key={item.name + '-alt'} index={i} start={mounted} onAction={handleAction} {...item} />
           ))}
         </ul>
       </section>

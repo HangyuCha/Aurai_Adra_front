@@ -1,0 +1,20 @@
+/* 공통 그라데이션 버튼 유틸리티 */
+.btn-gradient {
+	background: linear-gradient(135deg,#59A3FF,#326bcc);
+	color:#fff !important;
+	box-shadow:0 6px 18px -6px rgba(50,107,204,.55),0 4px 8px rgba(0,0,0,.18);
+	position:relative;
+	transition:transform .35s cubic-bezier(.16,.8,.3,1), box-shadow .4s, background .4s;
+}
+.btn-gradient:hover { transform:translateY(-4px); box-shadow:0 14px 30px -10px rgba(0,0,0,.25),0 6px 14px rgba(0,0,0,.18); }
+.btn-gradient:active { transform:translateY(-1px) scale(.98); transition-duration:.18s; }
+.btn-gradient:focus-visible { outline:4px solid #59A3FF; outline-offset:3px; }
+
+/* 연습용(초록) 변형 */
+.btn-gradient-green { background:linear-gradient(135deg,#60d56a,#169b2b); box-shadow:0 6px 18px -6px rgba(22,155,43,.55),0 4px 8px rgba(0,0,0,.18); }
+.btn-gradient-green:hover { box-shadow:0 16px 34px -12px rgba(0,0,0,.28),0 6px 14px rgba(0,0,0,.20); }
+
+/* 위험/삭제 변형 (빨강) - 선택적으로 적용 가능 */
+.btn-gradient-danger { background:linear-gradient(135deg,#ff6b6b,#d62828); box-shadow:0 6px 18px -6px rgba(214,40,40,.55),0 4px 8px rgba(0,0,0,.18); }
+.btn-gradient-danger:hover { box-shadow:0 16px 34px -12px rgba(0,0,0,.30),0 6px 14px rgba(0,0,0,.22); }
+
