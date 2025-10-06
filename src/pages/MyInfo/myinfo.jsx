@@ -113,12 +113,12 @@ export default function MyInfoPage() {
             <div className={styles.value}>{ageDisplay}</div>
           </div>
           <div className={styles.panelActions}>
-            <button className={styles.sharePrimary} onClick={() => navigate('/mission-share')}>
-              미션 자랑하기
-            </button>
-            <button className={styles.withdrawLink} onClick={() => setConfirmOpen(true)}>
-              회원 탈퇴하기
-            </button>
+            <button className={styles.sharePrimary} onClick={() => navigate('/mission-share')}>미션 자랑하기</button>
+            <div className={styles.inlineActions}>
+              <button className={styles.withdrawLink} onClick={()=> navigate('/password-change')}>비밀번호 바꾸기</button>
+              <span className={styles.vertBar}>|</span>
+              <button className={styles.withdrawLink} onClick={() => setConfirmOpen(true)}>회원 탈퇴하기</button>
+            </div>
           </div>
         </section>
       </div>

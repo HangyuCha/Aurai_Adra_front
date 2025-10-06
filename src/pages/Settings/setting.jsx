@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import styles from './setting.module.css';
@@ -48,28 +48,7 @@ export default function SettingsPage() {
     localStorage.setItem('voice', voice);
   }, [voice]);
 
-  // 비밀번호 변경
-  const [currentPw, setCurrentPw] = useState('');
-  const [newPw, setNewPw] = useState('');
-  const [confirmPw, setConfirmPw] = useState('');
-  const [pwMsg, setPwMsg] = useState('');
-
-  const canChangePw = useMemo(
-    () => newPw.length >= 4 && newPw === confirmPw && currentPw.length > 0,
-    [currentPw, newPw, confirmPw]
-  );
-
-  const onChangePassword = (e) => {
-    e.preventDefault();
-    const saved = localStorage.getItem('userPassword');
-    if (!saved) return setPwMsg('저장된 비밀번호가 없습니다. 회원가입/로그인 과정에서 비밀번호를 먼저 설정해주세요.');
-    if (currentPw !== saved) return setPwMsg('현재 비밀번호가 올바르지 않습니다.');
-    if (newPw.length < 4) return setPwMsg('새 비밀번호는 4자 이상이어야 합니다.');
-    if (newPw !== confirmPw) return setPwMsg('새 비밀번호가 일치하지 않습니다.');
-    localStorage.setItem('userPassword', newPw);
-    setPwMsg('비밀번호가 변경되었습니다.');
-    setCurrentPw(''); setNewPw(''); setConfirmPw('');
-  };
+  // 비밀번호 변경 로직은 PasswordChangePage로 이동
 
   return (
     <div className={styles.wrap}>
@@ -137,51 +116,9 @@ export default function SettingsPage() {
         </div>
       </section>
 
-      {/* 비밀번호 바꾸기 */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>비밀번호 바꾸기</h2>
-        <form className={styles.pwForm} onSubmit={onChangePassword}>
-          <label htmlFor="currentPw" className={styles.lbl}>기존 비밀번호</label>
-          <input
-            id="currentPw" type="password" className={styles.input}
-            value={currentPw} onChange={(e) => { setCurrentPw(e.target.value); setPwMsg(''); }}
-            placeholder="현재 비밀번호"
-          />
+      {/* 비밀번호 변경 기능은 전용 페이지로 이동 */}
 
-          <label htmlFor="newPw" className={styles.lbl}>새로운 비밀번호</label>
-          <input
-            id="newPw" type="password" className={styles.input}
-            value={newPw} onChange={(e) => { setNewPw(e.target.value); setPwMsg(''); }}
-            placeholder="새 비밀번호 (4자 이상)"
-            minLength={4}
-          />
-
-          <label htmlFor="confirmPw" className={styles.lbl}>새로운 비밀번호 확인</label>
-          <div className={styles.confirmRow}>
-            <input
-              id="confirmPw" type="password" className={styles.input}
-              value={confirmPw} onChange={(e) => { setConfirmPw(e.target.value); setPwMsg(''); }}
-              placeholder="새 비밀번호 확인"
-              minLength={4}
-            />
-            <button type="submit" className={styles.primary} disabled={!canChangePw}>
-              확인
-            </button>
-          </div>
-
-          <p className={styles.error} role="alert">{pwMsg}</p>
-        </form>
-      </section>
-
-      {/* 건의사항 */}
-      <section className={styles.section} style={{ paddingBottom:'32px', marginBottom:'60px' }}>
-        <button
-          type="button"
-          className={styles.ghost}
-          style={{ marginTop:'0', marginBottom:'8px' }}
-          onClick={() => navigate('/suggestion')}
-        >건의사항</button>
-      </section>
+      {/* 건의사항 버튼은 프로필 드롭다운으로 이동 */}
     </div>
   );
 }

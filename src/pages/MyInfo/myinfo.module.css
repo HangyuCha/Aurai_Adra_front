@@ -131,6 +131,38 @@
   color: #111; font-family: 'Jua', sans-serif; font-size: 20px;
   text-shadow: 3px 3px 6px rgba(0,0,0,.25);
   align-self: center;
+  padding: 2px 4px; /* 포인터 영역 살짝 확대 */
+  text-decoration: none;
+  transition: color .18s ease;
+}
+
+.withdrawLink:hover, .withdrawLink:focus-visible {
+  color: #d12c2c; /* 살짝 강조 (적당한 붉은톤) */
+  text-decoration: underline;
+  outline: none;
+}
+
+.inlineActions .withdrawLink:first-of-type:hover, .inlineActions .withdrawLink:first-of-type:focus-visible {
+  /* 비밀번호 바꾸기(첫 번째)는 중립 톤 강조 */
+  color: #222; /* 덜 공격적인 색상 */
+}
+
+/* 인라인 텍스트 액션 (비밀번호 변경 | 회원 탈퇴) */
+.inlineActions {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* 버튼과 구분자 사이 간격 */
+  align-self: center;
+  margin-top: 4px;
+}
+.vertBar {
+  font-family: 'Jua', sans-serif;
+  font-size: 20px;
+  color: #111;
+  text-shadow: 3px 3px 6px rgba(0,0,0,.25);
+  user-select: none;
+  line-height: 1;
+  transform: translateY(-1px); /* 시각적 중앙 정렬 미세 조정 */
 }
 
 /* 더 작은 높이/폭 대응 */

@@ -16,6 +16,7 @@ import SuggestionPage from './pages/Suggestion/Suggestion.jsx';
 import WritePage from './pages/Write/Write.jsx';
 import SuggestionDetailPage from './pages/SuggestionDetail/SuggestionDetail.jsx';
 import MyInfoPage from './pages/MyInfo/myinfo.jsx';
+import PasswordChangePage from './pages/PasswordChange/PasswordChange.jsx';
 import MissionShare from './pages/MissionShare/MissionShare.jsx'; // 추가
 
 // 인증이 필요한 경로 감싸기
@@ -80,6 +81,7 @@ export default function App() {
   {/* 상대 경로로 수정하여 Layout (BackButton, ProfileButton) 적용 */}
   <Route path="me" element={<MyInfoPage />} />
   <Route path="mission-share" element={<MissionShare />} />
+  <Route path="password-change" element={<PasswordChangePage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
     </Routes>
