@@ -48,36 +48,38 @@ export default function SuggestionDetailPage() {
   };
 
   const goList = () => {
-    // 히스토리에 목록이 바로 직전이면 뒤로가기, 아니면 직접 이동
-    if (window.history.length > 2) {
-      navigate(-1);
-    } else {
-      navigate('/suggestion');
-    }
+    // 언제나 목록 페이지로 직행하여 작성 -> 상세 뒤로가기가 작성 페이지로 가지 않도록 고정
+    navigate('/suggestion');
   };
 
   if (!data) return null;
 
   return (
     <div className={styles.wrap}>
+      <div className={styles.topBar}>
+        <h1 className={styles.heading}>건의사항</h1>
+      </div>
       <div className={styles.outerBox}>
         <div className={styles.innerBox}>
           <div className={styles.head}>
-            <h1 className={styles.pageTitle}>건의사항</h1>
-            <div className={styles.actions}>
-              {isOwner ? (
-                <>
-                  <button type="button" className={styles.secondary} onClick={onEditToggle}>
-                    {editing ? '저장' : '수정'}
-                  </button>
-                  <button type="button" className={styles.secondary} onClick={onDelete}>삭제</button>
-                </>
-              ) : (
-                <button type="button" className={styles.primary} onClick={goList}>돌아가기</button>
-              )}
-            </div>
+              <div className={styles.titleRow}>
+                {/* 내부 pageTitle 제거, 외부 heading 사용 */}
+                <span className={styles.metaInline}>작성자: {data.author}</span>
+              </div>
+              <div className={styles.actions}>
+                <button type="button" className={styles.backList} onClick={goList}>목록</button>
+                {isOwner ? (
+                  <>
+                    <button type="button" className={styles.secondary} onClick={onEditToggle}>
+                      {editing ? '저장' : '수정'}
+                    </button>
+                    <button type="button" className={styles.secondary} onClick={onDelete}>삭제</button>
+                  </>
+                ) : (
+                  <button type="button" className={styles.primary} onClick={goList}>돌아가기</button>
+                )}
+              </div>
           </div>
-          <div className={styles.meta}>작성자: {data.author}</div>
           <label className={styles.lbl} htmlFor="sugTitle">제목</label>
           <input
             id="sugTitle"
@@ -93,11 +95,9 @@ export default function SuggestionDetailPage() {
             disabled={!editing}
             value={content}
             onChange={e => setContent(e.target.value)}
-            rows={18}
+            rows={14} /* 작성 페이지와 동일하게 14로 조정 */
           />
-          <div className={styles.bottomRow}>
-            <button type="button" className={styles.backList} onClick={goList}>목록</button>
-          </div>
+          {/* 하단 목록 버튼 제거됨 */}
         </div>
       </div>
     </div>

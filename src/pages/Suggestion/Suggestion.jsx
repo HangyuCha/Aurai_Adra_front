@@ -32,9 +32,9 @@ export default function SuggestionPage() {
             </li>
           ))}
         </ul>
-        <div className={styles.writeRow}>
-          <button type="button" className={styles.writeBtn} onClick={() => navigate('/suggestion/write')}>글쓰기</button>
         </div>
+        <div className={styles.writeRowFixed}>
+          <button type="button" className={styles.writeBtn} onClick={() => navigate('/suggestion/write')}>글쓰기</button>
         </div>
       </div>
     </div>
