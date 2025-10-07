@@ -1,128 +1,37 @@
-/* 루트 흰색 틀(.page-content) 안에서 세로 중앙 및 가로 폭 제한 */
-.loginContainer {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 340px; /* 더 좁게 */
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  flex: 1 0 auto;
-  padding: 20px 0 40px;
-}
+/* 정리된 & 그라데이션 적용된 로그인 스타일 */
+/* 컨테이너 */
+.loginContainer { display:flex; flex-direction:column; width:100%; max-width:340px; margin:0 auto; justify-content:center; align-items:center; flex:1 0 auto; padding:20px 0 40px; }
 
-/* 모바일(작은 화면)에서 흰색 박스를 꽉 채운 상태에서 내부 콘텐츠도 안정적인 여백 유지 */
-@media (max-width: 520px) {
-  .loginContainer {
-    max-width: 100%; /* 모바일에서는 가득 */
-    padding: 10px 0 30px;
-  }
-  .title { font-size: 26px; margin-bottom: 24px; }
-  .loginButton { font-size: 16px; }
-  .kakaoButton { font-size: 15px; }
+@media (max-width:520px){
+  .loginContainer { max-width:100%; padding:10px 0 30px; }
+  .title { font-size:26px; margin-bottom:24px; }
+  .loginButton { font-size:16px; }
+  .kakaoButton { font-size:15px; }
 }
+@media (min-width:1440px){ .loginContainer { max-width:400px; } .title { font-size:34px; } }
 
-/* 더 넓은 화면에서(1440 이상) 살짝 여유 */
-@media (min-width: 1440px) {
-  .loginContainer { max-width: 400px; }
-  .title { font-size: 34px; }
-}
+.title { font-size:32px; font-weight:bold; margin:0 0 30px; color:#1c1e21; text-align:center; }
+.form { display:flex; flex-direction:column; gap:20px; width:100%; }
+.field { width:100%; }
+.input { width:100%; padding:12px 15px; border:1px solid #dddfe2; border-radius:25px; font-size:16px; outline:none; transition:border-color .25s, box-shadow .3s; }
+.input::placeholder { color:#90949c; }
+.input:focus { border-color:#59A3FF; box-shadow:0 0 0 3px rgba(89,163,255,.35); }
 
-.title {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 30px;
-  color: #1c1e21;
-  text-align: center;
-}
+/* 메인 제출 버튼 */
+.loginButton { width:100%; padding:14px; border:0; border-radius:26px; background:linear-gradient(135deg,#59A3FF,#326bcc); color:#fff; font-size:18px; font-weight:bold; cursor:pointer; box-shadow:0 8px 22px -6px rgba(0,0,0,.25),0 3px 8px rgba(0,0,0,.18); transition:transform .3s cubic-bezier(.16,.8,.3,1), box-shadow .35s; letter-spacing:.5px; }
+.loginButton:hover { transform:translateY(-4px); box-shadow:0 16px 38px -10px rgba(0,0,0,.30),0 6px 14px rgba(0,0,0,.22); }
+.loginButton:active { transform:translateY(-1px); }
+.loginButton:focus-visible { outline:4px solid #59A3FF; outline-offset:3px; }
 
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+/* 링크 */
+.links { display:flex; justify-content:space-around; margin-top:20px; width:100%; }
+.link { background:none; border:0; color:#1877f2; cursor:pointer; font-size:14px; text-decoration:none; transition:color .25s; }
+.link:hover { text-decoration:underline; }
 
-.field {
-  width: 100%;
-}
-
-.input {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #dddfe2;
-  border-radius: 25px;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.input::placeholder {
-  color: #90949c;
-}
-
-.input:focus {
-  border-color: #1877f2;
-}
-
-.loginButton {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 25px;
-  background-color: #000000;
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.links {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 20px;
-}
-
-.link {
-  background: none;
-  border: none;
-  color: #1877f2;
-  cursor: pointer;
-  font-size: 14px;
-  text-decoration: none;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-.socialLogin {
-  margin-top: 30px;
-  border-top: 1px solid #dddfe2;
-  padding-top: 20px;
-}
-
-.kakaoButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #FEE500;
-  border-radius: 25px;
-  background-color: #FEE500;
-  color: #000000;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.kakaoButton:hover {
-  background-color: #f0d900;
-}
-
-.kakaoIcon {
-  width: 28px;
-  height: 28px;
-  margin-right: 10px;
-  object-fit: cover;
-}
+/* 소셜 로그인 영역 */
+.socialLogin { margin-top:30px; border-top:1px solid #dddfe2; padding-top:20px; width:100%; }
+.kakaoButton { display:flex; align-items:center; justify-content:center; width:100%; padding:12px; border:0; border-radius:26px; background:linear-gradient(135deg,#FEE500,#e4c800); color:#111; font-size:16px; cursor:pointer; box-shadow:0 8px 22px -6px rgba(0,0,0,.25),0 3px 8px rgba(0,0,0,.18); transition:transform .3s cubic-bezier(.16,.8,.3,1), box-shadow .35s, filter .35s; }
+.kakaoButton:hover { transform:translateY(-4px); box-shadow:0 16px 38px -10px rgba(0,0,0,.30),0 6px 14px rgba(0,0,0,.22); filter:brightness(1.05); }
+.kakaoButton:active { transform:translateY(-1px); }
+.kakaoButton:focus-visible { outline:4px solid #ffef75; outline-offset:3px; }
+.kakaoIcon { width:28px; height:28px; margin-right:10px; object-fit:cover; }

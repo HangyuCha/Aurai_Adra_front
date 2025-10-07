@@ -1,0 +1,123 @@
+.framePage{width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;gap:32px;/* 직전 이동(28px) 동일량 추가: 좌측 68→96px */padding:4px clamp(18px,4vw,48px) 52px 96px;box-sizing:border-box;}
+.frameHeader{width:100%;max-width:1040px;display:flex;flex-direction:column;gap:8px;padding-bottom:2px;}
+.frameTitle{margin:0;font-family:'Jua',system-ui,sans-serif;font-size:clamp(28px,4.6vw,42px);line-height:1.02;letter-spacing:.4px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.frameSubtitle{margin:2px 0 0;font-size:18px;color:#555;line-height:1.45;max-width:680px;}
+.shellArea{display:flex;justify-content:center;align-items:center;}
+/* 메인 행 컨테이너 (기기 + 사이드 패널) */
+.lessonRow{width:100%;display:flex;flex-direction:column;align-items:center;gap:34px;max-width:1700px;margin:0 auto;padding:0 clamp(16px,4vw,60px);} 
+.deviceCol{display:flex;justify-content:center;width:100%;}
+.sidePanel{width:100%;display:flex;justify-content:center;}
+
+@media (min-width:1100px){
+  .lessonRow{flex-direction:row;align-items:flex-start;justify-content:space-between;gap:70px;flex-wrap:wrap;} /* wrap 허용: 폭 부족 시 줄바꿈하여 잘림 방지 */
+  .deviceCol{width:auto;flex:0 0 auto;}
+  .sidePanel{width:auto;flex:1;display:flex;justify-content:flex-end;}
+  .captionBar{margin-top:0;align-items:flex-start;text-align:left;}
+  .captionBar p,.captionBar .progressText{ text-align:left; }
+  .listenBtn{align-self:flex-start;}
+}
+/* 기본 폰 크기 줄임 + 최대 높이 제약 (뷰포트 넘칠 경우 scale) */
+/* 좌우 여백 축소: padding 10px -> 8px */
+/* 추가 축소: padding 8px -> 6px, border 6px -> 5px */
+/* 고정 기기 비율 제거: 이미지 자연 비율을 그대로 사용 (height: auto) */
+.deviceShell{position:relative;--shell-width:clamp(340px,40vw,440px);width:var(--shell-width);background:linear-gradient(135deg,#fbfbfc,#eef1f5);border:5px solid #111;border-radius:44px;box-shadow:0 12px 36px -14px rgba(0,0,0,.30),0 5px 16px rgba(0,0,0,.18);padding:6px;box-sizing:border-box;display:flex;transition:width .3s ease, box-shadow .3s ease, border-radius .3s ease;}
+/* 내부 패딩 최소화: 프레임과 이미지 사이 공간을 얇게 */
+/* 내부 좌우 여백 축소: 10px -> 6px */
+/* 내부 좌우 최소: 6px -> 4px */
+/* 내부 높이 자동: 이미지가 세로 크기를 결정 */
+.deviceInner{flex:1;position:relative;border-radius:32px;overflow:hidden;background:#fff;display:flex;flex-direction:column;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);} 
+/* 이미지 자체 여백 최소화 & 비율 유지. 불필요한 여백 제거 위해 max-height 100% */
+.statusStrip{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;font:600 12px/1 system-ui,sans-serif;letter-spacing:.4px;color:#111;background:linear-gradient(180deg,#fafbfc,#f1f3f6);border-bottom:1px solid #dde2e8;}
+.statusTime{font-weight:600;}
+.statusIcons{display:flex;align-items:center;gap:6px;}
+.signal,.wifi,.battery{display:inline-block;position:relative;}
+.signal{width:14px;height:10px;background:linear-gradient(90deg,#111,#111) no-repeat center/100% 2px;}
+.signal::after{content:"";position:absolute;left:2px;bottom:0;width:10px;height:8px;border:2px solid #111;border-top:none;border-radius:2px;}
+.wifi{width:16px;height:12px;}
+.wifi::before,.wifi::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border:2px solid #111;border-radius:50%;}
+.wifi::before{width:16px;height:16px;top:-6px;clip-path:inset(0 0 55% 0);}
+.wifi::after{width:10px;height:10px;top:-2px;clip-path:inset(0 0 55% 0);}
+.battery{width:18px;height:10px;border:2px solid #111;border-radius:2px;}
+.battery::after{content:"";position:absolute;right:-4px;top:2px;width:3px;height:6px;background:#111;border-radius:1px;}
+.screenArea{flex:1;display:flex;align-items:stretch;justify-content:center;padding:0 0 8px;} /* 기존 하단 약간 여백 */
+.screenshot{width:100%;height:auto;display:block;background:#fff;}
+/* 이전 notchBar 관련 클래스 제거 (상단바 분리) */
+.captionBar{margin-top:-26px;/* overlap look (간격 축소) */ width:clamp(330px,34vw,400px);display:flex;flex-direction:column;align-items:center;gap:16px;}
+.captionBarCompact{width:clamp(280px,28vw,350px);} /* side 레이아웃에서 기기 축소 시 패널 폭도 줄여 공간 확보 */
+.stepStrip{display:flex;gap:8px;}
+.stepDot{width:14px;height:14px;border-radius:50%;background:#d6dbe0;}
+.stepDotActive{background:#59A3FF;box-shadow:0 0 0 4px rgba(89,163,255,.35);}
+.progressHeader{display:flex;flex-direction:column;align-items:flex-start;gap:14px;width:100%;}
+.stepMeta{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.stepCount{font-size:14px;font-weight:600;color:#2561a8;background:rgba(89,163,255,.16);padding:4px 10px;border-radius:18px;line-height:1;letter-spacing:.5px;}
+.stepTitle{font-size:18px;font-weight:700;color:#2b3136;letter-spacing:.3px;}
+.captionDivider{width:100%;height:1px;background:linear-gradient(90deg,#dfe4e8,#f5f7f9);margin:2px 0 10px;}
+.actionRow{display:flex;gap:18px;margin-top:12px;}
+.primaryBtn,.ghostBtn{border:0;border-radius:26px;padding:14px 26px;font-family:'Jua',system-ui,sans-serif;font-size:18px;cursor:pointer;letter-spacing:.5px;box-shadow:0 6px 16px -4px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.18);transition:.4s;background:#fff;}
+.primaryBtn{background:linear-gradient(135deg,#59A3FF,#2d65c4);color:#fff;}
+.primaryBtn:hover,.ghostBtn:hover{transform:translateY(-4px);} 
+.ghostBtn{background:#fff;color:#222;}
+.progressText{font-size:15px;color:#444;}
+/* 인터랙션 확장 */
+.lessonInstruction{font-size:15px;line-height:1.56;text-align:left;color:#1f2225;padding:2px 2px 8px;font-family:system-ui,sans-serif;max-width:520px;}
+.listenBtn{border:0;background:linear-gradient(135deg,#59A3FF,#2d65c4);color:#fff;font-size:14px;font-weight:600;padding:10px 20px;border-radius:26px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 10px -2px rgba(0,0,0,.28);transition:.3s;}
+.listenBtn:hover{transform:translateY(-3px);} 
+.listenBtn:active{transform:translateY(-1px);} 
+.highlightLayer{position:absolute;inset:0;pointer-events:none;}
+.focusBox{position:absolute;border:3px solid #59A3FF;border-radius:22px;box-shadow:0 0 0 6px rgba(89,163,255,.25),0 4px 18px -4px rgba(0,0,0,.35);animation:pulse 2.2s ease-in-out infinite;mix-blend-mode:normal;background:rgba(89,163,255,.08);pointer-events:auto;cursor:pointer;transition:.25s;}
+.focusBox:focus-visible{outline:3px solid #1d6ed6;}
+.focusBox:active{transform:scale(.97);} 
+.focusBoxPill{border-radius:1000px;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(89,163,255,.25),0 4px 14px -4px rgba(0,0,0,.3);}50%{box-shadow:0 0 0 8px rgba(89,163,255,.15),0 6px 20px -2px rgba(0,0,0,.38);}}
+/* 인앱(기기 화면) 하단 채팅 입력 바 */
+.chatInputBar{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:72%;max-width:300px;display:flex;align-items:center;background:#fff;border:1px solid #d2d8dd;border-radius:1000px;padding:2px 6px 2px 14px;gap:4px;height:34px;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} /* 더 좁게 축소 */
+.chatInputBar:focus,.chatInputBar:focus-within{outline:none;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} /* 기본 포커스 링 제거 */
+.chatInputBar,.chatInputField{-webkit-tap-highlight-color:transparent;}
+.chatInputField{flex:1;border:0;background:transparent;font-size:13.5px;line-height:1.2;font-family:system-ui,sans-serif;padding:4px 2px;}
+.chatInputField:focus{outline:none;box-shadow:none;}
+.chatInputField:focus{outline:none;}
+.chatSendBtn{width:26px;height:26px;border-radius:50%;border:0;cursor:pointer;background:linear-gradient(135deg,#65ee7c,#3ec454);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;box-shadow:0 2px 6px -2px rgba(59,180,92,.4),0 1px 3px rgba(0,0,0,.2);transition:.25s;}
+.chatSendBtn:hover:not(:disabled){transform:translateY(-2px);} 
+.chatSendBtn:disabled{opacity:.45;cursor:not-allowed;}
+.chatSendBtn:active{transform:translateY(0);} 
+.feedback{min-height:20px;font-size:14px;font-weight:600;}
+.feedback.ok{color:#1d8c3f;}
+.feedback.bad{color:#c34747;}
+.devCoord{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.55);color:#fff;font:12px/1.3 system-ui,sans-serif;padding:4px 8px;border-radius:8px;pointer-events:none;z-index:10;}
+@media (max-width:1500px){
+  .lessonRow{flex-direction:row;align-items:flex-start;justify-content:flex-start;gap:32px;flex-wrap:nowrap;} /* 좁은 간격으로 바로 옆 배치 */
+  /* 살짝 더 좁은 환경에서 패널이 과도하게 넓어지지 않도록 */
+  .captionBar{width:clamp(360px,42vw,460px);} 
+}
+@media (max-width:1100px){
+  .deviceShell{--shell-width:clamp(325px,45vw,430px);} 
+  .captionBar{width:clamp(300px,44vw,380px);} 
+}
+@media (max-width:900px){
+  .deviceShell{--shell-width:clamp(300px,54vw,400px);} 
+  .captionBar{width:clamp(280px,54vw,360px);} 
+}
+@media (max-width:680px){
+  .framePage{padding:4px 14px 78px 82px;} /* 모바일: 직전 증가(24px) 반복 적용 58→82px */
+  .deviceShell{--shell-width:min(100%,380px);margin:0 auto;}
+  .captionBar{margin-top:14px;width:100%;max-width:360px;}
+  .inlineTagline{display:block;margin:10px 0 0 0;max-width:100%;}
+}
+
+/* 제목 옆 라벨형 태그라인 */
+.inlineTagline{font-size:clamp(12px,.95vw,15px);font-weight:400;line-height:1.28;color:#555;margin-left:14px;max-width:360px;font-family:system-ui,sans-serif;position:relative;top:4px;}
+@media (min-width:1100px){
+  .inlineTagline{top:6px;}
+}
+@media (max-width:680px){
+  .frameTitle{font-size:clamp(24px,7.4vw,36px);gap:10px;}
+  .inlineTagline{margin-left:0;top:0;max-width:100%;}
+}
+/* 세로가 매우 짧은 경우 (소형 노트북 등) 전체 축소 */
+/* 세로가 너무 작을 때 화면이 넘친다면 축소 */
+@media (max-height:760px){
+  .deviceShell{transform:scale(.92);transform-origin:top center;}
+}
+@media (max-height:660px){
+  .deviceShell{transform:scale(.85);} 
+}

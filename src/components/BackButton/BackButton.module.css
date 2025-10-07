@@ -1,22 +1,30 @@
 .backBtn {
-  background:#59A3FF;
+  /* 사이즈/패딩/폰트 동일 유지, 배경만 그라데이션 적용 */
+  background:linear-gradient(135deg,#59A3FF,#326bcc);
   color:#fff;
   border:0;
-  border-radius:12px; /* settings 페이지 스타일 반영 */
-  padding:8px 14px;   /* settings 페이지와 동일 패딩 */
+  border-radius:12px; /* size unchanged */
+  padding:8px 14px;  /* size unchanged */
   cursor:pointer;
   font-family:'Jua', system-ui, sans-serif;
-  font-size:18px;     /* settings 버튼 크기와 맞춤 */
+  font-size:18px;    /* size unchanged */
   line-height:1.1;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
+  box-shadow:0 4px 12px -4px rgba(0,0,0,.28),0 2px 4px rgba(0,0,0,.18);
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  transition:background .15s ease, transform .12s ease, box-shadow .18s ease;
+  position:relative;
+  transition:background .35s, filter .35s, transform .18s ease, box-shadow .4s;
 }
-.backBtn:hover { background:#4A96F5; }
-.backBtn:active { transform:translateY(1px); box-shadow:0 1px 3px rgba(0,0,0,.25); }
-.backBtn:focus-visible { outline:2px solid #fff; outline-offset:2px; }
+.backBtn::after { /* 은은한 광택 */
+  content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(145deg,rgba(255,255,255,.28),rgba(255,255,255,0) 55%);
+  mix-blend-mode:overlay; opacity:.55; transition:opacity .5s;
+}
+.backBtn:hover { transform:translateY(-3px); box-shadow:0 10px 24px -8px rgba(0,0,0,.32),0 4px 10px rgba(0,0,0,.20); filter:brightness(1.04); }
+.backBtn:hover::after { opacity:.75; }
+.backBtn:active { transform:translateY(0) scale(.96); box-shadow:0 3px 8px rgba(0,0,0,.26); filter:brightness(.97); }
+.backBtn:focus-visible { outline:3px solid #ffffff; outline-offset:3px; }
 
 /* 흰색 틀 내부 상단 고정(스크롤 시 유지) */
 .insideWrap {

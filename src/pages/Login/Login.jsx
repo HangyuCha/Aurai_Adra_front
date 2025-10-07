@@ -44,8 +44,8 @@ export default function Login() {
       if (nn) localStorage.setItem('nickname', nn);
       if (ageRange) localStorage.setItem('ageRange', ageRange);
       if (gender) localStorage.setItem('gender', gender);
-      alert('로그인 되었습니다.');
-      navigate('/home', { replace: true });
+  alert('로그인 되었습니다.');
+  navigate('/intro', { replace: true });
     } catch (errLogin) {
       const status = errLogin?.response?.status;
       const data = errLogin?.response?.data;

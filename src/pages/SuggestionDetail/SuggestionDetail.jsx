@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './suggestionDetail.module.css';
 import { getSuggestion, updateSuggestion, deleteSuggestion } from '../../lib/suggestions.js';
+import BackButton from '../../components/BackButton/BackButton';
 
 export default function SuggestionDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -39,45 +41,61 @@ export default function SuggestionDetailPage() {
     setEditing(e => !e);
   };
 
-  const onDelete = () => {
+  const onDeleteRequest = () => {
     if (!isOwner) return;
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      deleteSuggestion(id);
-      goList();
-    }
+    setConfirmOpen(true);
   };
 
+  const confirmDelete = () => {
+    deleteSuggestion(id);
+    setConfirmOpen(false);
+    goList();
+  };
+
+  const cancelDelete = () => setConfirmOpen(false);
+
   const goList = () => {
-    // 히스토리에 목록이 바로 직전이면 뒤로가기, 아니면 직접 이동
-    if (window.history.length > 2) {
-      navigate(-1);
-    } else {
-      navigate('/suggestion');
-    }
+    // 언제나 목록 페이지로 직행하여 작성 -> 상세 뒤로가기가 작성 페이지로 가지 않도록 고정
+    navigate('/suggestion');
   };
 
   if (!data) return null;
 
   return (
     <div className={styles.wrap}>
+  <BackButton variant="fixed" to="/home" />
+      <div className={styles.topBar}>
+        <h1 className={styles.heading}>건의사항</h1>
+      </div>
       <div className={styles.outerBox}>
         <div className={styles.innerBox}>
           <div className={styles.head}>
-            <h1 className={styles.pageTitle}>건의사항</h1>
-            <div className={styles.actions}>
-              {isOwner ? (
-                <>
-                  <button type="button" className={styles.secondary} onClick={onEditToggle}>
-                    {editing ? '저장' : '수정'}
-                  </button>
-                  <button type="button" className={styles.secondary} onClick={onDelete}>삭제</button>
-                </>
-              ) : (
-                <button type="button" className={styles.primary} onClick={goList}>돌아가기</button>
-              )}
-            </div>
+              <div className={styles.titleRow}>
+                {/* 내부 pageTitle 제거, 외부 heading 사용 */}
+                <span className={styles.metaInline}>작성자: {data.author}</span>
+              </div>
+              <div className={styles.actions}>
+                <button type="button" className={styles.backList} onClick={goList}>목록</button>
+                {isOwner ? (
+                  <>
+                    <button
+                      type="button"
+                      className={`${styles.editBtn} ${editing ? styles.editing : ''}`}
+                      onClick={onEditToggle}
+                    >
+                      {editing ? '저장' : '수정'}
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.deleteBtn}
+                      onClick={onDeleteRequest}
+                    >삭제</button>
+                  </>
+                ) : (
+                  <button type="button" className={styles.primary} onClick={goList}>돌아가기</button>
+                )}
+              </div>
           </div>
-          <div className={styles.meta}>작성자: {data.author}</div>
           <label className={styles.lbl} htmlFor="sugTitle">제목</label>
           <input
             id="sugTitle"
@@ -93,11 +111,22 @@ export default function SuggestionDetailPage() {
             disabled={!editing}
             value={content}
             onChange={e => setContent(e.target.value)}
-            rows={18}
+            rows={14} /* 작성 페이지와 동일하게 14로 조정 */
           />
-          <div className={styles.bottomRow}>
-            <button type="button" className={styles.backList} onClick={goList}>목록</button>
-          </div>
+          {/* 하단 목록 버튼 제거됨 */}
+          {/* 삭제 확인 모달 */}
+          {confirmOpen && (
+            <div className={styles.modalBackdrop} role="dialog" aria-modal="true" aria-labelledby="delTitle">
+              <div className={styles.modal}>
+                <p id="delTitle" className={styles.modalTitle}>삭제 확인</p>
+                <p className={styles.modalMsg}>정말 이 건의를 삭제하시겠습니까?<br/>삭제 후 복구할 수 없습니다.</p>
+                <div className={styles.modalActions}>
+                  <button type="button" className={styles.btnNo} onClick={cancelDelete}>취소</button>
+                  <button type="button" className={styles.btnYes} onClick={confirmDelete}>삭제</button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

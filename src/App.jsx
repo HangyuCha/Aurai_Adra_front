@@ -10,12 +10,23 @@ import SignupExtraPage from './pages/Signup/SignupStep2.jsx'; // 2단계
 import FindInfoPage from './pages/Find/Findinfo.jsx';
 import FindInfoResultPage from './pages/Find/FindInfoResult.jsx'; // ✅ Step2
 import Home from './pages/Home/Home.jsx';
+import PostLogin from './pages/PostLogin/PostLogin.jsx';
 import SettingsPage from './pages/Settings/setting.jsx';
 import SuggestionPage from './pages/Suggestion/Suggestion.jsx';
 import WritePage from './pages/Write/Write.jsx';
 import SuggestionDetailPage from './pages/SuggestionDetail/SuggestionDetail.jsx';
 import MyInfoPage from './pages/MyInfo/myinfo.jsx';
+import PasswordChangePage from './pages/PasswordChange/PasswordChange.jsx';
 import MissionShare from './pages/MissionShare/MissionShare.jsx'; // 추가
+import SmsLearn from './pages/Sms/SmsLearn.jsx';
+import SmsPractice from './pages/Sms/SmsPractice.jsx';
+import SmsGreetingLesson from './pages/Sms/SmsGreetingLesson.jsx';
+import CallLearn from './pages/Call/CallLearn.jsx';
+import CallPractice from './pages/Call/CallPractice.jsx';
+import GptLearn from './pages/Gpt/GptLearn.jsx';
+import GptPractice from './pages/Gpt/GptPractice.jsx';
+import KakaoLearn from './pages/Kakao/KakaoLearn.jsx';
+import KakaoPractice from './pages/Kakao/KakaoPractice.jsx';
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -48,6 +59,14 @@ export default function App() {
         <Route path="loading" element={<LoadingPage />} />
         <Route path="start" element={<StartPage />} />
         <Route
+          path="intro" /* 로그인 직후 노출될 새 페이지 */
+          element={
+            <PrivateRoute>
+              <PostLogin />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="home"
           element={
             <PrivateRoute>
@@ -71,6 +90,16 @@ export default function App() {
   {/* 상대 경로로 수정하여 Layout (BackButton, ProfileButton) 적용 */}
   <Route path="me" element={<MyInfoPage />} />
   <Route path="mission-share" element={<MissionShare />} />
+  <Route path="sms/learn" element={<SmsLearn />} />
+  <Route path="sms/learn/greeting" element={<SmsGreetingLesson />} />
+  <Route path="sms/practice" element={<SmsPractice />} />
+  <Route path="call/learn" element={<CallLearn />} />
+  <Route path="call/practice" element={<CallPractice />} />
+  <Route path="gpt/learn" element={<GptLearn />} />
+  <Route path="gpt/practice" element={<GptPractice />} />
+  <Route path="kakao/learn" element={<KakaoLearn />} />
+  <Route path="kakao/practice" element={<KakaoPractice />} />
+  <Route path="password-change" element={<PasswordChangePage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
     </Routes>

@@ -1,54 +1,74 @@
-.iconGrid {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  flex-wrap: wrap;
+/* ===== Layout Shell ===== */
+:root { --home-max: 1080px; }
+
+.homeCenter { flex:1 1 auto; width:100%; display:flex; align-items:center; justify-content:center; min-height:100%; padding: clamp(30px,4vw,70px) clamp(18px,4vw,40px); box-sizing:border-box; }
+
+.homeHero { width:100%; max-width:var(--home-max); display:flex; flex-direction:column; gap:40px; position:relative; }
+.heroHead { display:flex; flex-direction:column; gap:14px; align-items:flex-start; }
+.heroTitle { font-family:'Jua', system-ui,sans-serif; margin:0; font-size:clamp(var(--fs-34),5vw,var(--fs-46)); line-height:1.05; letter-spacing:.5px; color:#111; position:relative; padding-left:18px; }
+.heroTitle::before { content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:6px; height:70%; border-radius:6px; background:linear-gradient(180deg,#59A3FF,#2d65c4); box-shadow:0 2px 6px rgba(89,163,255,.35); }
+.heroSub { margin:10px 0 0; font-size:var(--fs-18); color:#555; line-height:1.4; max-width:640px; }
+
+/* ===== Icon Grid ===== */
+.iconGrid { --card-size:140px; list-style:none; margin:0; padding:0; width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(var(--card-size),1fr)); gap:34px clamp(14px,2.4vw,30px); align-items:stretch; }
+
+/* Alt grid 아래 여백 분리 */
+.iconGridAlt { margin-top:10px; }
+
+@media (max-width:880px){ .iconGrid { --card-size:132px; gap:30px 22px; } }
+@media (max-width:640px){ .iconGrid { --card-size:118px; gap:28px 20px; } .heroHead { gap:10px; } .heroSub{ font-size:var(--fs-16); } }
+@media (max-width:480px){ .iconGrid { --card-size:104px; gap:26px 18px; } .heroTitle::after{ width:44px; height:5px; } }
+
+/* ===== Icon Card Item (단일 스타일) ===== */
+.appItemAlt { list-style:none; padding:0; margin:0; display:flex; }
+
+/* (구) iconButton 제거 */
+
+/* Stagger base state */
+.appItem { opacity:0; transform:translateY(18px) scale(.94); }
+@media (prefers-reduced-motion: reduce){ .appItem { opacity:1 !important; transform:none !important; } }
+.appear { animation: appIn .65s var(--delay, 0ms) cubic-bezier(.4,.2,.18,1) forwards; }
+@keyframes appIn { 0% { opacity:0; transform:translateY(22px) scale(.9);} 58%{ opacity:1; transform:translateY(-8px) scale(1.045);} 100%{ opacity:1; transform:translateY(0) scale(1);} }
+
+/* Icon wrapper & image (단일 사용 alt 변형) */
+.icon { width:100%; height:100%; object-fit:contain; }
+
+/* ===== Style B (Hover Action) ===== */
+.altCard { position:relative; flex:1 1 auto; background:#ffffff; border:1px solid #e4e8ee; border-radius:34px; padding:20px 16px 24px; width:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:14px; box-shadow:0 10px 26px -8px rgba(0,0,0,.15),0 3px 6px rgba(0,0,0,.08); overflow:hidden; transition: box-shadow .45s, transform .55s cubic-bezier(.16,.8,.24,1); }
+.altCard::after { content:""; position:absolute; inset:0; background:linear-gradient(135deg,rgba(89,163,255,.08),rgba(50,107,204,.06)); opacity:0; transition:opacity .5s; pointer-events:none; }
+.altCard:hover { transform:translateY(-6px); box-shadow:0 22px 40px -14px rgba(0,0,0,.20),0 8px 16px rgba(0,0,0,.12); }
+.altCard:hover::after { opacity:1; }
+
+.altFront { display:flex; flex-direction:column; align-items:center; gap:14px; transition: transform .55s, opacity .45s; }
+.altCard:hover .altFront { transform:translateY(-10px) scale(.92); opacity:.22; filter:blur(1px); }
+
+.iconWrapperAlt { width:calc(var(--card-size) - 48px); height:calc(var(--card-size) - 48px); display:flex; justify-content:center; align-items:center; filter:drop-shadow(0 4px 12px rgba(0,0,0,.22)); transition: transform .6s cubic-bezier(.16,.8,.24,1); }
+.altCard:hover .iconWrapperAlt { transform:translateY(-2px) scale(1.05); }
+
+.altActions { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; opacity:0; pointer-events:none; transform:translateY(12px) scale(.92); transition:opacity .5s .05s, transform .55s cubic-bezier(.16,.8,.24,1); }
+.altCard:hover .altActions, .altCard:focus-within .altActions { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+
+.actionBtn { min-width:140px; padding:14px 24px 16px; font-family:'Jua',system-ui,sans-serif; font-size:var(--fs-18); border:0; border-radius:18px; background:linear-gradient(135deg,#59A3FF,#326bcc); color:#fff; letter-spacing:.5px; cursor:pointer; box-shadow:0 6px 18px -6px rgba(50,107,204,.6),0 4px 8px rgba(0,0,0,.18); transition:transform .35s cubic-bezier(.16,.8,.3,1), box-shadow .4s, background .4s; position:relative; }
+.actionBtn[data-kind="practice"] { background:linear-gradient(135deg,#60d56a,#169b2b); box-shadow:0 6px 18px -6px rgba(22,155,43,.55),0 4px 8px rgba(0,0,0,.18); }
+.actionBtn:hover { transform:translateY(-4px) scale(1.04); box-shadow:0 14px 30px -10px rgba(0,0,0,.25),0 6px 14px rgba(0,0,0,.18); }
+.actionBtn:active { transform:translateY(-1px) scale(.98); transition-duration:.18s; }
+.actionBtn:focus-visible { outline:4px solid #59A3FF; outline-offset:3px; }
+
+@media (max-width:640px){
+	.altCard { padding:18px 14px 22px; }
+	.iconWrapperAlt { width:calc(var(--card-size) - 40px); height:calc(var(--card-size) - 40px); }
+	.actionBtn { font-size:var(--fs-16); padding:12px 20px 14px; }
 }
 
-/* 세로 중앙 정렬 래퍼 */
-.homeCenter {
-  flex: 1 1 auto;
-  width: 100%;
-  display: flex;
-  align-items: center; /* 세로 중앙 */
-  justify-content: center; /* 가로 중앙 */
-  min-height: 100%; /* page-content 높이 채우기 */
-}
+/* Text / badge */
+.appName { font-size:var(--fs-20); font-family:'Jua', system-ui,sans-serif; line-height:1.1; color:#222; letter-spacing:.5px; text-shadow:0 2px 4px rgba(0,0,0,.18); }
+/* .badge 제거됨 (준비중 레이블 삭제) */
 
-.appItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  text-align: center;
-  transition: transform 0.2s ease;
-}
+/* Decorative subtle radial background */
+/* 배경 그라데이션 제거 */
+.homeHero::before { content:none; }
 
-.appItem:hover {
-  transform: translateY(-5px);
-}
+/* Original classes retained (legacy selectors if referenced elsewhere) */
+/* .homeCenter already redefined above */
 
-.iconWrapper {
-  width: 120px; /* 아이콘 크기 */
-  height: 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.icon {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* 아이콘 비율 유지 */
-}
-
-.appName {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-}
 

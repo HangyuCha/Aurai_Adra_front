@@ -1,0 +1,53 @@
+.carousel { width:100%; display:flex; flex-direction:column; gap:28px; align-items:center; position:relative; /* 카드 높이 & 색상 변수 도입 */ --card-min-height:300px; --accent-start:#59A3FF; --accent-end:#326bcc; --accent-radial:rgba(89,163,255,.35); --accent-outline:#59A3FF; --accent-border-active:#b9d9ff; --card-bg2:#eef6ff; --card-active-mid:#e5f2ff; --card-active-end:#f2fbff; --score-bg:#e0edfa; --score-fill-start:#59A3FF; --score-fill-end:#326bcc; --score-text:#1d5088; /* 완료 상태 테마 변수 (코랄 계열) */ --complete-pill-bg:#fff2ef; --complete-pill-border:#ffcfc3; --complete-pill-text:#c24424; --complete-icon-bg-start:#FF8F6A; --complete-icon-bg-end:#FF5A35; }
+/* practice(연습) 변형: 초록 계열 */
+.practice { --accent-start:#31C073; --accent-end:#1A8F52; --accent-radial:rgba(49,192,115,.35); --accent-outline:#1FA062; --accent-border-active:#b8ecd9; --card-bg2:#e8f9f0; --card-active-mid:#dff4ea; --card-active-end:#eefdf6; --score-bg:#d6f2e6; --score-fill-start:#31C073; --score-fill-end:#1A8F52; --score-text:#14623d; }
+/* 좌우 네비 버튼을 절대 배치 */
+.navBtn { position:absolute; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); color:#fff; border:0; width:54px; height:54px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Jua',system-ui,sans-serif; font-size:22px; cursor:pointer; box-shadow:none; transition:transform .35s, filter .35s; z-index:5; }
+.navPrev { left:8px; }
+.navNext { right:8px; }
+.navBtn:disabled { opacity:.28; cursor:not-allowed; filter:grayscale(.6); }
+.navBtn:not(:disabled):hover { transform:translateY(-50%) scale(1.08); }
+.navBtn:active:not(:disabled) { transform:translateY(-50%) scale(.95); }
+
+/* 트랙 래퍼: 그림자 잘림 방지를 위해 overflow:visible */
+.trackWrapper { width:100%; overflow:visible; padding:0 74px; /* 네비 버튼 영역 만큼 안쪽 여백 */ box-sizing:border-box; }
+
+/* 가로 스크롤 + 사이드 공간 확보(첫/마지막 센터링) */
+.track { --card-width:62%; display:flex; gap:34px; width:100%; overflow-x:auto; overflow-y:visible; scroll-snap-type:x mandatory; scroll-padding-inline:calc((100% - var(--card-width))/2); padding:26px 0 28px; scrollbar-width:none; }
+.track::-webkit-scrollbar { display:none; }
+/* 양끝 여백(센트럴 포커싱) */
+.track::before, .track::after { content:""; flex:0 0 calc((100% - var(--card-width))/2); }
+
+.item { flex:0 0 var(--card-width); max-width:640px; scroll-snap-align:center; transition:transform .6s cubic-bezier(.16,.8,.3,1), filter .5s, opacity .5s; position:relative; display:flex; justify-content:center; }
+@media (max-width:940px){ .track { --card-width:72%; } }
+@media (max-width:640px){ .track { --card-width:86%; } .carousel { --card-min-height:240px; } }
+.card { width:100%; min-height:var(--card-min-height); background:linear-gradient(155deg,#ffffff,var(--card-bg2)); border:1px solid #d6dde6; border-radius:46px; padding:46px 46px 54px; text-align:left; font-family:'Jua',system-ui,sans-serif; letter-spacing:.4px; box-shadow:none; cursor:pointer; position:relative; overflow:hidden; transition:background .7s, transform .55s, border-color .5s; }
+.card::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%,var(--accent-radial),transparent 60%); opacity:.0; transition:opacity .8s; }
+.card:hover::before { opacity:.5; }
+.cardTitle { margin:0 0 14px; font-size:clamp(var(--fs-26),4.2vw,var(--fs-34)); line-height:1.1; color:#111; text-shadow:0 3px 6px rgba(0,0,0,.20); }
+.cardText { margin:0; font-size:var(--fs-18); color:#444; line-height:1.42; max-width:540px; }
+.scoreArea { margin-top:30px; display:flex; flex-direction:column; gap:10px; }
+.scoreMeta { display:flex; align-items:baseline; gap:6px; font-size:var(--fs-18); font-family:'Jua',system-ui,sans-serif; color:var(--score-text); }
+.scoreLabel { font-size:var(--fs-16); opacity:.75; letter-spacing:.5px; }
+.scoreValue { font-size:var(--fs-26); line-height:1; }
+.scoreMax { font-size:var(--fs-16); opacity:.5; }
+.scoreBarOuter { position:relative; width:100%; height:14px; background:var(--score-bg); border-radius:999px; overflow:hidden; }
+.scoreBarFill { position:absolute; inset:0; width:0%; background:linear-gradient(135deg,var(--score-fill-start),var(--score-fill-end)); transition:width .7s cubic-bezier(.25,.9,.3,1); }
+/* ---- Learn 완료 상태 표시 ---- */
+.statusArea { margin-top:28px; display:flex; align-items:center; gap:12px; }
+.statusBadge { font-family:'Jua',system-ui,sans-serif; letter-spacing:.5px; font-size:var(--fs-16); padding:6px 16px 7px; border-radius:999px; border:1px solid #cfd6dd; background:#f2f5f8; color:#39454f; display:inline-flex; align-items:center; gap:8px; transition:background .4s, color .4s, border-color .4s; }
+.statusDot { width:12px; height:12px; border-radius:50%; background:#b5c1cb; transition:background .35s, box-shadow .5s, transform .5s; box-shadow:0 0 0 0 rgba(0,0,0,0); position:relative; }
+.done .statusBadge { background:var(--complete-pill-bg); border-color:var(--complete-pill-border); color:var(--complete-pill-text); box-shadow:0 2px 6px -2px rgba(180,70,40,.25); }
+/* 미완료 점은 그대로, 완료 시 체크 아이콘 사용하므로 .statusDot 빨강 규칙 제거 */
+.statusCheck { width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; background:linear-gradient(135deg,var(--complete-icon-bg-start),var(--complete-icon-bg-end)); color:#fff; font-size:12px; font-weight:700; box-shadow:0 0 0 2px #fff inset,0 2px 4px -1px rgba(0,0,0,.25); }
+.statusCheck svg { width:12px; height:12px; display:block; }
+.statusDoneText { font-weight:700; letter-spacing:.5px; }
+/* 강제 적용 (다른 캐스케이드 충돌 대비) */
+.item.done .statusDot { background:#ff3b30 !important; }
+.pendingText { opacity:.75; }
+.active .card { background:linear-gradient(165deg,#ffffff,var(--card-active-mid) 58%,var(--card-active-end)); border-color:var(--accent-border-active); transform:scale(1.05); }
+.active .card::before { opacity:.78; }
+.card:focus-visible { outline:4px solid var(--accent-outline); outline-offset:4px; }
+.dots { display:flex; gap:10px; justify-content:center; }
+.dot { width:14px; height:14px; border-radius:50%; border:0; background:#cfd6dd; cursor:pointer; transition:background .35s, transform .35s; }
+.dotActive { background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); transform:scale(1.26); }

@@ -60,15 +60,10 @@ export default function ProfileButton() {
             }
           }}
         >
-          <Link to="/me" className={styles.dropdownItem} onClick={closeMenu}>
-            나의 정보
-          </Link>
-            <Link to="/settings" className={styles.dropdownItem} onClick={closeMenu}>
-            설정
-          </Link>
-          <button onClick={handleLogout} className={styles.dropdownItem}>
-            로그아웃
-          </button>
+          <Link to="/me" className={styles.dropdownItem} onClick={closeMenu}>나의 정보</Link>
+          <Link to="/settings" className={styles.dropdownItem} onClick={closeMenu}>설정</Link>
+          <Link to="/suggestion" className={styles.dropdownItem} onClick={closeMenu}>건의사항</Link>
+          <button onClick={handleLogout} className={styles.dropdownItem}>로그아웃</button>
         </div>
       )}
     </div>

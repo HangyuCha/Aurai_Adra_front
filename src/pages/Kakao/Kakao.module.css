@@ -1,0 +1,20 @@
+/* 카카오톡 배우기 / 연습하기 */
+.kakaoPage { width:100%; max-width:1080px; margin:0 auto; padding: clamp(28px,4vw,54px) clamp(18px,4vw,40px) 80px; box-sizing:border-box; display:flex; flex-direction:column; gap:46px; }
+.kakaoHead { display:flex; flex-direction:column; gap:14px; align-items:flex-start; }
+.kakaoTitle { margin:0; font-family:'Jua',system-ui,sans-serif; font-size:clamp(var(--fs-38),6vw,var(--fs-54)); line-height:1.04; letter-spacing:.5px; color:#111; position:relative; padding-left:20px; }
+.kakaoTitle::before { content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:6px; height:70%; border-radius:6px; background:linear-gradient(180deg,#59A3FF,#2d65c4); box-shadow:0 2px 6px rgba(89,163,255,.35); }
+/* 연습하기 초록 바 */
+.practiceTitle::before { background:linear-gradient(180deg,#60d56a,#169b2b); box-shadow:0 2px 6px rgba(22,155,43,.40); }
+.kakaoDesc { margin:4px 0 0; font-size:var(--fs-18); color:#555; line-height:1.45; max-width:700px; }
+.optionsGrid { --col-min: 220px; list-style:none; margin:0; padding:0; width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(var(--col-min),1fr)); gap:30px clamp(16px,2.6vw,34px); }
+.optionItem { margin:0; padding:0; }
+.optionBtn { position:relative; width:100%; min-height:168px; border:1px solid #e1e5eb; border-radius:32px; background:linear-gradient(150deg,#ffffff,#f6f9fc); padding:28px 26px 34px; display:flex; flex-direction:column; gap:18px; text-align:left; cursor:pointer; font-family:'Jua',system-ui,sans-serif; letter-spacing:.5px; box-shadow:0 12px 28px -10px rgba(0,0,0,.18),0 4px 8px rgba(0,0,0,.08); transition: transform .55s cubic-bezier(.16,.8,.24,1), box-shadow .55s, background .6s, border-color .5s; }
+.optionBtn:hover { transform:translateY(-9px) scale(1.035); box-shadow:0 30px 48px -16px rgba(0,0,0,.26),0 12px 20px rgba(0,0,0,.14); }
+.optionBtn:active { transform:translateY(-2px) scale(.985); }
+.optionBtn:focus-visible { outline:4px solid #59A3FF; outline-offset:3px; }
+.optionBtn::after { content:""; position:absolute; inset:0; background:linear-gradient(135deg,rgba(89,163,255,.16),rgba(50,107,204,.04)); opacity:0; transition:opacity .55s; border-radius:inherit; }
+.optionBtn:hover::after { opacity:1; }
+.optionTitle { font-size:var(--fs-22); line-height:1.15; color:#111; text-shadow:0 2px 4px rgba(0,0,0,.12); }
+.optionText { font-size:var(--fs-16); line-height:1.38; color:#444; font-family:system-ui,sans-serif; font-weight:500; letter-spacing:.2px; }
+@media (max-width:840px){ .optionsGrid { --col-min: 200px; gap:26px 20px; } .optionBtn { min-height:156px; padding:24px 22px 30px; } }
+@media (max-width:560px){ .kakaoPage { gap:38px; } .optionsGrid { --col-min: 160px; gap:20px 16px; } .optionBtn { min-height:140px; border-radius:26px; } .optionTitle { font-size:var(--fs-20); } .optionText { font-size:var(--fs-14); } }
