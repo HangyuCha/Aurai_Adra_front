@@ -20,6 +20,7 @@ import PasswordChangePage from './pages/PasswordChange/PasswordChange.jsx';
 import MissionShare from './pages/MissionShare/MissionShare.jsx'; // 추가
 import SmsLearn from './pages/Sms/SmsLearn.jsx';
 import SmsPractice from './pages/Sms/SmsPractice.jsx';
+import SmsGreetingLesson from './pages/Sms/SmsGreetingLesson.jsx';
 import CallLearn from './pages/Call/CallLearn.jsx';
 import CallPractice from './pages/Call/CallPractice.jsx';
 import GptLearn from './pages/Gpt/GptLearn.jsx';
@@ -90,6 +91,7 @@ export default function App() {
   <Route path="me" element={<MyInfoPage />} />
   <Route path="mission-share" element={<MissionShare />} />
   <Route path="sms/learn" element={<SmsLearn />} />
+  <Route path="sms/learn/greeting" element={<SmsGreetingLesson />} />
   <Route path="sms/practice" element={<SmsPractice />} />
   <Route path="call/learn" element={<CallLearn />} />
   <Route path="call/practice" element={<CallPractice />} />

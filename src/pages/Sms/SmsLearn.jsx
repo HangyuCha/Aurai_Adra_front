@@ -3,14 +3,17 @@ import styles from './Sms.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import smsTopics from './SmsTopics.js';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function SmsLearn() {
-  // const navigate = useNavigate(); // 라우팅 연결 시 사용 예정
+  const navigate = useNavigate();
   const handleSelect = (opt) => {
-    // TODO: 세부 학습 페이지 라우팅 (예: /sms/learn/:key)
-    // 임시: 콘솔 + 알림
-    console.log('Learn select:', opt.key);
+    if(opt.key === 'greeting'){
+      navigate('/sms/learn/greeting');
+    } else {
+      // 다른 주제는 향후 확장
+      console.log('미구현 주제:', opt.key);
+    }
   };
   return (
     <div className={styles.smsPage}>
