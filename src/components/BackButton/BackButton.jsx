@@ -30,6 +30,18 @@ export default function BackButton({
       if (location.pathname !== to) navigate(to, { replace });
       return;
     }
+    const profileCluster = (p) => ['/me','/settings','/suggestion'].some(pref => p === pref || p.startsWith(pref + '/'));
+    if(profileCluster(location.pathname)){
+      const entry = sessionStorage.getItem('profileEntryFrom');
+      if(entry && entry !== location.pathname){
+        navigate(entry, { replace: true });
+        return;
+      }
+      if(location.pathname !== '/home'){
+        navigate('/home', { replace: true });
+        return;
+      }
+    }
     // 일반 뒤로가기 + 짧은 히스토리 fallback
     if (window.history.length <= 2) {
       if (location.pathname !== fallback) navigate(fallback, { replace: true });

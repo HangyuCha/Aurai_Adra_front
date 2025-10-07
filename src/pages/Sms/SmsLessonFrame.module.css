@@ -1,4 +1,4 @@
-.framePage{width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;gap:32px;/* 상단/좌측 추가 축소로 좌상단으로 살짝 이동 */padding:4px clamp(18px,4vw,48px) 52px 12px;box-sizing:border-box;}
+.framePage{width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;gap:32px;/* 직전 이동(28px) 동일량 추가: 좌측 68→96px */padding:4px clamp(18px,4vw,48px) 52px 96px;box-sizing:border-box;}
 .frameHeader{width:100%;max-width:1040px;display:flex;flex-direction:column;gap:8px;padding-bottom:2px;}
 .frameTitle{margin:0;font-family:'Jua',system-ui,sans-serif;font-size:clamp(28px,4.6vw,42px);line-height:1.02;letter-spacing:.4px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
 .frameSubtitle{margin:2px 0 0;font-size:18px;color:#555;line-height:1.45;max-width:680px;}
@@ -47,15 +47,20 @@
 .stepStrip{display:flex;gap:8px;}
 .stepDot{width:14px;height:14px;border-radius:50%;background:#d6dbe0;}
 .stepDotActive{background:#59A3FF;box-shadow:0 0 0 4px rgba(89,163,255,.35);}
-.actionRow{display:flex;gap:14px;}
+.progressHeader{display:flex;flex-direction:column;align-items:flex-start;gap:14px;width:100%;}
+.stepMeta{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.stepCount{font-size:14px;font-weight:600;color:#2561a8;background:rgba(89,163,255,.16);padding:4px 10px;border-radius:18px;line-height:1;letter-spacing:.5px;}
+.stepTitle{font-size:18px;font-weight:700;color:#2b3136;letter-spacing:.3px;}
+.captionDivider{width:100%;height:1px;background:linear-gradient(90deg,#dfe4e8,#f5f7f9);margin:2px 0 10px;}
+.actionRow{display:flex;gap:18px;margin-top:12px;}
 .primaryBtn,.ghostBtn{border:0;border-radius:26px;padding:14px 26px;font-family:'Jua',system-ui,sans-serif;font-size:18px;cursor:pointer;letter-spacing:.5px;box-shadow:0 6px 16px -4px rgba(0,0,0,.3),0 2px 6px rgba(0,0,0,.18);transition:.4s;background:#fff;}
 .primaryBtn{background:linear-gradient(135deg,#59A3FF,#2d65c4);color:#fff;}
 .primaryBtn:hover,.ghostBtn:hover{transform:translateY(-4px);} 
 .ghostBtn{background:#fff;color:#222;}
 .progressText{font-size:15px;color:#444;}
 /* 인터랙션 확장 */
-.lessonInstruction{font-size:15px;line-height:1.45;text-align:center;color:#222;padding:4px 10px;font-family:system-ui,sans-serif;}
-.listenBtn{border:0;background:linear-gradient(135deg,#59A3FF,#2d65c4);color:#fff;font-size:14px;font-weight:600;padding:8px 14px;border-radius:22px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 10px -2px rgba(0,0,0,.28);transition:.3s;}
+.lessonInstruction{font-size:15px;line-height:1.56;text-align:left;color:#1f2225;padding:2px 2px 8px;font-family:system-ui,sans-serif;max-width:520px;}
+.listenBtn{border:0;background:linear-gradient(135deg,#59A3FF,#2d65c4);color:#fff;font-size:14px;font-weight:600;padding:10px 20px;border-radius:26px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 10px -2px rgba(0,0,0,.28);transition:.3s;}
 .listenBtn:hover{transform:translateY(-3px);} 
 .listenBtn:active{transform:translateY(-1px);} 
 .highlightLayer{position:absolute;inset:0;pointer-events:none;}
@@ -64,12 +69,17 @@
 .focusBox:active{transform:scale(.97);} 
 .focusBoxPill{border-radius:1000px;}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(89,163,255,.25),0 4px 14px -4px rgba(0,0,0,.3);}50%{box-shadow:0 0 0 8px rgba(89,163,255,.15),0 6px 20px -2px rgba(0,0,0,.38);}}
-.answerWrap{display:flex;flex-direction:column;gap:10px;width:100%;}
-.answerInputRow{display:flex;gap:10px;}
-.answerInput{flex:1;height:48px;border:1px solid #cfd6dd;border-radius:14px;padding:0 14px;font-size:15px;font-family:system-ui,sans-serif;}
-.answerInput:focus{outline:3px solid rgba(89,163,255,.45);border-color:#59A3FF;}
-.submitBtn{border:0;background:#2d65c4;color:#fff;font-weight:600;font-size:15px;border-radius:14px;padding:0 20px;cursor:pointer;box-shadow:0 4px 12px -2px rgba(0,0,0,.3);}
-.submitBtn:disabled{opacity:.55;cursor:not-allowed;}
+/* 인앱(기기 화면) 하단 채팅 입력 바 */
+.chatInputBar{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:72%;max-width:300px;display:flex;align-items:center;background:#fff;border:1px solid #d2d8dd;border-radius:1000px;padding:2px 6px 2px 14px;gap:4px;height:34px;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} /* 더 좁게 축소 */
+.chatInputBar:focus,.chatInputBar:focus-within{outline:none;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} /* 기본 포커스 링 제거 */
+.chatInputBar,.chatInputField{-webkit-tap-highlight-color:transparent;}
+.chatInputField{flex:1;border:0;background:transparent;font-size:13.5px;line-height:1.2;font-family:system-ui,sans-serif;padding:4px 2px;}
+.chatInputField:focus{outline:none;box-shadow:none;}
+.chatInputField:focus{outline:none;}
+.chatSendBtn{width:26px;height:26px;border-radius:50%;border:0;cursor:pointer;background:linear-gradient(135deg,#65ee7c,#3ec454);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;box-shadow:0 2px 6px -2px rgba(59,180,92,.4),0 1px 3px rgba(0,0,0,.2);transition:.25s;}
+.chatSendBtn:hover:not(:disabled){transform:translateY(-2px);} 
+.chatSendBtn:disabled{opacity:.45;cursor:not-allowed;}
+.chatSendBtn:active{transform:translateY(0);} 
 .feedback{min-height:20px;font-size:14px;font-weight:600;}
 .feedback.ok{color:#1d8c3f;}
 .feedback.bad{color:#c34747;}
@@ -88,7 +98,7 @@
   .captionBar{width:clamp(280px,54vw,360px);} 
 }
 @media (max-width:680px){
-  .framePage{padding:4px 14px 78px 10px;} /* 모바일: 상단/좌측 더 축소 */
+  .framePage{padding:4px 14px 78px 82px;} /* 모바일: 직전 증가(24px) 반복 적용 58→82px */
   .deviceShell{--shell-width:min(100%,380px);margin:0 auto;}
   .captionBar{margin-top:14px;width:100%;max-width:360px;}
   .inlineTagline{display:block;margin:10px 0 0 0;max-width:100%;}

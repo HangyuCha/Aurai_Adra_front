@@ -1,10 +1,22 @@
 // src/layouts/Layout.jsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import ProfileButton from '../components/ProfileButton/ProfileButton';
 
 export default function Layout() {
   const location = useLocation();
+  const prevRef = useRef(location.pathname);
+  useEffect(()=>{
+    const profileCluster = (p) => ['/me','/settings','/suggestion'].some(pref => p === pref || p.startsWith(pref + '/'));
+    const prev = prevRef.current;
+    const curr = location.pathname;
+    if(profileCluster(curr) && !profileCluster(prev)){
+      sessionStorage.setItem('profileEntryFrom', (prev && prev!==curr) ? prev : '/home');
+    } else if(!profileCluster(curr) && profileCluster(prev)){
+      sessionStorage.removeItem('profileEntryFrom');
+    }
+    prevRef.current = curr;
+  }, [location.pathname]);
   // 로딩, 스타트, 로그인 페이지에서는 프로필 버튼을 숨깁니다.
   const showProfileButton = !['/loading', '/start', '/login', '/intro'].includes(location.pathname);
   // 홈/로딩/스타트/로그인/설정/내정보 페이지에서는 전역 BackButton 숨김 (/settings, /me 는 로컬에서 개별 구현)

@@ -97,7 +97,7 @@ export default function MyInfoPage() {
 
   return (
     <div className={styles.stage}>
-  <BackButton to="/home" replace />
+  <BackButton />
       <div className={styles.canvas}>
         <div className={styles.title}>나의 정보</div>
         <div className={styles.profileCluster}>

@@ -52,7 +52,7 @@ export default function SettingsPage() {
 
   return (
     <div className={styles.wrap}>
-      <BackButton to="/home" replace />
+  <BackButton />
       <div className={styles.inner}>
         <header className={styles.head}>
           <h1 className={styles.title}>설정</h1>

@@ -12,7 +12,7 @@ export default function SuggestionPage() {
   }, []);
   return (
     <div className={styles.wrap}>
-  <BackButton variant="fixed" to="/home" />
+  <BackButton variant="fixed" />
       <div className={styles.topBar}>
         <h1 className={styles.title}>건의사항</h1>
       </div>

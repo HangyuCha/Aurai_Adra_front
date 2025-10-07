@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from './SmsLessonFrame.module.css';
+import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import screenshot from '../../assets/test1.png';
 import stepsConfig from './SmsGreetingLessonSteps.js';
 
@@ -25,6 +26,7 @@ export default function SmsGreetingLesson(){
   const [feedback, setFeedback] = useState('');
   const [speaking,setSpeaking] = useState(false);
   const [autoPlayed,setAutoPlayed] = useState(false); // 현재 단계 자동 재생 여부
+  const [voices,setVoices] = useState([]); // 가용 음성 목록 (Web Speech)
   const current = steps.find(st => st.id === step) || steps[0];
   const canSubmit = step === total && answer.trim().length > 0;
 
@@ -36,6 +38,12 @@ export default function SmsGreetingLesson(){
     const u = new SpeechSynthesisUtterance(base);
     u.lang = 'ko-KR';
     u.rate = 1;
+    // 설정된 음성 preference 적용
+    try {
+      const pref = (localStorage.getItem('voice') || 'female');
+      const v = pickPreferredVoice(pref, voices);
+      if(v) u.voice = v;
+    } catch { /* ignore */ }
     u.onend = () => setSpeaking(false);
     u.onerror = () => setSpeaking(false);
     setSpeaking(true);
@@ -51,25 +59,7 @@ export default function SmsGreetingLesson(){
     setFeedback(hit ? '좋아요! 자연스러운 마무리 인사입니다.' : '핵심 어조가 조금 더 다정하면 좋아요. 예: 수고해, 조심히 와.');
   };
 
-  const renderFocus = () => {
-    if(!current.focusAreas) return null;
-    return current.focusAreas.map((fa,i)=>{
-      const cls = fa.pill ? `${frameStyles.focusBox} ${frameStyles.focusBoxPill}` : frameStyles.focusBox;
-      const handleClick = () => { if(step < total) next(); };
-      return (
-        <div
-          key={i}
-          className={cls}
-            style={{left: fa.x+'%', top: fa.y+'%', width: fa.w+'%', height: fa.h+'%'}}
-          role="button"
-          tabIndex={0}
-          aria-label="다음 단계로 이동"
-          onClick={handleClick}
-          onKeyDown={e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); handleClick(); } }}
-        />
-      );
-    });
-  };
+  // (포커스 하이라이트 제거됨)
 
   // 단계 변경 시 입력/피드백 리셋
   useEffect(()=>{ 
@@ -85,6 +75,11 @@ export default function SmsGreetingLesson(){
           const u = new SpeechSynthesisUtterance(base);
           u.lang='ko-KR';
           u.rate=1;
+          try {
+            const pref = (localStorage.getItem('voice') || 'female');
+            const v = pickPreferredVoice(pref, voices);
+            if(v) u.voice = v;
+          } catch { /* ignore */ }
           u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); };
           u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); };
           setSpeaking(true);
@@ -93,9 +88,36 @@ export default function SmsGreetingLesson(){
       }
     }, 250); // 약간 지연 후 (레이아웃 안정화)
     return ()=> clearTimeout(timer);
-  }, [step, current]);
+  }, [step, current, voices]);
   // 언마운트 시 음성 중지
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
+
+  // 음성 목록 로딩 (브라우저 비동기 로딩 대응)
+  useEffect(()=>{
+    if(!('speechSynthesis' in window)) return;
+    function loadVoices(){
+      const list = window.speechSynthesis.getVoices();
+      if(list && list.length){ setVoices(list); }
+    }
+    loadVoices();
+    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    return ()=> window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+  },[]);
+
+  // 음성 선택 헬퍼 (남/여 구분 휴리스틱)
+  function pickPreferredVoice(pref, all){
+    if(!all || !all.length) return null;
+    const ko = all.filter(v=> (v.lang||'').toLowerCase().startsWith('ko'));
+    if(!ko.length) return null;
+    const maleKeys = ['male','남','man','boy','seong','min'];
+    const femaleKeys = ['female','여','woman','girl','yuna','ara'];
+    const wantMale = pref === 'male';
+    const keys = wantMale ? maleKeys : femaleKeys;
+    const primary = ko.find(v=> keys.some(k=> (v.name||'').toLowerCase().includes(k)) );
+    if(primary) return primary;
+    // fallback: 첫 번째 한국어 음성 / 마지막
+    return ko[ wantMale ? (ko.length>1 ? 1 : 0) : 0 ];
+  }
 
   // 개발 보조: 마우스 위치 퍼센트 표시 (d 키로 토글)
   const [showDev,setShowDev] = useState(false);
@@ -228,7 +250,18 @@ export default function SmsGreetingLesson(){
                 >
                   {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
                   <img src={screenshot} alt="문자 인사 학습 화면" className={frameStyles.screenshot} />
-                  <div className={frameStyles.highlightLayer}>{renderFocus()}</div>
+                  {/* 파란색 깜빡임(포커스 하이라이트) 제거: highlightLayer 렌더 제거 */}
+                  {step === total && (
+                    <ChatInputBar
+                      value={answer}
+                      placeholder="마무리 답장을 입력해 보세요"
+                      disabled={!canSubmit}
+                      onChange={(val)=>{setAnswer(val); setFeedback('');}}
+                      onSubmit={onSubmitAnswer}
+                      offsetBottom={218} /* 더 아래로 소폭 (226->218: 8px 내려감) */
+                      offsetX={44} /* 오른쪽으로 44px (40에서 아주 소폭 추가 이동) */
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -236,29 +269,21 @@ export default function SmsGreetingLesson(){
         </div>
         <div className={frameStyles.sidePanel}>
           <div className={(frameStyles.captionBar) + (deviceWidth ? ' '+frameStyles.captionBarCompact : '')} ref={captionRef} style={isSide ? {width:'auto',maxWidth: deviceWidth ? 380 : 420, marginTop:0}:undefined}>
-            <div className={frameStyles.stepStrip} aria-label="학습 단계">
-              {Array.from({length:total}).map((_,i)=>(
-                <div key={i} className={i+1===step ? `${frameStyles.stepDot} ${frameStyles.stepDotActive}` : frameStyles.stepDot} />
-              ))}
+            <div className={frameStyles.progressHeader}>
+              <div className={frameStyles.stepMeta}>
+                <span className={frameStyles.stepCount}>{step} / {total}</span>
+                <span className={frameStyles.stepTitle}>{current.title}</span>
+              </div>
             </div>
-            <div className={frameStyles.progressText}>{step} / {total} 단계 · {current.title}</div>
-            {/* 더 크게 보기 기능 제거됨 */}
-            <p className={frameStyles.lessonInstruction}>{current.instruction}</p>
+            <div className={frameStyles.captionDivider} />
             <button type="button" onClick={speakCurrent} className={frameStyles.listenBtn} aria-label="현재 단계 설명 다시 듣기">🔊 {autoPlayed || speaking ? '다시 듣기' : '듣기'}</button>
-            {step === total && (
-              <form onSubmit={onSubmitAnswer} className={frameStyles.answerWrap}>
-                <div className={frameStyles.answerInputRow}>
-                  <input
-                    className={frameStyles.answerInput}
-                    placeholder="마무리 답장을 입력해 보세요"
-                    value={answer}
-                    onChange={e=>{setAnswer(e.target.value); setFeedback('');}}
-                  />
-                  <button type="submit" className={frameStyles.submitBtn} disabled={!canSubmit}>확인</button>
-                </div>
-                <div className={frameStyles.feedback} style={feedback ? {color: feedback.startsWith('좋아요') ? '#1d8c3f' : '#c34747'}:undefined}>{feedback}</div>
-              </form>
-            )}
+            <p className={frameStyles.lessonInstruction}>{current.instruction}</p>
+            {/* 피드백 영역: 항상 placeholder 렌더하여 단계 전환 시 버튼 위치 흔들림 방지 */}
+            <div
+              className={frameStyles.feedback}
+              aria-live="polite"
+              style={step === total && feedback ? {color: feedback.startsWith('좋아요') ? '#1d8c3f' : '#c34747'}:undefined}
+            >{step === total ? feedback : ''}</div>
             <div className={frameStyles.actionRow}>
               <button type="button" onClick={prev} disabled={step===1} className={frameStyles.ghostBtn}>이전</button>
               {step < total ? (
