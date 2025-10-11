@@ -5,7 +5,7 @@
 .navBtn { position:absolute; top:50%; transform:translateY(-50%); background:linear-gradient(135deg,var(--accent-start),var(--accent-end)); color:#fff; border:0; width:54px; height:54px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Jua',system-ui,sans-serif; font-size:22px; cursor:pointer; box-shadow:none; transition:transform .35s, filter .35s; z-index:5; }
 .navPrev { left:8px; }
 .navNext { right:8px; }
-.navBtn:disabled { opacity:.28; cursor:not-allowed; filter:grayscale(.6); }
+.navBtn:disabled { opacity:.28; cursor:not-allowed; filter:grayscale(.6); pointer-events:none; transform:translateY(-50%); }
 .navBtn:not(:disabled):hover { transform:translateY(-50%) scale(1.08); }
 .navBtn:active:not(:disabled) { transform:translateY(-50%) scale(.95); }
 /* 컴팩트 모드: 화살표와 카드 간격 최소화 */

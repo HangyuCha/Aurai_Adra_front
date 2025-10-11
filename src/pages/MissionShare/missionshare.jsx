@@ -4,8 +4,9 @@ import html2canvas from 'html2canvas';
 import styles from './missionshare.module.css';
 import RankList from '../../components/RankList/RankList';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
+import BackButton from '../../components/BackButton/BackButton';
 // 좌측에 표시할 캐릭터 이미지는 추후 실제 PNG로 교체 예정
-import characterPlaceholder from '../../assets/trophy.png';
+import characterPlaceholder from '../../assets/80F.png';
 // 아이콘 이미지 (src/assets)
 import phoneTrophy from '../../assets/phone_trophy.png';
 import messageTrophy from '../../assets/message_trophy.png';
@@ -65,6 +66,7 @@ export default function MissionShare() {
   return (
     <div className={styles.wrap}>
       <div ref={captureRef} className={styles.captureArea}>
+        <BackButton variant="fixed" to="/home" />
         <div className={styles.grid}>
           {/* 좌측 캐릭터 */}
           <aside className={styles.leftPane} aria-label="캐릭터">
