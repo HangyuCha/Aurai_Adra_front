@@ -8,9 +8,10 @@ import styles from './TopicCarousel.module.css';
  */
 // scores: 선택적 점수 배열 (index 매칭) 또는 객체 { key: score }
 // completions: 학습 완료 여부 (배열 boolean 또는 객체 { key: true })
-export default function TopicCarousel({ topics = [], onSelect, variant, scores, completions }) {
+export default function TopicCarousel({ topics = [], onSelect, variant, scores, completions, renderItem, plain, onIndexChange, itemMaxWidth, cardWidthPercent, compact }) {
   const trackRef = useRef(null);
   const [index, setIndex] = useState(0);
+  useEffect(() => { onIndexChange?.(index); }, [index, onIndexChange]);
 
   const scrollTo = useCallback((i, behavior = 'smooth') => {
     if (!trackRef.current) return;
@@ -68,13 +69,18 @@ export default function TopicCarousel({ topics = [], onSelect, variant, scores, 
     else if (e.key === 'Enter') { onSelect?.(topics[index]); }
   };
 
-  const rootClass = variant === 'practice' ? `${styles.carousel} ${styles.practice}` : styles.carousel;
+  const rootClassBase = variant === 'practice' ? `${styles.carousel} ${styles.practice}` : styles.carousel;
+  const rootClass = compact ? `${rootClassBase} ${styles.compact}` : rootClassBase;
 
   return (
     <div className={rootClass} onKeyDown={onKey} tabIndex={0} aria-roledescription="carousel" aria-label="학습 주제 선택">
   <button type="button" className={`${styles.navBtn} ${styles.navPrev}`} onClick={prev} aria-label="이전 주제" disabled={index === 0}>◀</button>
       <div className={styles.trackWrapper}>
-        <div ref={trackRef} className={styles.track}>
+        <div
+          ref={trackRef}
+          className={styles.track}
+          style={cardWidthPercent ? { ['--card-width']: cardWidthPercent } : undefined}
+        >
           {topics.map((t, i) => {
             let scoreValue = undefined;
             if (scores) {
@@ -94,10 +100,11 @@ export default function TopicCarousel({ topics = [], onSelect, variant, scores, 
             <div
               key={t.key}
               className={itemClass}
+              style={itemMaxWidth ? { maxWidth: itemMaxWidth } : undefined}
             >
               <button
                 type="button"
-                className={styles.card}
+                className={plain ? styles.card + ' ' + styles.cardPlain : styles.card}
                 onClick={() => {
                   // 부분만 보여지는 옆 카드 클릭 시 부드럽게 중앙으로 스크롤
                   scrollTo(i);
@@ -105,35 +112,41 @@ export default function TopicCarousel({ topics = [], onSelect, variant, scores, 
                 }}
                 aria-label={`${t.title} 선택`}
               >
-                <h3 className={styles.cardTitle}>{t.title}</h3>
-                <p className={styles.cardText}>{t.text}</p>
-                {variant === 'practice' && clamped !== null && (
-                  <div className={styles.scoreArea} aria-label={`점수 ${clamped}점`}> 
-                    <div className={styles.scoreMeta}>
-                      <span className={styles.scoreLabel}>점수</span>
-                      <span className={styles.scoreValue}>{clamped}</span>
-                      <span className={styles.scoreMax}>/100</span>
-                    </div>
-                    <div className={styles.scoreBarOuter} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={clamped}>
-                      <div className={styles.scoreBarFill} style={{ width: clamped + '%' }} />
-                    </div>
-                  </div>
-                )}
-                {variant !== 'practice' && (
-                  <div className={styles.statusArea} aria-label={completed ? '학습 완료' : '미완료'}>
-                    <div className={styles.statusBadge}>
-                      {completed ? (
-                        <span className={styles.statusCheck} aria-hidden="true">
-                          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.4 11.2 3.2 8l1.12-1.12 2.08 2.08 5.28-5.28L12.8 4.8 6.4 11.2Z" fill="currentColor" />
-                          </svg>
-                        </span>
-                      ) : (
-                        <span className={styles.statusDot} aria-hidden="true" />
-                      )}
-                      {completed ? <span className={styles.statusDoneText}>완료됨</span> : <span className={styles.pendingText}>미완료</span>}
-                    </div>
-                  </div>
+                {renderItem ? (
+                  renderItem({ topic: t, index: i, active: i === index })
+                ) : (
+                  <>
+                    <h3 className={styles.cardTitle}>{t.title}</h3>
+                    <p className={styles.cardText}>{t.text}</p>
+                    {variant === 'practice' && clamped !== null && (
+                      <div className={styles.scoreArea} aria-label={`점수 ${clamped}점`}>
+                        <div className={styles.scoreMeta}>
+                          <span className={styles.scoreLabel}>점수</span>
+                          <span className={styles.scoreValue}>{clamped}</span>
+                          <span className={styles.scoreMax}>/100</span>
+                        </div>
+                        <div className={styles.scoreBarOuter} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={clamped}>
+                          <div className={styles.scoreBarFill} style={{ width: clamped + '%' }} />
+                        </div>
+                      </div>
+                    )}
+                    {variant !== 'practice' && (
+                      <div className={styles.statusArea} aria-label={completed ? '학습 완료' : '미완료'}>
+                        <div className={styles.statusBadge}>
+                          {completed ? (
+                            <span className={styles.statusCheck} aria-hidden="true">
+                              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.4 11.2 3.2 8l1.12-1.12 2.08 2.08 5.28-5.28L12.8 4.8 6.4 11.2Z" fill="currentColor" />
+                              </svg>
+                            </span>
+                          ) : (
+                            <span className={styles.statusDot} aria-hidden="true" />
+                          )}
+                          {completed ? <span className={styles.statusDoneText}>완료됨</span> : <span className={styles.pendingText}>미완료</span>}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </button>
             </div>

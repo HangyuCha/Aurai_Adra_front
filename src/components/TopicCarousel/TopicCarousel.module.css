@@ -8,12 +8,17 @@
 .navBtn:disabled { opacity:.28; cursor:not-allowed; filter:grayscale(.6); }
 .navBtn:not(:disabled):hover { transform:translateY(-50%) scale(1.08); }
 .navBtn:active:not(:disabled) { transform:translateY(-50%) scale(.95); }
+/* 컴팩트 모드: 화살표와 카드 간격 최소화 */
+.compact .navPrev { left:2px; }
+.compact .navNext { right:2px; }
 
 /* 트랙 래퍼: 그림자 잘림 방지를 위해 overflow:visible */
-.trackWrapper { width:100%; overflow:visible; padding:0 74px; /* 네비 버튼 영역 만큼 안쪽 여백 */ box-sizing:border-box; }
+.trackWrapper { width:100%; overflow:visible; padding:0 74px; /* 기본: 네비 버튼 영역 만큼 안쪽 여백 */ box-sizing:border-box; }
+.compact .trackWrapper { padding:0 12px; }
 
 /* 가로 스크롤 + 사이드 공간 확보(첫/마지막 센터링) */
 .track { --card-width:62%; display:flex; gap:34px; width:100%; overflow-x:auto; overflow-y:visible; scroll-snap-type:x mandatory; scroll-padding-inline:calc((100% - var(--card-width))/2); padding:26px 0 28px; scrollbar-width:none; }
+.compact .track { gap:10px; }
 .track::-webkit-scrollbar { display:none; }
 /* 양끝 여백(센트럴 포커싱) */
 .track::before, .track::after { content:""; flex:0 0 calc((100% - var(--card-width))/2); }
@@ -24,6 +29,8 @@
 .card { width:100%; min-height:var(--card-min-height); background:linear-gradient(155deg,#ffffff,var(--card-bg2)); border:1px solid #d6dde6; border-radius:46px; padding:46px 46px 54px; text-align:left; font-family:'Jua',system-ui,sans-serif; letter-spacing:.4px; box-shadow:none; cursor:pointer; position:relative; overflow:hidden; transition:background .7s, transform .55s, border-color .5s; }
 .card::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%,var(--accent-radial),transparent 60%); opacity:.0; transition:opacity .8s; }
 .card:hover::before { opacity:.5; }
+.cardPlain { background:transparent !important; border:0 !important; border-radius:0 !important; padding:0 !important; min-height:auto !important; box-shadow:none !important; }
+.cardPlain::before { display:none !important; }
 .cardTitle { margin:0 0 14px; font-size:clamp(var(--fs-26),4.2vw,var(--fs-34)); line-height:1.1; color:#111; text-shadow:0 3px 6px rgba(0,0,0,.20); }
 .cardText { margin:0; font-size:var(--fs-18); color:#444; line-height:1.42; max-width:540px; }
 .scoreArea { margin-top:30px; display:flex; flex-direction:column; gap:10px; }
@@ -47,6 +54,7 @@
 .pendingText { opacity:.75; }
 .active .card { background:linear-gradient(165deg,#ffffff,var(--card-active-mid) 58%,var(--card-active-end)); border-color:var(--accent-border-active); transform:scale(1.05); }
 .active .card::before { opacity:.78; }
+.active .cardPlain { background:transparent !important; border-color:transparent !important; transform:none !important; }
 .card:focus-visible { outline:4px solid var(--accent-outline); outline-offset:4px; }
 .dots { display:flex; gap:10px; justify-content:center; }
 .dot { width:14px; height:14px; border-radius:50%; border:0; background:#cfd6dd; cursor:pointer; transition:background .35s, transform .35s; }
