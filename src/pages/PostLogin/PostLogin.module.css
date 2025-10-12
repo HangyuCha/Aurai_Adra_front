@@ -2,17 +2,38 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: center / cover no-repeat url("../../assets/startpage.png");
+  background: center / contain no-repeat url("../../assets/startpage.png");
   overflow: hidden;
-  border-radius: 15px; /* page-content 대체 */
-  box-shadow:0 4px 20px rgba(0,0,0,0.1); /* 기존 틀 그림자 유지 */
+  display: grid;
+  place-items: center;
 }
+
+/* Desktop: restore framed look */
+@media (min-width: 900px) {
+  .stage {
+    background-size: contain;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.18), 0 8px 20px rgba(0,0,0,.12);
+    margin: 24px;
+  }
+}
+
+/* Mobile: full-bleed cover look */
+@media (max-width: 899px) {
+  .stage {
+    background-size: cover;
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+  }
+}
+/* 인트로는 항상 꽉 차게: 너무 좁은 화면에서도 cover 유지 (일부 크롭 허용) */
 /* overlay 제거 (원본 이미지 그대로) */
 /* 애니메이션 버튼 */
 .startBtn {
   position: absolute;
   left: 50%;
-  bottom: clamp(48px, 12vh, 140px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(32px, 8vh, 120px));
   transform: translateX(-50%);
   border: 0;
   font-family: 'Jua', sans-serif;

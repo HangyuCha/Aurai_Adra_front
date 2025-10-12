@@ -27,6 +27,7 @@ export default function SmsGreetingLesson(){
   const [speaking,setSpeaking] = useState(false);
   const [autoPlayed,setAutoPlayed] = useState(false); // 현재 단계 자동 재생 여부
   const [voices,setVoices] = useState([]); // 가용 음성 목록 (Web Speech)
+  const [showHelp,setShowHelp] = useState(false); // 모바일 도움말 모달
   const current = steps.find(st => st.id === step) || steps[0];
   const canSubmit = step === total && answer.trim().length > 0;
 
@@ -218,7 +219,7 @@ export default function SmsGreetingLesson(){
       <header className={frameStyles.frameHeader} ref={headerRef}>
         <h1 className={frameStyles.frameTitle}>
           기본 인사 표현
-          <span className={frameStyles.inlineTagline}>스크린샷 기반 문자 흐름을 단계별로 살펴보고, 포커스 강조·듣기·직접 답장 입력까지 연습합니다.</span>
+          <span className={frameStyles.inlineTagline}>처음 인사할 때 쓰는 쉬운 문장들을 배워요.</span>
         </h1>
       </header>
       <div className={frameStyles.lessonRow}>
@@ -227,6 +228,15 @@ export default function SmsGreetingLesson(){
       className={frameStyles.deviceShell}
       style={deviceWidth ? {width:deviceWidth+"px"} : (scale!==1 && !deviceWidth ? {transform:`scale(${scale})`, transformOrigin:'top center'}:undefined)}>
             <div className={frameStyles.deviceInner}>
+              {/* 모바일 전용 오버레이 버튼 */}
+              <div className={frameStyles.mobileOverlayButtons} aria-hidden={false}>
+                <button type="button" className={frameStyles.overlayBtn} onClick={()=> setShowHelp(true)} aria-label="설명 보기">
+                  <span className={frameStyles.overlayBtnIcon}>❔</span>
+                </button>
+                <button type="button" className={frameStyles.overlayBtn} onClick={speakCurrent} aria-label="오디오 재생">
+                  <span className={frameStyles.overlayBtnIcon}>🔊</span>
+                </button>
+              </div>
               <div className={frameStyles.statusStrip}>
                 <span className={frameStyles.statusTime}>9:41</span>
                 <div className={frameStyles.statusIcons}>
@@ -251,6 +261,18 @@ export default function SmsGreetingLesson(){
                   {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
                   <img src={screenshot} alt="문자 인사 학습 화면" className={frameStyles.screenshot} />
                   {/* 파란색 깜빡임(포커스 하이라이트) 제거: highlightLayer 렌더 제거 */}
+                  {/* 모바일 도움말 모달 */}
+                  {showHelp && (
+                    <div className={frameStyles.mobileModalBackdrop} role="dialog" aria-modal="true">
+                      <div className={frameStyles.mobileModalCard}>
+                        <div className={frameStyles.mobileModalHeader}>
+                          <h2 className={frameStyles.mobileModalTitle}>{current.title}</h2>
+                          <button className={frameStyles.mobileModalClose} aria-label="닫기" onClick={()=> setShowHelp(false)}>✕</button>
+                        </div>
+                        <div className={frameStyles.mobileModalBody}>{current.instruction}</div>
+                      </div>
+                    </div>
+                  )}
                   {step === total && (
                     <ChatInputBar
                       value={answer}
@@ -258,7 +280,7 @@ export default function SmsGreetingLesson(){
                       disabled={!canSubmit}
                       onChange={(val)=>{setAnswer(val); setFeedback('');}}
                       onSubmit={onSubmitAnswer}
-                      offsetBottom={218} /* 더 아래로 소폭 (226->218: 8px 내려감) */
+                      offsetBottom={218} /* 오버레이 배치: 디바이스 화면 안쪽 */
                       offsetX={44} /* 오른쪽으로 44px (40에서 아주 소폭 추가 이동) */
                     />
                   )}

@@ -10,13 +10,14 @@
 }
 
 .logo {
-  width: 250px; /* 로고 크기 조정 */
+  width: clamp(140px, 42vw, 260px);
+  max-width: 80vw;
   height: auto;
 }
 
 .startButton {
-  padding:15px 60px;
-  font-size:28px;
+  padding: clamp(12px, 2.8vw, 16px) clamp(28px, 8vw, 60px);
+  font-size: clamp(18px, 5.2vw, 28px);
   font-weight:bold;
   color:#fff;
   background:linear-gradient(135deg,#59A3FF,#326bcc);

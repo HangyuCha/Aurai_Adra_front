@@ -6,7 +6,7 @@
   justify-content: center; /* 가로 중앙 */
   align-items: center;     /* 세로 중앙 */
   min-height: 70svh;       /* 중앙 근사치 */
-  padding: 40px 16px;
+  padding: 40px 16px calc(40px + env(safe-area-inset-bottom, 0px));
 }
 
 /* 폼: 세로 1열 + 동일 간격 */

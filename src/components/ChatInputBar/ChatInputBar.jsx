@@ -28,11 +28,13 @@ export default function ChatInputBar({
     if(disabled) return;
     onSubmit && onSubmit();
   };
+  const isOverlay = Number.isFinite(offsetBottom) && offsetBottom !== 0;
+  const baseClass = isOverlay ? styles.chatInputBarAbsolute : styles.chatInputBarSticky;
   return (
     <form
       onSubmit={handleSubmit}
-      className={`${styles.chatInputBar} ${className}`.trim()}
-      style={{bottom: offsetBottom, transform:`translateX(calc(-50% + ${offsetX}px))`}}
+      className={`${baseClass} ${className}`.trim()}
+      style={isOverlay ? {bottom: offsetBottom, transform:`translateX(calc(-50% + ${offsetX}px))`} : undefined}
     >
       <input
         className={styles.chatInputField}

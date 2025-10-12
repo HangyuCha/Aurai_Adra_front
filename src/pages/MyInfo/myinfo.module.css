@@ -101,7 +101,7 @@
 .avatarBox { position: relative; display:flex; }
 .bigAvatar {
   position: relative;
-  width: clamp(320px, 34vw, 440px); /* 더 크게 */
+  width: clamp(220px, 60vw, 440px);
   aspect-ratio: 2/3;
   object-fit: contain;
   border-radius: 0; /* 카드 라운드 제거 */
@@ -224,7 +224,7 @@
 @media (max-width: 640px) {
   .canvas { padding: 0 20px; }
   .profileCluster { padding:34px 30px 38px; border-radius:30px; gap:34px; }
-  .bigAvatar { width: clamp(300px, 80vw, 440px); }
+  .bigAvatar { width: clamp(200px, 80vw, 400px); }
   .sharePrimary { height:72px; font-size: clamp(30px,6vw,42px); }
   .metaValue { font-size: clamp(38px,8.4vw,54px); }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../lib/api';
 import styles from './myinfo.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 
@@ -67,7 +67,7 @@ export default function MyInfoPage() {
   const handleDeleteConfirm = async () => {
     setDeleting(true);
     try {
-      const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      // const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
       // 토큰에 실수로 들어간 양끝의 " 제거
       const raw = localStorage.getItem('accessToken');
@@ -77,10 +77,7 @@ export default function MyInfoPage() {
         return;
       }
 
-      await axios.delete('/api/users/me', {
-        baseURL,
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete('/users/me', { headers: { Authorization: `Bearer ${token}` } });
 
       // 성공 처리
       localStorage.clear();
