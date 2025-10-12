@@ -18,8 +18,15 @@ export default function WritePage() {
       return;
     }
   const author = localStorage.getItem('nickname') || '익명';
-  const item = addSuggestion({ title, content, author });
-  navigate(`/suggestion/${item.id}`);
+  (async () => {
+    try {
+      const item = await addSuggestion({ title, content, author });
+      navigate(`/suggestion/${item.id}`);
+    } catch (err) {
+      console.error('Failed to create suggestion', err);
+      alert('글 작성에 실패했습니다.');
+    }
+  })();
   };
 
   return (

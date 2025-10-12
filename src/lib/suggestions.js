@@ -1,55 +1,32 @@
-// 로컬 스토리지 기반 간단한 건의사항 저장 유틸
-const KEY = 'suggestions';
 
-export function getSuggestions() {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    if (!Array.isArray(arr)) return [];
-    return arr;
-  } catch (e) {
-    console.error('getSuggestions error', e);
-    return [];
-  }
+import api from './api';
+
+// 건의사항 목록 조회
+export async function getSuggestions() {
+  const res = await api.get('/api/suggestions');
+  return res.data;
 }
 
-function save(list) {
-  localStorage.setItem(KEY, JSON.stringify(list));
+// 건의사항 추가
+export async function addSuggestion({ title, content, author }) {
+  const res = await api.post('/api/suggestions', { title, content, author });
+  return res.data;
 }
 
-export function addSuggestion({ title, content, author }) {
-  const list = getSuggestions();
-  const now = new Date().toISOString();
-  const item = {
-    id: crypto.randomUUID(),
-    title: title.trim(),
-    content: content.trim(),
-    author,
-    createdAt: now,
-    updatedAt: now,
-  };
-  list.unshift(item); // 최신이 위로
-  save(list);
-  return item;
+// 건의사항 단일 조회
+export async function getSuggestion(id) {
+  const res = await api.get(`/api/suggestions/${id}`);
+  return res.data;
 }
 
-export function getSuggestion(id) {
-  return getSuggestions().find(s => s.id === id) || null;
+// 건의사항 수정
+export async function updateSuggestion(id, fields) {
+  const res = await api.put(`/api/suggestions/${id}`, fields);
+  return res.data;
 }
 
-export function updateSuggestion(id, fields) {
-  const list = getSuggestions();
-  const idx = list.findIndex(s => s.id === id);
-  if (idx === -1) return null;
-  list[idx] = { ...list[idx], ...fields, updatedAt: new Date().toISOString() };
-  save(list);
-  return list[idx];
-}
-
-export function deleteSuggestion(id) {
-  const list = getSuggestions();
-  const next = list.filter(s => s.id !== id);
-  save(next);
-  return list.length !== next.length;
+// 건의사항 삭제
+export async function deleteSuggestion(id) {
+  const res = await api.delete(`/api/suggestions/${id}`);
+  return res.data;
 }
