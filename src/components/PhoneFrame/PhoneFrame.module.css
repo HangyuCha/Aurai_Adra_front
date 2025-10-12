@@ -1,0 +1,38 @@
+.phone{display:flex;justify-content:center;align-items:center;transform:scale(var(--scale,1));transform-origin:top center;}
+.bezel{background:linear-gradient(135deg,#fdfdfd,#eaeef3);border:6px solid #0e0e0f;border-radius:42px;box-shadow:none;padding:5px;}
+.screen{position:relative;background:#fff;border-radius:30px;overflow:hidden;} 
+/* 전체 프레임 너비 제어 */
+.screen::before{content:"";display:block;width:var(--screen-width, min(72vw, 430px));}
+/* 상태바와 하단바 사이 실제 화면(이미지) 박스: 이미지 비율 유지 */
+.contentBox{position:relative;margin-top:var(--bar-h,34px);margin-bottom:calc(var(--bar-h,34px) - 10px);background:#fff;border-radius:0;} 
+.contentBox::before{content:"";display:block;aspect-ratio:var(--screen-aspect, 9/19.5);} 
+.screenshot{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;box-shadow:none !important;filter:none !important;}
+.overlay{position:absolute;inset:0;pointer-events:none;}
+.overlay>*{pointer-events:auto;}
+/* 오버레이 내 모든 요소의 그림자/필터 제거 (입력바 등의 투영 제거) */
+.overlay, .overlay *{box-shadow:none !important;filter:none !important;text-shadow:none !important;}
+
+/* 상태바 + 아이콘 */
+.statusBar{--bar-h:34px;position:absolute;top:0;left:0;right:0;height:var(--bar-h);display:flex;align-items:center;justify-content:space-between;padding:0 10px;font:600 12px/1 system-ui,sans-serif;color:#111;background:#fff;z-index:3}
+.bottomBar{position:absolute;left:0;right:0;bottom:0;height:var(--bar-h,34px);background:#fff;z-index:2}
+.time{font-weight:600}
+.statusIcons{display:flex;align-items:center;gap:6px}
+.signal,.wifi,.battery{display:inline-block;position:relative}
+.signal{width:14px;height:10px;background:linear-gradient(90deg,#111,#111) no-repeat center/100% 2px}
+.signal::after{content:"";position:absolute;left:2px;bottom:0;width:10px;height:8px;border:2px solid #111;border-top:none;border-radius:2px}
+.wifi{width:16px;height:12px}
+.wifi::before,.wifi::after{content:"";position:absolute;left:50%;transform:translateX(-50%);border:2px solid #111;border-radius:50%}
+.wifi::before{width:16px;height:16px;top:-6px;clip-path:inset(0 0 55% 0)}
+.wifi::after{width:10px;height:10px;top:-2px;clip-path:inset(0 0 55% 0)}
+.battery{width:18px;height:10px;border:2px solid #111;border-radius:2px}
+.battery::after{content:"";position:absolute;right:-4px;top:2px;width:3px;height:6px;background:#111;border-radius:1px}
+
+/* 노치(장식) */
+.notch{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:34%;max-width:160px;height:20px;background:#0e0e10;border-bottom-left-radius:14px;border-bottom-right-radius:14px;z-index:2;box-shadow:none}
+
+/* 반응형 줄이기: 아주 작은 화면에서 프레임 스스로 축소 */
+@media (max-width:680px){
+  .bezel{border-radius:36px;border-width:5px;padding:5px}
+  .screen{border-radius:26px}
+  .screen::before{width:var(--screen-width, min(92vw, 380px))}
+}

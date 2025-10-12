@@ -104,6 +104,9 @@
   .inlineTagline{display:block;margin:10px 0 0 0;max-width:100%;}
 }
 
+/* helper: overlay를 화면 수직 중앙, 오른쪽으로 고정 (페이지 전용) */
+.inputRightCenter{position:absolute !important;top:50% !important;right:18px !important;left:auto !important;bottom:auto !important;transform:translateY(calc(-50% + 21px)) !important;z-index:6}
+
 /* 제목 옆 라벨형 태그라인 */
 .inlineTagline{font-size:clamp(12px,.95vw,15px);font-weight:400;line-height:1.28;color:#555;margin-left:14px;max-width:360px;font-family:system-ui,sans-serif;position:relative;top:4px;}
 @media (min-width:1100px){

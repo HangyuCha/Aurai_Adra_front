@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from './SmsLessonFrame.module.css';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import screenshot from '../../assets/test1.png';
 import stepsConfig from './SmsGreetingLessonSteps.js';
@@ -223,51 +224,40 @@ export default function SmsGreetingLesson(){
       </header>
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
-    <div ref={shellRef}
-      className={frameStyles.deviceShell}
-      style={deviceWidth ? {width:deviceWidth+"px"} : (scale!==1 && !deviceWidth ? {transform:`scale(${scale})`, transformOrigin:'top center'}:undefined)}>
-            <div className={frameStyles.deviceInner}>
-              <div className={frameStyles.statusStrip}>
-                <span className={frameStyles.statusTime}>9:41</span>
-                <div className={frameStyles.statusIcons}>
-                  <span className={frameStyles.signal} />
-                  <span className={frameStyles.wifi} />
-                  <span className={frameStyles.battery} />
-                </div>
-              </div>
-              <div className={frameStyles.screenArea}>
-                <div 
-                  style={{position:'relative',width:'100%'}}
-                  onMouseMove={e=>{
-                    if(!showDev) return;
-                    const imgEl = e.currentTarget.querySelector('img');
-                    if(!imgEl) return;
-                    const r = imgEl.getBoundingClientRect();
-                    const px = ((e.clientX - r.left)/r.width)*100;
-                    const py = ((e.clientY - r.top)/r.height)*100;
-                    setDevPos({x: px.toFixed(2), y: py.toFixed(2)});
-                  }}
-                >
-                  {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-                  <img src={screenshot} alt="문자 인사 학습 화면" className={frameStyles.screenshot} />
-                  {/* 파란색 깜빡임(포커스 하이라이트) 제거: highlightLayer 렌더 제거 */}
-                  {step === total && (
-                    <ChatInputBar
-                      value={answer}
-                      placeholder="마무리 답장을 입력해 보세요"
-                      disabled={!canSubmit}
-                      onChange={(val)=>{setAnswer(val); setFeedback('');}}
-                      onSubmit={onSubmitAnswer}
-                      offsetBottom={218} /* 더 아래로 소폭 (226->218: 8px 내려감) */
-                      offsetX={44} /* 오른쪽으로 44px (40에서 아주 소폭 추가 이동) */
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
+          <div
+            ref={shellRef}
+            style={deviceWidth ? {width:deviceWidth+"px"} : (scale!==1 && !deviceWidth ? {transform:`scale(${scale})`, transformOrigin:'top center'}:undefined)}
+            onMouseMove={(e)=>{
+              if(!showDev || !shellRef.current) return;
+              const r = shellRef.current.getBoundingClientRect();
+              const px = ((e.clientX - r.left)/r.width)*100;
+              const py = ((e.clientY - r.top)/r.height)*100;
+              setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0});
+            }}
+          >
+            <PhoneFrame
+              image={screenshot}
+              screenWidth={deviceWidth ? deviceWidth+'px' : 'min(72vw, 391px)'}
+              aspect={'391 / 629'}
+              scale={0.92}
+            >
+              {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
+              {step === total && (
+                <ChatInputBar
+                  value={answer}
+                  placeholder="마무리 답장을 입력해 보세요"
+                  disabled={!canSubmit}
+                  onChange={(val)=>{setAnswer(val); setFeedback('');}}
+                  onSubmit={onSubmitAnswer}
+                  offsetBottom={50}
+                  offsetX={0}
+                  className={frameStyles.inputRightCenter}
+                />
+              )}
+            </PhoneFrame>
           </div>
-        </div>
-        <div className={frameStyles.sidePanel}>
+  </div>
+  <div className={frameStyles.sidePanel}>
           <div className={(frameStyles.captionBar) + (deviceWidth ? ' '+frameStyles.captionBarCompact : '')} ref={captionRef} style={isSide ? {width:'auto',maxWidth: deviceWidth ? 380 : 420, marginTop:0}:undefined}>
             <div className={frameStyles.progressHeader}>
               <div className={frameStyles.stepMeta}>
