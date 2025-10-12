@@ -26,7 +26,7 @@
 /* 캐릭터/닉네임 카드 제거됨 */
 
 /* 트로피 섹션 */
-.trophySection { margin-top: 0; display:flex; flex-direction:column; min-height:0; }
+.trophySection { margin-top: 0; display:flex; flex-direction:column; min-height:0; align-items:center; text-align:center; }
 .sectionTitle { font-family:'Jua', sans-serif; font-size:24px; margin: 10px 2px 14px; }
 /* 슬라이더 */
 /* TopicCarousel을 사용하므로 슬라이더 래퍼는 필요 없음 */
