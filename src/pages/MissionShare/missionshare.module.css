@@ -1,14 +1,16 @@
 .wrap {
   width: 100%;
   position: relative;
-  /* 자연 흐름으로 쌓이게 (외부 page-content 자체가 스크롤) */
   background: transparent;
+  height: 100vh;      /* 원페이지 높이 */
+  overflow: hidden;   /* 페이지 스크롤 제거 */
 }
 .captureArea {
   width: 100%;
   max-width: 900px;
-  margin: 48px auto 120px; /* 상단/하단 여백 */
-  padding: 32px 16px 120px; /* 내부 패딩만 유지 */
+  height: 100%;
+  margin: 0 auto;          /* 수직 여백 제거 */
+  padding: 16px;           /* 내부 패딩 축소 */
   position: relative;
   background: transparent; /* 내부 흰 박스 제거 */
   box-shadow: none;
@@ -20,14 +22,49 @@
   margin-bottom: 32px;
   text-align: center;
 }
+
+/* 캐릭터/닉네임 카드 제거됨 */
+
+/* 트로피 섹션 */
+.trophySection { margin-top: 0; display:flex; flex-direction:column; min-height:0; }
+.sectionTitle { font-family:'Jua', sans-serif; font-size:24px; margin: 10px 2px 14px; }
+/* 슬라이더 */
+/* TopicCarousel을 사용하므로 슬라이더 래퍼는 필요 없음 */
+
+/* 큰 정사각형 카드 */
+.squareCard {
+  width: 100%;
+  max-width: 700px;
+  aspect-ratio: 1 / 1; /* 정사각형 */
+  margin: 0; /* 좌우 여백 제거 (TopicCarousel 아이템 안에서 꽉 차게) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 24px;
+  padding: 20px 16px 18px;
+}
+.squareImgBox { width: 96%; height: 92%; display:grid; place-items:center; }
+.squareImg { width: 100%; height: 100%; object-fit: contain; }
+.squareLabel { margin-top: 8px; font-family:'Jua', sans-serif; font-size: 26px; }
+
+.pager { text-align:center; margin-top: 6px; font-weight: 700; color:#334155; font-size:14px; }
+
+/* 랭킹 섹션 */
+.rankSection { margin-top: 50px; }
+.emptyBox { background:#fff; padding:20px; border-radius:14px; text-align:center; color:#6b7a90; box-shadow:0 6px 16px rgba(0,0,0,.06); }
+
+/* TopicCarousel 자체 반응형 규칙을 따릅니다 */
+
 .shareBtn {
-  position:absolute; right:32px; bottom:32px;
+  position:absolute; right:32px; bottom:0px; /* 하단 여백 확보로 잘림 방지 */
   background:linear-gradient(135deg,#59A3FF,#326bcc);
   color:#fff; border:0; border-radius:14px; padding:14px 26px; font-size:18px; cursor:pointer;
-  box-shadow:0 10px 26px -8px rgba(0,0,0,.25),0 4px 10px rgba(0,0,0,.16);
-  font-family:'Jua',sans-serif; letter-spacing:.5px; transition:transform .35s cubic-bezier(.16,.8,.3,1), box-shadow .4s;
+  box-shadow:none; /* 그림자 제거 */
+  font-family:'Jua',sans-serif; letter-spacing:.5px; transition:transform .35s cubic-bezier(.16,.8,.3,1);
 }
-.shareBtn:hover { transform:translateY(-6px); box-shadow:0 20px 42px -14px rgba(0,0,0,.32),0 6px 16px rgba(0,0,0,.22); }
+.shareBtn:hover { transform:translateY(-6px); box-shadow:none; }
 .shareBtn:active { transform:translateY(-2px) scale(.97); }
 .shareBtn:focus-visible { outline:4px solid #59A3FF; outline-offset:3px; }
 
@@ -64,3 +101,22 @@
 .closeBtn:hover { transform:translateY(-3px); }
 .closeBtn:active { transform:translateY(-1px); }
 .closeBtn:focus-visible { outline:4px solid #59A3FF; outline-offset:3px; }
+
+/* ====== 원페이지 2열 레이아웃 ====== */
+.grid {
+  display:grid;
+  grid-template-columns: 1fr 1fr; /* 좌우 절반씩 */
+  gap: 20px;
+  align-items:stretch;
+  height: 100%;
+}
+.leftPane { height: 100%; }
+.characterBox { height:100%; background:transparent; border:0; border-radius:0; padding:0; margin-left:-300px; }
+.characterImg { display:block; width:100%; height:100%; object-fit:contain; }
+.rightPane { height:100%; display:grid; grid-template-rows: 60% 40%; gap:16px; min-height:0; }
+
+@media (max-width: 980px){
+  .grid { grid-template-columns: 1fr; }
+  .leftPane { height:auto; }
+  .rightPane { grid-template-rows: auto auto; }
+}
