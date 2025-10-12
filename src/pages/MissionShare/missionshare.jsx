@@ -6,7 +6,7 @@ import RankList from '../../components/RankList/RankList';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import BackButton from '../../components/BackButton/BackButton';
 // 좌측에 표시할 캐릭터 이미지는 추후 실제 PNG로 교체 예정
-import characterPlaceholder from '../../assets/80F.png';
+import characterPlaceholder from '../../assets/40F.png';
 // 아이콘 이미지 (src/assets)
 import phoneTrophy from '../../assets/phone_trophy.png';
 import messageTrophy from '../../assets/message_trophy.png';
@@ -72,6 +72,7 @@ export default function MissionShare() {
           <aside className={styles.leftPane} aria-label="캐릭터">
             <div className={styles.characterBox}>
               <img className={styles.characterImg} src={characterPlaceholder} alt="캐릭터" />
+              <div className={styles.characterCaption}>배움 나이: 40대</div>
             </div>
           </aside>
           {/* 우측: 상단 트로피, 하단 랭킹 */}
