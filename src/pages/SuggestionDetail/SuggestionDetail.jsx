@@ -56,8 +56,10 @@ export default function SuggestionDetailPage() {
           const updated = await updateSuggestion(id, { title: title.trim(), content: content.trim() });
           setData(updated);
         } catch (err) {
-          console.error('Failed to update', err);
-          alert('수정에 실패했습니다.');
+            console.error('Failed to update', err);
+            const status = err?.response?.status;
+            const body = err?.response?.data;
+            alert(`수정에 실패했습니다.\n서버 응답: ${status || 'N/A'}\n메시지: ${body?.message || JSON.stringify(body) || err.message}`);
         }
       })();
     }
@@ -77,7 +79,9 @@ export default function SuggestionDetailPage() {
         goList();
       } catch (err) {
         console.error('Failed to delete', err);
-        alert('삭제에 실패했습니다.');
+        const status = err?.response?.status;
+        const body = err?.response?.data;
+        alert(`삭제에 실패했습니다.\n서버 응답: ${status || 'N/A'}\n메시지: ${body?.message || JSON.stringify(body) || err.message}`);
         setConfirmOpen(false);
       }
     })();
