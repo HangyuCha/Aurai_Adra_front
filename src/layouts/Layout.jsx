@@ -24,6 +24,7 @@ export default function Layout() {
   // (이전) 설정 페이지 전용 내부 스크롤 제거 -> 모든 페이지 동일 동작
   const isHome = location.pathname === '/home';
   const isIntro = location.pathname === '/intro';
+  const isSms = location.pathname.startsWith('/sms');
   // 스크롤 필요한 경로 목록 (필요 시 확장)
   // 내부 스크롤이 정말 필요한 페이지만 지정 (settings는 제거)
   const scrollablePaths = ['/mission-share', '/me'];
@@ -33,7 +34,8 @@ export default function Layout() {
     'page-content',
     isScrollable ? 'scrollable' : '',
     isHome ? 'no-scroll' : '',
-    isIntro ? 'no-pad' : ''
+    isIntro ? 'no-pad' : '',
+    isSms ? 'no-scroll' : '' // disable internal page-content scrolling for SMS pages
   ].filter(Boolean).join(' ');
 
   return (

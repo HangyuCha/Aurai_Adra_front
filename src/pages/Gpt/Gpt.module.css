@@ -1,5 +1,7 @@
+.gptPage { width:100%; max-width:1080px; margin:0 auto; box-sizing:border-box; display:flex; flex-direction:column; height:100vh; overflow:hidden; padding: clamp(18px,3.5vh,36px) clamp(12px,4vw,32px); gap:clamp(18px,3.5vh,40px); }
+.gptHead { display:flex; flex-direction:column; gap:14px; align-items:flex-start; }
+.gptTitle { margin:0; font-family:'Jua',system-ui,sans-serif; font-size:clamp(var(--fs-38),6vw,var(--fs-54)); line-height:1.04; letter-spacing:.5px; color:#111; position:relative; padding-left:20px; }
 /* GPT 배우기 / 연습하기 */
-.gptPage { width:100%; max-width:1080px; margin:0 auto; padding: clamp(28px,4vw,54px) clamp(18px,4vw,40px) 80px; box-sizing:border-box; display:flex; flex-direction:column; gap:46px; }
 .gptHead { display:flex; flex-direction:column; gap:14px; align-items:flex-start; }
 .gptTitle { margin:0; font-family:'Jua',system-ui,sans-serif; font-size:clamp(var(--fs-38),6vw,var(--fs-54)); line-height:1.04; letter-spacing:.5px; color:#111; position:relative; padding-left:20px; }
 .gptTitle::before { content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:6px; height:70%; border-radius:6px; background:linear-gradient(180deg,#59A3FF,#2d65c4); box-shadow:0 2px 6px rgba(89,163,255,.35); }
@@ -17,4 +19,6 @@
 .optionTitle { font-size:var(--fs-22); line-height:1.15; color:#111; text-shadow:0 2px 4px rgba(0,0,0,.12); }
 .optionText { font-size:var(--fs-16); line-height:1.38; color:#444; font-family:system-ui,sans-serif; font-weight:500; letter-spacing:.2px; }
 @media (max-width:840px){ .optionsGrid { --col-min: 200px; gap:26px 20px; } .optionBtn { min-height:156px; padding:24px 22px 30px; } }
-@media (max-width:560px){ .gptPage { gap:38px; } .optionsGrid { --col-min: 160px; gap:20px 16px; } .optionBtn { min-height:140px; border-radius:26px; } .optionTitle { font-size:var(--fs-20); } .optionText { font-size:var(--fs-14); } }
+@media (max-width:560px){ .gptPage { gap:28px; } .optionsGrid { --col-min: 160px; gap:20px 16px; } .optionBtn { min-height:140px; border-radius:26px; } .optionTitle { font-size:var(--fs-20); } .optionText { font-size:var(--fs-14); } }
+
+.contentArea { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }

@@ -1,5 +1,5 @@
 /* 문자 배우기 / 연습하기 공용 스타일 */
-.smsPage { width:100%; max-width:1080px; margin:0 auto; padding: clamp(28px,4vw,54px) clamp(18px,4vw,40px) 80px; box-sizing:border-box; display:flex; flex-direction:column; gap:46px; }
+.smsPage { width:100%; max-width:1080px; margin:0 auto; box-sizing:border-box; display:flex; flex-direction:column; height:100vh; overflow:hidden; padding: clamp(18px,3.5vh,36px) clamp(12px,4vw,32px); gap:clamp(18px,3.5vh,40px); }
 
 .smsHead { display:flex; flex-direction:column; gap:14px; align-items:flex-start; }
 .smsTitle { margin:0; font-family:'Jua',system-ui,sans-serif; font-size:clamp(var(--fs-38),6vw,var(--fs-54)); line-height:1.04; letter-spacing:.5px; color:#111; position:relative; padding-left:20px; }
@@ -30,9 +30,11 @@
   .optionBtn { min-height:150px; padding:22px 20px 26px; }
 }
 @media (max-width:560px){
-  .smsPage { gap:38px; }
+  .smsPage { gap:28px; }
   .optionsGrid { --col-min: 160px; gap:20px 16px; }
   .optionBtn { min-height:140px; border-radius:26px; }
   .optionTitle { font-size:var(--fs-20); }
   .optionText { font-size:var(--fs-14); }
 }
+
+.contentArea { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }

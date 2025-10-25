@@ -1,8 +1,33 @@
-.keyboard{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:calc(var(--screen-width, min(72vw, 391px)) - 8px);max-width:100%;background:#d7d9dc;padding:22px 6px 24px;border-top-left-radius:12px;border-top-right-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.4);box-sizing:border-box;z-index:6;} 
+/* Ensure keyboard fits inside the phone screen: constrain to --screen-width and use inset padding so edge keys are visible */
+.keyboard{
+	position:absolute;
+	left:50%;
+	bottom:6px;
+	transform:translateX(-50%);
+	/* extra inset so edge keys don't get clipped; subtract 1px so default 278 - 1 = 277px */
+	width:calc(var(--screen-width, 278px) - 1px);
+	max-width:100%;
+	background:#d7d9dc;
+	padding:6.5px 10px 22.5px; /* increase by half of last reduction: top +0.5px, bottom +0.5px */
+	border-top-left-radius:0;
+	border-top-right-radius:0;
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.4);
+	box-sizing:border-box;
+	z-index:30; /* bring above other overlays */
+	/* prevent the keyboard (or its shadows) from visually escaping the device bezel */
+	overflow:hidden;
+}
 .row{display:flex;gap:4px;justify-content:center;margin-bottom:6px;} 
-.key{flex:0 0 auto;min-width:28px;height:38px;border-radius:8px;border:0;background:#fff;color:#111;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(0,0,0,.06),0 1px 0 rgba(0,0,0,.03);cursor:pointer;user-select:none;padding:0 6px;} 
+.key{flex:0 0 auto;min-width:22px;height:32px;border-radius:8px;border:0;background:#fff;color:#111;font-size:12.5px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 0 rgba(0,0,0,.06);cursor:pointer;user-select:none;padding:0 4px;overflow:visible;} 
 .key:active{transform:translateY(1px);} 
-.space{flex:1;border-radius:12px;min-width:80px;background:#fff;height:38px;display:flex;align-items:center;justify-content:center;} 
-.returnKey{background:#8f9aa0;color:#fff;min-width:56px;border-radius:8px;height:38px;display:flex;align-items:center;justify-content:center;} 
-.deleteKey{background:#bfc8cc;}
+.space{flex:1;border-radius:12px;min-width:56px;background:#fff;height:32px;display:flex;align-items:center;justify-content:center;} 
+.returnKey{background:#8f9aa0;color:#fff;min-width:44px;border-radius:8px;height:32px;display:flex;align-items:center;justify-content:center;} 
+.deleteKey{background:#bfc8cc;} 
 .shiftActive{background:#6b7780;color:#fff;box-shadow:none}
+
+@media (max-width:320px){
+	.keyboard{padding:6.5px 6px 8.5px;width:calc(var(--screen-width, 260px) - 12px);} 
+	.key{min-width:22px;height:30px;font-size:12px;padding:0 4px}
+	.space{min-width:56px;height:30px}
+	.returnKey{min-width:44px;height:30px}
+}

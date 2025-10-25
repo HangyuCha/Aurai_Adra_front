@@ -18,3 +18,5 @@
 .optionText { font-size:var(--fs-16); line-height:1.38; color:#444; font-family:system-ui,sans-serif; font-weight:500; letter-spacing:.2px; }
 @media (max-width:840px){ .optionsGrid { --col-min: 200px; gap:26px 20px; } .optionBtn { min-height:156px; padding:24px 22px 30px; } }
 @media (max-width:560px){ .kakaoPage { gap:38px; } .optionsGrid { --col-min: 160px; gap:20px 16px; } .optionBtn { min-height:140px; border-radius:26px; } .optionTitle { font-size:var(--fs-20); } .optionText { font-size:var(--fs-14); } }
+.kakaoPage { height:100vh; overflow:hidden; }
+.contentArea { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:hidden; }
