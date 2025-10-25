@@ -8,6 +8,7 @@ export default function SuggestionDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [title, setTitle] = useState('');
@@ -17,15 +18,30 @@ export default function SuggestionDetailPage() {
   const isOwner = data && data.author === nickname;
 
   useEffect(() => {
-    const s = getSuggestion(id);
-    if (!s) {
-      alert('존재하지 않는 글입니다.');
-      navigate('/suggestion', { replace: true });
-    } else {
-      setData(s);
-      setTitle(s.title);
-      setContent(s.content);
-    }
+    let mounted = true;
+    const load = async () => {
+      try {
+        const s = await getSuggestion(id);
+        if (!s) {
+          alert('존재하지 않는 글입니다.');
+          navigate('/suggestion', { replace: true });
+          return;
+        }
+        if (mounted) {
+          setData(s);
+          setTitle(s.title);
+          setContent(s.content);
+        }
+      } catch (err) {
+        console.error('Failed to load suggestion', err);
+        alert('건의를 불러오지 못했습니다.');
+        navigate('/suggestion', { replace: true });
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    load();
+    return () => { mounted = false; };
   }, [id, navigate]);
 
   const onEditToggle = () => {
@@ -35,8 +51,15 @@ export default function SuggestionDetailPage() {
         alert('제목과 내용을 입력해 주세요.');
         return;
       }
-      const updated = updateSuggestion(id, { title: title.trim(), content: content.trim() });
-      setData(updated);
+      (async () => {
+        try {
+          const updated = await updateSuggestion(id, { title: title.trim(), content: content.trim() });
+          setData(updated);
+        } catch (err) {
+          console.error('Failed to update', err);
+          alert('수정에 실패했습니다.');
+        }
+      })();
     }
     setEditing(e => !e);
   };
@@ -47,9 +70,17 @@ export default function SuggestionDetailPage() {
   };
 
   const confirmDelete = () => {
-    deleteSuggestion(id);
-    setConfirmOpen(false);
-    goList();
+    (async () => {
+      try {
+        await deleteSuggestion(id);
+        setConfirmOpen(false);
+        goList();
+      } catch (err) {
+        console.error('Failed to delete', err);
+        alert('삭제에 실패했습니다.');
+        setConfirmOpen(false);
+      }
+    })();
   };
 
   const cancelDelete = () => setConfirmOpen(false);
@@ -59,6 +90,7 @@ export default function SuggestionDetailPage() {
     navigate('/suggestion');
   };
 
+  if (loading) return null;
   if (!data) return null;
 
   return (

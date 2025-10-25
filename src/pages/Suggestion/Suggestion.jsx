@@ -7,8 +7,23 @@ import BackButton from '../../components/BackButton/BackButton';
 export default function SuggestionPage() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    setItems(getSuggestions());
+    let mounted = true;
+    const load = async () => {
+      try {
+        const list = await getSuggestions();
+        if (mounted) setItems(list || []);
+      } catch (err) {
+        console.error('Failed to load suggestions', err);
+        if (mounted) setItems([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+    load();
+    return () => { mounted = false; };
   }, []);
   return (
     <div className={styles.wrap}>
@@ -19,7 +34,8 @@ export default function SuggestionPage() {
       <div className={styles.panel}>
         <div className={styles.panelInner}>
         <ul className={styles.list} aria-label="건의 목록">
-          {items.length === 0 && (
+          {loading && <li className={styles.empty}>불러오는 중...</li>}
+          {!loading && items.length === 0 && (
             <li className={styles.empty}>등록된 건의가 없습니다.</li>
           )}
           {items.map(item => (
