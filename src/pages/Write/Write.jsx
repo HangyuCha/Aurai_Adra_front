@@ -24,7 +24,9 @@ export default function WritePage() {
       navigate(`/suggestion/${item.id}`);
     } catch (err) {
       console.error('Failed to create suggestion', err);
-      alert('글 작성에 실패했습니다.');
+      const status = err?.response?.status;
+      const body = err?.response?.data;
+      alert(`글 작성에 실패했습니다.\n서버 응답: ${status || 'N/A'}\n메시지: ${body?.message || JSON.stringify(body) || err.message}`);
     }
   })();
   };
