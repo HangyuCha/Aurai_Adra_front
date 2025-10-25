@@ -4,6 +4,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Layout from './layouts/Layout.jsx';
 import StartPage from './pages/Start/Start.jsx';
 import LoginPage from './pages/Login/Login.jsx';
+import KakaoCallback from './pages/Login/KakaoCallback.jsx';
 import LoadingPage from './pages/Loading/loading.jsx';
 import SignupPage from './pages/Signup/Signup.jsx';
 import SignupExtraPage from './pages/Signup/SignupStep2.jsx'; // 2단계
@@ -75,6 +76,7 @@ export default function App() {
           }
         />
         <Route path="login" element={<LoginPage />} />
+  <Route path="login/kakao/callback" element={<KakaoCallback />} />
         <Route path="signup" element={<SignupPage />} />
         <Route path="signup/extra" element={<SignupExtraPage />} />
         {/* 레이아웃 영역 내에서만 잡히는 catch-all */}

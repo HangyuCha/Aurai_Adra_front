@@ -28,7 +28,7 @@ function normGender(g) {
 }
 
 export default function SignupStep2() {
-  const { state: prev } = useLocation(); // { name, birth, gender }
+  const { state: prev } = useLocation(); // { name, birth, gender, oauth? }
   const navigate = useNavigate();
 
   // 직접 접근 방지: 1단계 값 없으면 되돌리기
@@ -73,12 +73,34 @@ export default function SignupStep2() {
       ageRange: toAgeRange(prev.birth),
     };
 
+    // If OAuth pending, include provider/accessToken (backend may ignore if not used)
+    try {
+      const pending = JSON.parse(sessionStorage.getItem('oauth_pending') || 'null');
+      if (prev?.oauth && pending?.provider === 'kakao' && pending?.accessToken) {
+        payload.oauthProvider = 'kakao';
+        payload.oauthAccessToken = pending.accessToken;
+      }
+    } catch {/* ignore */}
+
     try {
   await api.post("/users/register", payload);
 
       // 로그인 단계 보완용으로 기본값 저장(없으면 로그인 때 불러옵니다)
       localStorage.setItem("signup_gender", payload.gender);
       localStorage.setItem("signup_ageRange", payload.ageRange);
+
+      // If OAuth signup, we can directly proceed to intro for a smoother flow (dev-only)
+      if (payload.oauthProvider === 'kakao') {
+        sessionStorage.removeItem('oauth_pending');
+        localStorage.setItem('nickname', payload.nickname);
+        localStorage.setItem('ageRange', payload.ageRange);
+        localStorage.setItem('gender', payload.gender);
+        // Mark as logged in (dev). In real backend, a proper app token should be returned.
+        localStorage.setItem('accessToken', `dev-oauth-kakao-${Date.now()}`);
+        alert('회원가입이 완료되었습니다. 카카오 로그인으로 접속되었습니다.');
+        navigate('/intro', { replace: true });
+        return;
+      }
 
       alert("회원가입이 완료되었습니다. 로그인해 주세요.");
       navigate("/login", { replace: true });
