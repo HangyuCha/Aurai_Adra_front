@@ -1,11 +1,24 @@
 // src/pages/Signup/Signup.jsx
-import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./Signup.module.css";
 
 export default function Signup({ onNext }) {
-  const [form, setForm] = useState({ name: "", birth: "", gender: "" });
+  const { state } = useLocation();
   const navigate = useNavigate();
+  const [form, setForm] = useState({ name: "", birth: "", gender: "" });
+
+  // Prefill from OAuth pending/profile if exists
+  useEffect(() => {
+    try {
+      const pending = JSON.parse(sessionStorage.getItem('oauth_pending') || 'null');
+      const pre = state || {};
+      const name = pre.name || pending?.profile?.nickname || "";
+      const gender = pre.gender || pending?.profile?.gender || "";
+      setForm((p)=> ({ ...p, name, gender }));
+  } catch { /* ignore prefill errors */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +34,10 @@ export default function Signup({ onNext }) {
     e.preventDefault();
     if (!isFilled) return;
     // 2단계로 이동하며 1단계 값 전달
-    navigate("/signup/extra", { state: { ...form } });
+  // Pass along OAuth flag so step2 can include provider/access token
+  const pending = sessionStorage.getItem('oauth_pending');
+  const isOAuth = !!pending;
+  navigate("/signup/extra", { state: { ...form, oauth: isOAuth } });
     if (onNext) onNext(form);
   };
 

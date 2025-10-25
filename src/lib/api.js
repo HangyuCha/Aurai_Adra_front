@@ -8,10 +8,19 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(cfg => {
-  const raw = localStorage.getItem('accessToken');
-  if (raw) {
-    const token = raw.replace(/^"|"$/g, '');
-    cfg.headers.Authorization = `Bearer ${token}`;
+  const url = (cfg.url || '').toString();
+  const isKakaoExchange = /(\/auth\/kakao(\/callback)?|\/users\/kakao(\/callback)?|\/oauth2?\/kakao(\/callback)?|\/login\/oauth2\/code\/kakao)/.test(url);
+  if (!isKakaoExchange) {
+    const raw = localStorage.getItem('accessToken');
+    if (raw) {
+      const token = raw.replace(/^"|"$/g, '');
+      const looksJwt = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(token);
+      if (looksJwt) {
+        cfg.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+  } else if (cfg.headers && 'Authorization' in cfg.headers) {
+    delete cfg.headers.Authorization;
   }
   console.log('[API REQ]', cfg.method?.toUpperCase(), cfg.url, 'auth?=', !!cfg.headers.Authorization);
   return cfg;

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 import kakaoIcon from '../../assets/kakao.png';
+import { loadKakao, resolveKakaoAppKey } from '../../lib/kakao';
+import { useMemo } from 'react';
 import api from '../../lib/api';
 
 export default function Login() {
@@ -12,6 +14,7 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const redirectUri = useMemo(() => `${window.location.origin}/login/kakao/callback`, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,7 +99,28 @@ export default function Login() {
         <button type="button" onClick={() => navigate('/find')} className={styles.link}>정보찾기</button>
       </div>
       <div className={styles.socialLogin}>
-        <button type="button" className={styles.kakaoButton}>
+        <button
+          type="button"
+          className={styles.kakaoButton}
+          onClick={async ()=>{
+            try{
+              const appKey = resolveKakaoAppKey();
+              if (!appKey) {
+                alert('카카오 앱 키가 설정되지 않았습니다.\n다음 중 하나를 설정한 후 다시 시도하세요:\n1) .env.local에 VITE_KAKAO_APP_KEY=자바스크립트키 추가 후 개발 서버 재시작\n2) F12 콘솔에서 localStorage.setItem("DEV_KAKAO_APP_KEY","자바스크립트키") 실행 후 새로고침');
+                return;
+              }
+              const Kakao = await loadKakao(appKey);
+              if (!Kakao || !(Kakao.isInitialized?.())) {
+                throw new Error('Kakao SDK 초기화 실패');
+              }
+              Kakao.Auth.authorize({ redirectUri, state: 'login' });
+            }catch(e){
+              console.error('Kakao login init failed', e);
+              const msg = e?.message || '카카오 로그인 초기화에 실패했습니다.';
+              alert(`${msg} (환경 변수 또는 SDK 로딩 확인)`);
+            }
+          }}
+        >
           <img src={kakaoIcon} alt="Kakao" className={styles.kakaoIcon} />
           카카오톡으로 로그인
         </button>
