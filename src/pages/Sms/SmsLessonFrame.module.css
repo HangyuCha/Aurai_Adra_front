@@ -114,7 +114,8 @@
 }
 
 /* helper: overlay를 화면 수직 중앙, 오른쪽으로 고정 (페이지 전용) */
-.inputRightCenter{position:absolute !important;top:50% !important;right:18px !important;left:auto !important;bottom:auto !important;transform:translateY(calc(-50% + 21px)) !important;z-index:6}
+/* 오른쪽으로 +4px, 위로 -4px 조정 (right:18->22, translateY 21px->17px) */
+.inputRightCenter{position:absolute !important;top:50% !important;right:11px !important;left:auto !important;bottom:auto !important;transform:translateX(0) translateY(calc(-50% + 15px)) !important;z-index:6}
 
 /* 제목 옆 라벨형 태그라인 */
 .inlineTagline{font-size:clamp(12px,.95vw,15px);font-weight:400;line-height:1.28;color:#555;margin-left:14px;max-width:360px;font-family:system-ui,sans-serif;position:relative;top:4px;}
