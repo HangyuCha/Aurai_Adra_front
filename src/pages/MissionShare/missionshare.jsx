@@ -5,8 +5,22 @@ import styles from './missionshare.module.css';
 import RankList from '../../components/RankList/RankList';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import BackButton from '../../components/BackButton/BackButton';
-// 좌측에 표시할 캐릭터 이미지는 추후 실제 PNG로 교체 예정
-import characterPlaceholder from '../../assets/40F.png';
+// 아바타 이미지 맵 (MyInfo와 동일 규칙)
+import avatar20M from '../../assets/20M.png';
+import avatar20F from '../../assets/20F.png';
+import avatar30M from '../../assets/30M.png';
+import avatar30F from '../../assets/30F.png';
+import avatar40M from '../../assets/40M.png';
+import avatar40F from '../../assets/40F.png';
+import avatar50M from '../../assets/50M.png';
+import avatar50F from '../../assets/50F.png';
+import avatar60M from '../../assets/60M.png';
+import avatar60F from '../../assets/60F.png';
+import avatar70M from '../../assets/70M.png';
+import avatar70F from '../../assets/70F.png';
+import avatar80M from '../../assets/80M.png';
+import avatar80F from '../../assets/80F.png';
+import avatarDefault from '../../assets/default.png';
 // 아이콘 이미지 (src/assets)
 import phoneTrophy from '../../assets/phone_trophy.png';
 import messageTrophy from '../../assets/message_trophy.png';
@@ -18,6 +32,52 @@ export default function MissionShare() {
   const [modalOpen, setModalOpen] = useState(false);
   const captureRef = useRef(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+
+  // 유틸: MyInfo와 동일한 규칙으로 파싱
+  const parseAgeRange = (ar) => {
+    const a = (ar || '').toString().trim();
+    if (/^\d{2}대$/.test(a)) return { display: a, band: a.replace('대','') };
+    const m = a.match(/^(\d{2})s$/i);
+    if (m) return { display: `${m[1]}대`, band: m[1] };
+    if (/^\d{2}$/.test(a)) return { display: `${a}대`, band: a };
+    return { display: '—', band: '' };
+  };
+  const parseGender = (gd) => {
+    const g = (gd || '').toString().trim().toLowerCase();
+    if (['m','male','남','남성','남자'].includes(g)) return 'M';
+    if (['f','female','여','여성','여자'].includes(g)) return 'F';
+    return '';
+  };
+
+  const avatarMap = useMemo(() => ({
+    '20M': avatar20M, '20F': avatar20F,
+    '30M': avatar30M, '30F': avatar30F,
+    '40M': avatar40M, '40F': avatar40F,
+    '50M': avatar50M, '50F': avatar50F,
+    '60M': avatar60M, '60F': avatar60F,
+    '70M': avatar70M, '70F': avatar70F,
+    '80M': avatar80M, '80F': avatar80F,
+    default: avatarDefault,
+  }), []);
+
+  // localStorage에서 배움 나이와 성별 로드 → 학습 아바타 결정
+  const { learningAgeDisplay, avatarSrc } = useMemo(() => {
+    const laRaw = localStorage.getItem('learningAge') || '';
+    const arRaw = localStorage.getItem('ageRange') || localStorage.getItem('age') || localStorage.getItem('signup_ageRange') || '';
+    const gdRaw = localStorage.getItem('gender') || localStorage.getItem('signup_gender') || '';
+
+    const la = parseAgeRange(laRaw);
+    const age = parseAgeRange(la.band ? la.band : arRaw); // band가 없으면 ageRange로 재파싱
+    // 표시 텍스트: learningAge 값이 있으면 그것을, 없으면 나이 표시
+    const display = la.display !== '—' ? la.display : age.display;
+
+    // 아바타 키: learningAge의 band 우선, 없으면 ageRange band 사용 (정확 매칭)
+    const band = la.band || age.band;
+    const gender = parseGender(gdRaw);
+    const key = band && gender ? `${band}${gender}` : 'default';
+    const src = avatarMap[key] || avatarDefault;
+    return { learningAgeDisplay: display, avatarSrc: src };
+  }, [avatarMap]);
 
   // 데이터 모델: 4개의 앱, 각 앱은 5개의 과제. 모두 완료 시 트로피 획득
   // 실제 연동 시에는 API 또는 상위 상태에서 주입받도록 교체 가능
@@ -71,8 +131,8 @@ export default function MissionShare() {
           {/* 좌측 캐릭터 */}
           <aside className={styles.leftPane} aria-label="캐릭터">
             <div className={styles.characterBox}>
-              <img className={styles.characterImg} src={characterPlaceholder} alt="캐릭터" />
-              <div className={styles.characterCaption}>배움 나이: 40대</div>
+              <img className={styles.characterImg} src={avatarSrc} alt="캐릭터" onError={(e)=>{ e.currentTarget.src = avatarDefault; }} />
+              <div className={styles.characterCaption}>배움 나이: {learningAgeDisplay}</div>
             </div>
           </aside>
           {/* 우측: 상단 트로피, 하단 랭킹 */}

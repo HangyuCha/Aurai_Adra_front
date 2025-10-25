@@ -6,15 +6,27 @@ import BackButton from '../../components/BackButton/BackButton';
 
 import avatar20M from '../../assets/20M.png';
 import avatar20F from '../../assets/20F.png';
+import avatar30M from '../../assets/30M.png';
+import avatar30F from '../../assets/30F.png';
 import avatar40M from '../../assets/40M.png';
 import avatar40F from '../../assets/40F.png';
+import avatar50M from '../../assets/50M.png';
+import avatar50F from '../../assets/50F.png';
+import avatar60M from '../../assets/60M.png';
+import avatar60F from '../../assets/60F.png';
+import avatar70M from '../../assets/70M.png';
+import avatar70F from '../../assets/70F.png';
 import avatar80M from '../../assets/80M.png';
 import avatar80F from '../../assets/80F.png';
 import avatarDefault from '../../assets/default.png';
 
 const avatarMap = {
   '20M': avatar20M, '20F': avatar20F,
+  '30M': avatar30M, '30F': avatar30F,
   '40M': avatar40M, '40F': avatar40F,
+  '50M': avatar50M, '50F': avatar50F,
+  '60M': avatar60M, '60F': avatar60F,
+  '70M': avatar70M, '70F': avatar70F,
   '80M': avatar80M, '80F': avatar80F,
   default: avatarDefault,
 };
@@ -30,8 +42,8 @@ const parseAgeRange = (ar) => {
 };
 const parseGender = (gd) => {
   const g = (gd || '').toString().trim().toLowerCase();
-  if (['m','male','남','남성'].includes(g)) return 'M';
-  if (['f','female','여','여성'].includes(g)) return 'F';
+  if (['m','male','남','남성','남자'].includes(g)) return 'M';
+  if (['f','female','여','여성','여자'].includes(g)) return 'F';
   return '';
 }
 
@@ -60,7 +72,10 @@ export default function MyInfoPage() {
   }, []);
   useEffect(() => { readFromStorage(); }, [readFromStorage]);
 
-  const avatarKey = ageBand && gender ? `${ageBand}${gender}` : 'default';
+  // 아바타는 '배움 나이' 기준으로 우선 적용, 없으면 기존 나이대 사용
+  const learningParsed = useMemo(() => parseAgeRange(learningAge), [learningAge]);
+  const effectiveBand = learningParsed.band || ageBand;
+  const avatarKey = effectiveBand && gender ? `${effectiveBand}${gender}` : 'default';
   const avatarSrc = useMemo(() => avatarMap[avatarKey] || avatarDefault, [avatarKey]);
 
   // 서버 삭제(단일 요청)
