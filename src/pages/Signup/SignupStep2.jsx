@@ -1,7 +1,7 @@
 // src/pages/Signup/SignupStep2.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";                                   // 추가
+import api from "../../lib/api";
 import styles from "./SignupStep2.module.css";
 
 // birth(yyyy-mm-dd) → "20s"|"30s"...
@@ -65,7 +65,7 @@ export default function SignupStep2() {
     if (!match) return setError("비밀번호가 일치하지 않습니다.");
     if (!prev)   return setError("1단계 정보가 없습니다. 처음부터 진행해 주세요.");
 
-    const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+  // baseURL은 api 인스턴스('/api' 프록시)에서 처리
     const payload = {
       nickname: vals.nickname.trim(),
       password: vals.password,
@@ -74,7 +74,7 @@ export default function SignupStep2() {
     };
 
     try {
-      await axios.post("/api/users/register", payload, { baseURL });
+  await api.post("/users/register", payload);
 
       // 로그인 단계 보완용으로 기본값 저장(없으면 로그인 때 불러옵니다)
       localStorage.setItem("signup_gender", payload.gender);

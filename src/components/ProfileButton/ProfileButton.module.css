@@ -1,7 +1,7 @@
 .profileButtonContainer {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: max(12px, env(safe-area-inset-top, 0px) + 8px);
+  right: max(10px, env(safe-area-inset-right, 0px) + 10px);
   z-index: 1000;
 }
 
@@ -42,6 +42,11 @@
   transform-origin: top right;
   transition: opacity .18s ease, transform .18s cubic-bezier(.4,.2,.2,1);
   will-change: opacity, transform;
+}
+
+@media (max-width:480px){
+  .profileButton { width: 44px; height: 44px; }
+  .dropdownMenu { width: 140px; }
 }
 
 .dropdownMenu.open {

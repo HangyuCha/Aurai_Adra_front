@@ -1,6 +1,6 @@
-.framePage{width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;gap:32px;/* 직전 이동(28px) 동일량 추가: 좌측 68→96px */padding:4px clamp(18px,4vw,48px) 52px 96px;box-sizing:border-box;}
-.frameHeader{width:100%;max-width:1040px;display:flex;flex-direction:column;gap:8px;padding-bottom:2px;}
-.frameTitle{margin:0;font-family:'Jua',system-ui,sans-serif;font-size:clamp(28px,4.6vw,42px);line-height:1.02;letter-spacing:.4px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.framePage{width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;gap:32px;padding:4px clamp(18px,4vw,48px) 52px 96px;box-sizing:border-box;}
+.frameHeader{width:100%;max-width:1040px;display:flex;flex-direction:column;gap:10px;padding-bottom:4px;}
+.frameTitle{margin:0;font-family:'Jua',system-ui,sans-serif;font-size:clamp(28px,6.2vw,44px);line-height:1.04;letter-spacing:.4px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
 .frameSubtitle{margin:2px 0 0;font-size:18px;color:#555;line-height:1.45;max-width:680px;}
 .shellArea{display:flex;justify-content:center;align-items:center;}
 /* 메인 행 컨테이너 (기기 + 사이드 패널) */
@@ -20,7 +20,7 @@
 /* 좌우 여백 축소: padding 10px -> 8px */
 /* 추가 축소: padding 8px -> 6px, border 6px -> 5px */
 /* 고정 기기 비율 제거: 이미지 자연 비율을 그대로 사용 (height: auto) */
-.deviceShell{position:relative;--shell-width:clamp(340px,40vw,440px);width:var(--shell-width);background:linear-gradient(135deg,#fbfbfc,#eef1f5);border:5px solid #111;border-radius:44px;box-shadow:0 12px 36px -14px rgba(0,0,0,.30),0 5px 16px rgba(0,0,0,.18);padding:6px;box-sizing:border-box;display:flex;transition:width .3s ease, box-shadow .3s ease, border-radius .3s ease;}
+.deviceShell{position:relative;--shell-width:clamp(320px,86vw,420px);width:var(--shell-width);background:linear-gradient(135deg,#fbfbfc,#eef1f5);border:5px solid #111;border-radius:44px;box-shadow:0 12px 36px -14px rgba(0,0,0,.30),0 5px 16px rgba(0,0,0,.18);padding:6px;box-sizing:border-box;display:flex;transition:width .3s ease, box-shadow .3s ease, border-radius .3s ease;}
 /* 내부 패딩 최소화: 프레임과 이미지 사이 공간을 얇게 */
 /* 내부 좌우 여백 축소: 10px -> 6px */
 /* 내부 좌우 최소: 6px -> 4px */
@@ -39,10 +39,10 @@
 .wifi::after{width:10px;height:10px;top:-2px;clip-path:inset(0 0 55% 0);}
 .battery{width:18px;height:10px;border:2px solid #111;border-radius:2px;}
 .battery::after{content:"";position:absolute;right:-4px;top:2px;width:3px;height:6px;background:#111;border-radius:1px;}
-.screenArea{flex:1;display:flex;align-items:stretch;justify-content:center;padding:0 0 8px;} /* 기존 하단 약간 여백 */
-.screenshot{width:100%;height:auto;display:block;background:#fff;}
+.screenArea{flex:1;display:flex;align-items:center;justify-content:center;padding:0 0 8px;}
+.screenshot{display:block;width:100%;height:auto;object-fit:contain;background:#fff;}
 /* 이전 notchBar 관련 클래스 제거 (상단바 분리) */
-.captionBar{margin-top:-26px;/* overlap look (간격 축소) */ width:clamp(330px,34vw,400px);display:flex;flex-direction:column;align-items:center;gap:16px;}
+.captionBar{margin-top:0;width:clamp(330px,34vw,400px);display:flex;flex-direction:column;align-items:flex-start;gap:16px;}
 .captionBarCompact{width:clamp(280px,28vw,350px);} /* side 레이아웃에서 기기 축소 시 패널 폭도 줄여 공간 확보 */
 .stepStrip{display:flex;gap:8px;}
 .stepDot{width:14px;height:14px;border-radius:50%;background:#d6dbe0;}
@@ -59,7 +59,7 @@
 .ghostBtn{background:#fff;color:#222;}
 .progressText{font-size:15px;color:#444;}
 /* 인터랙션 확장 */
-.lessonInstruction{font-size:15px;line-height:1.56;text-align:left;color:#1f2225;padding:2px 2px 8px;font-family:system-ui,sans-serif;max-width:520px;}
+.lessonInstruction{font-size:clamp(15px, 4.4vw, 18px);line-height:1.6;text-align:left;color:#1f2225;padding:2px 2px 8px;font-family:system-ui,sans-serif;max-width:560px;}
 .listenBtn{border:0;background:linear-gradient(135deg,#59A3FF,#2d65c4);color:#fff;font-size:14px;font-weight:600;padding:10px 20px;border-radius:26px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 10px -2px rgba(0,0,0,.28);transition:.3s;}
 .listenBtn:hover{transform:translateY(-3px);} 
 .listenBtn:active{transform:translateY(-1px);} 
@@ -98,10 +98,13 @@
   .captionBar{width:clamp(280px,54vw,360px);} 
 }
 @media (max-width:680px){
-  .framePage{padding:4px 14px 78px 82px;} /* 모바일: 직전 증가(24px) 반복 적용 58→82px */
-  .deviceShell{--shell-width:min(100%,380px);margin:0 auto;}
-  .captionBar{margin-top:14px;width:100%;max-width:360px;}
-  .inlineTagline{display:block;margin:10px 0 0 0;max-width:100%;}
+  /* 모바일: 헤더/사이드 숨김, 기기 최대화 */
+  .frameHeader{display:none;}
+  .sidePanel{display:none;}
+  .lessonRow{padding:0 6px;gap:12px;}
+  .framePage{min-height:100svh;padding:6px 8px;}
+  .deviceShell{--shell-width:94vw;margin:0 auto;}
+  .captionBar{display:none;}
 }
 
 /* helper: overlay를 화면 수직 중앙, 오른쪽으로 고정 (페이지 전용) */
@@ -114,7 +117,7 @@
 }
 @media (max-width:680px){
   .frameTitle{font-size:clamp(24px,7.4vw,36px);gap:10px;}
-  .inlineTagline{margin-left:0;top:0;max-width:100%;}
+  .inlineTagline{display:none;}
 }
 /* 세로가 매우 짧은 경우 (소형 노트북 등) 전체 축소 */
 /* 세로가 너무 작을 때 화면이 넘친다면 축소 */
@@ -123,4 +126,25 @@
 }
 @media (max-height:660px){
   .deviceShell{transform:scale(.85);} 
+}
+
+/* --- 모바일 전용 오버레이 컨트롤 & 모달 --- */
+.mobileOverlayButtons{display:none;}
+.mobileModalBackdrop{display:none;}
+
+@media (max-width:680px){
+  .mobileOverlayButtons{position:absolute;top:42px;right:12px;display:flex;gap:8px;z-index:6;}
+  .overlayBtn{width:36px;height:36px;border-radius:999px;border:0;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.9);box-shadow:0 4px 12px rgba(0,0,0,.18);backdrop-filter:saturate(150%) blur(6px);cursor:pointer;}
+  .overlayBtn:active{transform:scale(.96);} 
+  .overlayBtnIcon{font-size:18px;}
+
+  .mobileModalBackdrop{position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:8;padding:16px;}
+  .mobileModalCard{width:100%;max-width:520px;background:#fff;border-radius:18px;box-shadow:0 22px 48px rgba(0,0,0,.28);padding:16px 16px 18px;display:flex;flex-direction:column;gap:10px;}
+  .mobileModalHeader{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;}
+  .mobileModalTitle{font:700 18px/1.2 system-ui,sans-serif;color:#222;margin:0;}
+  .mobileModalClose{width:34px;height:34px;border-radius:999px;border:0;background:#f1f3f6;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .mobileModalBody{font:400 15px/1.6 system-ui,sans-serif;color:#333;}
+
+  /* 데스크톱용 듣기 버튼 숨김 */
+  .listenBtn{display:none;}
 }

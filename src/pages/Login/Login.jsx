@@ -7,12 +7,8 @@ import api from '../../lib/api';
 export default function Login() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, []);
+  // 전역 스크롤 제어 제거: 모바일에서 폼이 길어질 때 스크롤 가능해야 함
+  useEffect(() => {}, []);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,7 +24,7 @@ export default function Login() {
     if (!nickname || !password) { setError('별명/비밀번호 입력'); return; }
     setLoading(true);
     try {
-      const path = '/api/users/login';
+  const path = '/users/login';
       console.log('[LOGIN TRY]', path);
       const res = await api.post(path, { nickname, password });
       console.log('[LOGIN RESPONSE]', path, res.data);

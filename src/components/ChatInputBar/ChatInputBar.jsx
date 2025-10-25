@@ -37,31 +37,23 @@ export default function ChatInputBar({
   useEffect(()=>{
     const ta = taRef.current;
     if(!ta) return;
-    // autosize once on mount/update
     function resize(){
-      // keep textarea within maxRows lines by clamping height; keep font-size unchanged
       const cs = window.getComputedStyle(ta);
       const baseFont = ta.dataset.baseFontSize || cs.fontSize;
       if(!ta.dataset.baseFontSize) ta.dataset.baseFontSize = baseFont;
       const baseFontSize = parseFloat(ta.dataset.baseFontSize);
-      // ensure using base font size
       ta.style.fontSize = baseFontSize + 'px';
       const lineH = parseFloat(cs.lineHeight) || (baseFontSize * 1.2) || 20;
       const maxH = lineH * Math.max(1, Number(maxRows) || 1);
       ta.style.height = 'auto';
       const sh = ta.scrollHeight || lineH;
-      // clamp height to maxH and set overflow accordingly
       const finalH = Math.min(Math.max(lineH, sh), maxH);
       ta.style.height = finalH + 'px';
       const isOverflowing = (ta.scrollHeight > maxH);
       ta.style.overflow = isOverflowing ? 'auto' : 'hidden';
-      // if overflowing, keep view scrolled to bottom so last line is visible
-      if(isOverflowing){
-        ta.scrollTop = ta.scrollHeight;
-      }
+      if(isOverflowing){ ta.scrollTop = ta.scrollHeight; }
     }
     resize();
-    // resize on input
     ta.addEventListener('input', resize);
     return ()=> ta.removeEventListener('input', resize);
   },[value, maxRows]);
@@ -75,11 +67,13 @@ export default function ChatInputBar({
     }
   }
 
+  const isOverlay = Number.isFinite(offsetBottom) && offsetBottom !== 0;
+  const baseClass = isOverlay ? styles.chatInputBarAbsolute : styles.chatInputBarSticky;
   return (
     <form
       onSubmit={handleSubmit}
-      className={`${styles.chatInputBar} ${className}`.trim()}
-      style={{bottom: offsetBottom, transform:`translateX(calc(-50% + ${offsetX}px))`}}
+      className={`${baseClass} ${className}`.trim()}
+      style={isOverlay ? {bottom: offsetBottom, transform:`translateX(calc(-50% + ${offsetX}px))`} : undefined}
     >
       <textarea
         ref={taRef}
@@ -97,3 +91,4 @@ export default function ChatInputBar({
     </form>
   );
 }
+

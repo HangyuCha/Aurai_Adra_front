@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import ProfileButton from '../components/ProfileButton/ProfileButton';
+import HomeLogoButton from '../components/HomeLogoButton/HomeLogoButton';
 
 export default function Layout() {
   const location = useLocation();
@@ -37,6 +38,8 @@ export default function Layout() {
 
   return (
     <div className="app-shell">
+      {/* 상단 좌측 홈 이동 로고 버튼 (전역) */}
+  <HomeLogoButton size={56} to="/home" />
       {showProfileButton && <ProfileButton />}
       <main className="app-main">
         <div className={pageClasses}>

@@ -2,7 +2,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+  // Use relative base URL; in dev/preview proxy '/api' to backend; in production deploy behind same origin
+  baseURL: '/api',
   timeout: 10000,
 });
 

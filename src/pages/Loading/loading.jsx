@@ -3,8 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
-const DELAY = 1500;   // 로고 유지 시간
-const FADE_MS = 400;  // 페이드아웃 시간
+const DELAY = 1500;      // 로고 유지 시간
+const FADE_MS = 400;     // 페이드아웃 시간
+const MAX_WAIT = 3000;   // 이미지 대기 상한(멈춤 방지)
 
 export default function LoadingPage() {
   const navigate = useNavigate();
@@ -17,29 +18,41 @@ export default function LoadingPage() {
     let mounted = true;
 
     const waitForImage = async (img) => {
-      if (!img) return;
-      if (img.complete) {
+      try {
+        if (!img) return;
+        if (img.complete) {
+          if (img.decode) await img.decode().catch(() => {});
+          return;
+        }
+        await new Promise((res) => {
+          img.addEventListener('load', res, { once: true });
+          img.addEventListener('error', res, { once: true });
+        });
         if (img.decode) await img.decode().catch(() => {});
-        return;
+      } catch {
+        // 이미지 문제는 무시하고 진행
       }
-      await new Promise((res) => {
-        img.addEventListener('load', res, { once: true });
-        img.addEventListener('error', res, { once: true });
-      });
-      if (img.decode) await img.decode().catch(() => {});
     };
 
     (async () => {
-      await waitForImage(imgRef.current);
+      // 이미지 대기와 상한 타이머 병렬
+      await Promise.race([
+        waitForImage(imgRef.current),
+        new Promise((res) => setTimeout(res, MAX_WAIT)),
+      ]);
       if (!mounted) return;
+
       setReady(true);
       t1 = setTimeout(() => {
         setFade(true);
         t2 = setTimeout(() => {
           const token = localStorage.getItem('accessToken');
-          navigate(token ? '/home' : '/start', { replace: true });
+          const to = token ? '/home' : '/start';
+          // 디버그 로그(필요시 확인용)
+          // console.log('[LOADING NAV]', { hasToken: !!token, to });
+          navigate(to, { replace: true });
         }, FADE_MS);
-      }, DELAY);
+      }, Math.max(200, DELAY));
     })();
 
     return () => {
