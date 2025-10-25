@@ -12,8 +12,8 @@ import styles from './PhoneFrame.module.css';
  *  - children: 화면 위 오버레이 요소(ChatInputBar 등)
  */
 export default function PhoneFrame({
-  // 화면(스크린) 목표 너비. 예: 'min(72vw, 391px)'
-  screenWidth = 'min(72vw, 430px)',
+  // 화면(스크린) 목표 너비. 기본은 고정값으로 사용 (전역 고정 정책)
+  screenWidth = '278px',
   // 화면 비율. 예: '391 / 629'
   aspect = '9 / 19.5',
   image,
@@ -23,8 +23,13 @@ export default function PhoneFrame({
   scale = 1,
 }){
   // CSS 변수로 전달하여 프레임 내부 레이아웃이 일관되게 따르도록 함
+  // Enforce fixed widths via CSS variable so consumers cannot pass fluid values that
+  // make the phone resize with the viewport. Small-screen breakpoints are handled
+  // in the component CSS (media queries) to allow a smaller fixed size on mobile.
+  // If a consumer explicitly passes a fixed px value, allow it; otherwise prefer the global fixed width.
+  const fixedWidth = (typeof screenWidth === 'string' && screenWidth.trim().endsWith('px')) ? screenWidth.trim() : '400px';
   const styleVars = {
-    '--screen-width': screenWidth,
+    '--screen-width': fixedWidth,
     '--screen-aspect': aspect,
     '--scale': scale,
   };

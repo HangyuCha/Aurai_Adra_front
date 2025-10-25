@@ -15,7 +15,9 @@ export default function CallPractice() {
   <h1 className={`${styles.callTitle} ${styles.practiceTitle}`}>전화 연습하기</h1>
         <p className={styles.callDesc}>자주 겪는 통화 상황을 연습하며 자연스러운 표현을 익혀요.</p>
       </header>
-  <TopicCarousel topics={callTopics} onSelect={handleSelect} variant="practice" scores={[60, 85, 0, 40, 0]} />
+  <div className={styles.contentArea}>
+    <TopicCarousel topics={callTopics} onSelect={handleSelect} variant="practice" scores={[60, 85, 0, 40, 0]} />
+  </div>
     </div>
   );
 }

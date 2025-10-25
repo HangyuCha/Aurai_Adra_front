@@ -1,17 +1,14 @@
-.phone{display:flex;justify-content:center;align-items:center;transform:scale(var(--scale,1));transform-origin:top center;}
+.phone{--scale:1;display:flex;justify-content:center;align-items:center;transform:scale(var(--scale,1));transform-origin:top center;}
 .bezel{background:linear-gradient(135deg,#fdfdfd,#eaeef3);border:6px solid #0e0e0f;border-radius:42px;box-shadow:none;padding:5px;}
 .screen{position:relative;background:#fff;border-radius:30px;overflow:hidden;} 
-/* 전체 프레임 너비 제어 */
-.screen::before{content:"";display:block;width:var(--screen-width, min(72vw, 430px));}
+/* 전체 프레임 너비 제어 (고정) */
+.screen::before{content:"";display:block;width:278px;} /* adjusted so overall outer width ≈ 300px (bezel+borders add ~22px) */
 /* 상태바와 하단바 사이 실제 화면(이미지) 박스: 이미지 비율 유지 */
 .contentBox{position:relative;margin-top:var(--bar-h,34px);margin-bottom:calc(var(--bar-h,34px) - 10px);background:#fff;border-radius:0;} 
 .contentBox::before{content:"";display:block;aspect-ratio:var(--screen-aspect, 9/19.5);} 
 .screenshot{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;box-shadow:none !important;filter:none !important;}
-.overlay{position:absolute;inset:0;pointer-events:none;overflow:auto;-webkit-overflow-scrolling:touch;/* reserve space so scrolling content doesn't go under the input bar */padding-bottom:112px;overscroll-behavior:contain;scrollbar-gutter:stable;}
-/* hide overlay scrollbar visuals but keep scroll functionality */
-.overlay::-webkit-scrollbar{width:0;height:0}
-.overlay{scrollbar-width:none;-ms-overflow-style:none}
-.overlay>*{pointer-events:auto;}
+.overlay{position:absolute;inset:0;pointer-events:none;overflow:hidden;/* disable internal scrolling to avoid visible scrollbar in the white device area */padding-bottom:0;overscroll-behavior:contain}
+.overlay>*{pointer-events:auto}
 .overlay .chatInputBar{z-index:6;position:absolute;left:50%;transform:translateX(-50%);}
 /* 오버레이 내 모든 요소의 그림자/필터 제거 (입력바 등의 투영 제거) */
 .overlay, .overlay *{box-shadow:none !important;filter:none !important;text-shadow:none !important;}
@@ -37,5 +34,14 @@
 @media (max-width:680px){
   .bezel{border-radius:36px;border-width:5px;padding:5px}
   .screen{border-radius:26px}
-  .screen::before{width:var(--screen-width, min(92vw, 380px))}
+}
+
+/* fixed size breakpoints to keep phone width stable per request */
+@media (max-width:900px){
+  /* smaller fixed size on medium screens */
+  .screen::before{width:248px} /* outer ≈ 270px */
+}
+@media (max-width:420px){
+  /* mobile fixed size */
+  .screen::before{width:218px} /* outer ≈ 240px */
 }
