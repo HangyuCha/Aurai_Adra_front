@@ -1,9 +1,9 @@
 /* 정리된 & 그라데이션 적용된 로그인 스타일 */
 /* 컨테이너 */
-.loginContainer { display:flex; flex-direction:column; width:100%; max-width:340px; margin:0 auto; justify-content:center; align-items:center; flex:1 0 auto; padding:20px 0 40px; }
+.loginContainer { display:flex; flex-direction:column; width:100%; max-width:340px; margin:0 auto; justify-content:center; align-items:center; flex:1 0 auto; padding:20px 0 calc(40px + env(safe-area-inset-bottom, 0px)); }
 
 @media (max-width:520px){
-  .loginContainer { max-width:100%; padding:10px 0 30px; }
+  .loginContainer { max-width:100%; padding:10px 0 calc(30px + env(safe-area-inset-bottom, 0px)); }
   .title { font-size:26px; margin-bottom:24px; }
   .loginButton { font-size:16px; }
   .kakaoButton { font-size:15px; }

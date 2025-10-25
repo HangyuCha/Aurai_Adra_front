@@ -15,6 +15,14 @@
 /* 트랙 래퍼: 그림자 잘림 방지를 위해 overflow:visible */
 .trackWrapper { width:100%; overflow:visible; padding:0 74px; /* 기본: 네비 버튼 영역 만큼 안쪽 여백 */ box-sizing:border-box; }
 .compact .trackWrapper { padding:0 12px; }
+@media (max-width:640px){
+	.trackWrapper { padding: 0 48px; }
+	.navBtn { width:46px; height:46px; font-size:20px; }
+}
+@media (max-width:420px){
+	.trackWrapper { padding: 0 38px; }
+	.navBtn { width:40px; height:40px; font-size:18px; }
+}
 
 /* 가로 스크롤 + 사이드 공간 확보(첫/마지막 센터링) */
 .track { --card-width:62%; display:flex; gap:34px; width:100%; overflow-x:auto; overflow-y:visible; scroll-snap-type:x mandatory; scroll-padding-inline:calc((100% - var(--card-width))/2); padding:26px 0 28px; scrollbar-width:none; }
@@ -27,6 +35,12 @@
 @media (max-width:940px){ .track { --card-width:72%; } }
 @media (max-width:640px){ .track { --card-width:86%; } .carousel { --card-min-height:240px; } }
 .card { width:100%; min-height:var(--card-min-height); background:linear-gradient(155deg,#ffffff,var(--card-bg2)); border:1px solid #d6dde6; border-radius:46px; padding:46px 46px 54px; text-align:left; font-family:'Jua',system-ui,sans-serif; letter-spacing:.4px; box-shadow:none; cursor:pointer; position:relative; overflow:hidden; transition:background .7s, transform .55s, border-color .5s; }
+@media (max-width:640px){
+	.card { border-radius:36px; padding:28px 26px 34px; }
+}
+@media (max-width:420px){
+	.card { border-radius:28px; padding:22px 18px 26px; }
+}
 .card::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%,var(--accent-radial),transparent 60%); opacity:.0; transition:opacity .8s; }
 .card:hover::before { opacity:.5; }
 .cardPlain { background:transparent !important; border:0 !important; border-radius:0 !important; padding:0 !important; min-height:auto !important; box-shadow:none !important; }

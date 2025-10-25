@@ -16,8 +16,8 @@ html, body, #root{ height:100%; }
 body{
   margin:0; background:#F3F3F3;
   font-family: 'Jua', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
-  /* 페이지 자체 스크롤 제거, 내부 흰 틀에만 스크롤 주기 */
-  overflow:hidden;
+  /* 모바일 기본 스크롤 허용 (페이지 컨테이너에서 제어) */
+  overflow:auto;
 }
 /* 전역 고정 돌아가기 버튼 위치 (모듈 :global 보강) */
 /* .back-button-fixed{ position:fixed; top:20px; left:20px; z-index:1500; }  // (미사용) 전역 BackButton 제거 */
@@ -28,13 +28,15 @@ body{
 .app-shell{ display:flex; flex-direction:column; min-height:100vh; }
 .app-main{
   flex:1 0 auto;
-  padding:20px;
+  /* 모바일 패딩과 안전영역 반영 */
+  padding: clamp(12px, 4vw, 24px);
+  padding-bottom: calc(clamp(12px, 4vw, 24px) + env(safe-area-inset-bottom, 0px));
   background:#f0f2f5;
   display:flex;
   justify-content:center;
   align-items:stretch;
   /* 이미 height:100% (부모가 viewport) */
-  min-height:0; /* flex overflow 이슈 방지 */
+  min-height:100svh; /* iOS 15+ 안전한 viewport 높이 */
 }
 
 /* 모든 페이지에 적용될 흰색 컨텐츠 박스 */
@@ -44,18 +46,24 @@ body{
   background:#ffffff;
   border-radius:15px;
   box-shadow:0 4px 20px rgba(0,0,0,0.1);
-  padding:20px;
+  /* 반응형 padding */
+  padding: clamp(14px, 4vw, 24px);
+  padding-bottom: calc(clamp(14px, 4vw, 24px) + env(safe-area-inset-bottom, 0px));
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
   align-items:stretch;
-  overflow:hidden; /* 기본은 스크롤 없음 */
-  min-height:0;
+  /* 기본: 세로 스크롤 허용 (홈 등 일부 화면에서만 잠금) */
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling: touch; /* iOS 관성 스크롤 */
+  min-height:0; /* flex overflow 이슈 방지 */
 }
 
 /* intro 전용: 내부 패딩 제거하여 배경 이미지를 틀 전체에 맞춤 */
 .page-content.no-pad { padding:0; background:transparent; }
+.page-content.no-scroll { overflow:hidden; }
 .page-content.no-pad > *:last-child { margin-bottom:0 !important; }
 
 /* 스크롤이 필요한 페이지만 별도 클래스 적용 */
@@ -83,6 +91,11 @@ body{
 
 /* 마지막 요소가 하단 테두리에 붙어 보이지 않도록 동일한 공간 확보 */
 .page-content > *:last-child { margin-bottom: 20px; }
+
+/* 미디어 요소는 기본적으로 컨테이너에 맞춤 */
+img, video, canvas { display:block; max-width: 100%; height: auto; }
+/* 기본 이미지는 잘림 방지를 위해 contain 선호 (컴포넌트에서 override 가능) */
+img { object-fit: contain; }
 
 /* --- 헤더(풀폭) --- */
 .navbar{
