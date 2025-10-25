@@ -3,7 +3,7 @@
 .chatInputBarSticky:focus,.chatInputBarSticky:focus-within{outline:none;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} 
 
 /* 절대 배치(오버레이) 변형: 디바이스 화면 내부에 겹쳐서 배치 */
-.chatInputBarAbsolute{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:72%;max-width:320px;display:flex;align-items:center;background:#fff;border:1px solid #d2d8dd;border-radius:1000px;padding:0 6px 0 14px;gap:6px;height:26px;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} 
+.chatInputBarAbsolute{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:180px;max-width:320px;display:flex;align-items:center;background:#fff;border:1px solid #d2d8dd;border-radius:1000px;padding:0 6px 0 14px;gap:6px;height:24px;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} 
 .chatInputBarAbsolute:focus,.chatInputBarAbsolute:focus-within{outline:none;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} 
 
 .chatInputBarSticky,.chatInputBarAbsolute,.chatInputField{-webkit-tap-highlight-color:transparent;}
@@ -13,7 +13,7 @@
 .chatInputField::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.16);border-radius:6px}
 .chatInputField::-webkit-scrollbar-track{background:transparent}
 .chatInputField{scrollbar-width:thin;scrollbar-color: rgba(0,0,0,0.16) transparent}
-.chatSendBtn{width:22px;height:22px;border-radius:50%;border:0;cursor:pointer;background:linear-gradient(135deg,#65ee7c,#3ec454);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;box-shadow:0 2px 6px -2px rgba(59,180,92,.4),0 1px 3px rgba(0,0,0,.2);transition:.25s;}
+.chatSendBtn{width:19px;height:19px;border-radius:50%;border:0;cursor:pointer;background:linear-gradient(135deg,#65ee7c,#3ec454);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;box-shadow:0 2px 6px -2px rgba(59,180,92,.4),0 1px 3px rgba(0,0,0,.2);transition:.25s;}
 
 @media (max-width:480px){
  	.chatInputBarSticky{ width:100%; border-radius:22px; padding-left:12px; padding-right:8px; height:36px; bottom: env(safe-area-inset-bottom, 0px); margin: 0; }

@@ -21,7 +21,7 @@ export default function ChatInputBar({
   sendLabel='↑',
   className='',
   offsetBottom=40, // px 단위: 기본 40px 으로 밑땡
-  offsetX=0, // +면 오른쪽으로 이동(px)
+  offsetX=8, // +면 오른쪽으로 이동(px) — 오버레이 기본 가로 오프셋을 8px로 설정 (추가 4px 이동)
   readOnly=false,
   onFocus,
   onBlur,
