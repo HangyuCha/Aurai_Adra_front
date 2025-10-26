@@ -32,6 +32,7 @@ import GptLearn from './pages/Gpt/GptLearn.jsx';
 import GptPractice from './pages/Gpt/GptPractice.jsx';
 import KakaoLearn from './pages/Kakao/KakaoLearn.jsx';
 import KakaoPractice from './pages/Kakao/KakaoPractice.jsx';
+import AgePreview from './pages/Age/AgePreview.jsx';
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -109,6 +110,7 @@ export default function App() {
   <Route path="gpt/practice" element={<GptPractice />} />
   <Route path="kakao/learn" element={<KakaoLearn />} />
   <Route path="kakao/practice" element={<KakaoPractice />} />
+  <Route path="avatar/aging" element={<PrivateRoute><AgePreview /></PrivateRoute>} />
   <Route path="password-change" element={<PasswordChangePage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Route>
