@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
-import screenshot1 from '../../assets/test1.png';
+import screenshot1 from '../../assets/msend3.png';
 import smsTopics from '../Sms/SmsTopics.js';
 import callTopics from '../Call/CallTopics.js';
 import gptTopics from '../Gpt/GptTopics.js';

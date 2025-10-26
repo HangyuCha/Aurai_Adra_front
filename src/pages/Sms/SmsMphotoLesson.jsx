@@ -6,10 +6,10 @@ import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
-import screenshot1 from '../../assets/test1.png';
-import screenshot2 from '../../assets/test2.png';
-import screenshot3 from '../../assets/test3.png';
-import screenshot4 from '../../assets/test4.png';
+import screenshot1 from '../../assets/msend3.png';
+import screenshot2 from '../../assets/msend1.png';
+import screenshot3 from '../../assets/msend2.png';
+import screenshot4 from '../../assets/msend4.png';
 import stepsConfig from './SmsMphotoLessonSteps.js';
 
 export default function SmsMphotoLesson(){
