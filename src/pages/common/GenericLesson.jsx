@@ -1,7 +1,7 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
-import frameStyles from './SmsLessonFrame.module.css';
+import frameStyles from '../Sms/SmsLessonFrame.module.css';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
@@ -10,13 +10,11 @@ import screenshot1 from '../../assets/test1.png';
 import screenshot2 from '../../assets/test2.png';
 import screenshot3 from '../../assets/test3.png';
 import screenshot4 from '../../assets/test4.png';
-import stepsConfig from './SmsMsendLessonSteps.js';
 
-export default function SmsMsendLesson(){
+export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null }){
   const navigate = useNavigate();
   const [step,setStep] = useState(1);
-  const steps = stepsConfig;
-  const total = steps.length;
+  const total = steps.length || 1;
   const shellRef = useRef(null);
   const shellAreaRef = useRef(null);
   const [isSide,setIsSide] = useState(false);
@@ -34,16 +32,16 @@ export default function SmsMsendLesson(){
   const [speaking,setSpeaking] = useState(false);
   const [autoPlayed,setAutoPlayed] = useState(false);
   const [voices,setVoices] = useState([]);
-  const current = steps.find(st => st.id === step) || steps[0];
+  const current = steps.find(st => st.id === step) || steps[0] || {};
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const lastKeyRef = useRef({ch:null, t:0});
   const [submittedText, setSubmittedText] = useState('');
   const [useSubmittedScreenshot, setUseSubmittedScreenshot] = useState(false);
 
+  // minimal composer helpers (copied)
   const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
   const JUNG = ['\u0000','ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
   const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-
   const VCOMB = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
   const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
 
@@ -69,7 +67,7 @@ export default function SmsMsendLesson(){
     u.lang = 'ko-KR';
     u.rate = 1;
     try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ }
-  u.onend = () => setSpeaking(false);
+    u.onend = () => setSpeaking(false);
     u.onerror = () => setSpeaking(false);
     setSpeaking(true);
     window.speechSynthesis.speak(u);
@@ -77,39 +75,13 @@ export default function SmsMsendLesson(){
 
   const onSubmitAnswer = (e) => { e.preventDefault(); submitAnswer(); };
 
-  function submitAnswer(){
-    const commit = getCommittedFromComp(compRef.current);
-    const final = (answer + commit).trim();
-    if(!(step === total && final.length > 0)) return;
-    if(commit) setAnswer(a => a + commit);
-    updateComp({lead:'', vowel:'', tail:''});
-    setFeedback('좋아요. 잘 입력되었어요.');
-    setSubmittedText(final);
-    setUseSubmittedScreenshot(true);
-    setAnswer('');
-    if(step === total && 'speechSynthesis' in window){
-      try{
-        const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?';
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(msg);
-  u.lang = 'ko-KR';
-  u.rate = 1;
-  try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ }
-  u.onend = () => setSpeaking(false);
-        u.onerror = () => setSpeaking(false);
-        setSpeaking(true);
-        window.speechSynthesis.speak(u);
-  } catch { /* ignore */ }
-    }
-  }
+  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } if(donePath){ navigate(donePath); } } }
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
-
   useEffect(()=>{ if(step === total){ setKeyboardVisible(true); } }, [step, total]);
-
-  useEffect(()=>{ if(!('speechSynthesis' in window)) return; function loadVoices(){ const list = window.speechSynthesis.getVoices(); if(list && list.length){ setVoices(list); } } loadVoices(); window.speechSynthesis.addEventListener('voiceschanged', loadVoices); return ()=> window.speechSynthesis.removeEventListener('voiceschanged', loadVoices); },[]);
+  useEffect(()=>{ if(!('speechSynthesis' in window)) return; function loadVoices(){ const list = window.speechSynthesis.getVoices(); if(list && list.length){ setVoices(list); } } loadVoices(); window.speechSynthesis.addEventListener('voiceschanged', loadVoices); return ()=> window.removeEventListener('voiceschanged', loadVoices); },[]);
 
   function pickPreferredVoice(pref, all){ if(!all || !all.length) return null; const ko = all.filter(v=> (v.lang||'').toLowerCase().startsWith('ko')); if(!ko.length) return null; const maleKeys = ['male','남','man','boy','seong','min']; const femaleKeys = ['female','여','woman','girl','yuna','ara']; const wantMale = pref === 'male'; const keys = wantMale ? maleKeys : femaleKeys; const primary = ko.find(v=> keys.some(k=> (v.name||'').toLowerCase().includes(k)) ); if(primary) return primary; return ko[ wantMale ? (ko.length>1 ? 1 : 0) : 0 ]; }
 
@@ -124,11 +96,11 @@ export default function SmsMsendLesson(){
 
   return (
     <div className={frameStyles.framePage}>
-      <BackButton to="/sms/learn" variant="fixed" />
+      <BackButton to={backPath} variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
         <h1 className={frameStyles.frameTitle}>
-          문자 보내기
-          <span className={frameStyles.inlineTagline}>문자가 왔을 때 확인하고 직접 답장 입력까지 연습합니다.</span>
+          {headerTitle}
+          <span className={frameStyles.inlineTagline}>{headerTagline || current.instruction || ''}</span>
         </h1>
       </header>
       <div className={frameStyles.lessonRow}>
@@ -168,7 +140,7 @@ export default function SmsMsendLesson(){
               {step < total ? (
                 <button type="button" onClick={next} className={frameStyles.primaryBtn}>다음</button>
               ) : (
-                <button type="button" onClick={()=>navigate('/sms/learn')} className={frameStyles.primaryBtn}>완료</button>
+                <button type="button" onClick={()=>navigate(backPath)} className={frameStyles.primaryBtn}>완료</button>
               )}
             </div>
           </div>

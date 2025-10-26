@@ -1,12 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Call.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import callTopics from './CallTopics.js';
 
 export default function CallLearn() {
+  const navigate = useNavigate();
   const handleSelect = (opt) => {
-    console.log('Call learn select:', opt.key);
+    if (!opt || !opt.key) return;
+    navigate(`/call/learn/${opt.key}`);
   };
   return (
     <div className={styles.callPage}>

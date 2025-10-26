@@ -1,11 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Gpt.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import gptTopics from './GptTopics.js';
 
 export default function GptLearn() {
-  const handleSelect = (opt) => { console.log('GPT learn select:', opt.key); };
+  const navigate = useNavigate();
+  const handleSelect = (opt) => { if(!opt || !opt.key) return; navigate(`/gpt/learn/${opt.key}`); };
   return (
     <div className={styles.gptPage}>
       <BackButton variant="fixed" to="/home" />

@@ -3,9 +3,11 @@ import styles from './Gpt.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import gptTopics from './GptTopics.js';
+import { useNavigate } from 'react-router-dom';
 
 export default function GptPractice() {
-  const handleSelect = (opt) => { console.log('GPT practice select:', opt.key); };
+  const navigate = useNavigate();
+  const handleSelect = (opt) => { navigate(`/gpt/practice/${opt.key}`); };
   return (
     <div className={styles.gptPage}>
       <BackButton variant="fixed" to="/home" />

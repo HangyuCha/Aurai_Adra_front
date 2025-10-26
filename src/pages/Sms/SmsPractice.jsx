@@ -3,12 +3,12 @@ import styles from './Sms.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import smsTopics from './SmsTopics.js';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function SmsPractice() {
-  // const navigate = useNavigate(); // 추후 상세 연습 페이지 이동
+  const navigate = useNavigate();
   const handleSelect = (opt) => {
-    console.log('Practice select:', opt.key);
+    navigate(`/sms/practice/${opt.key}`);
   };
   return (
     <div className={styles.smsPage}>
