@@ -1,0 +1,10 @@
+/* Minimal styles for PracticeLesson */
+.practicePage { padding: 20px; }
+.practiceHeader { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.practiceTitle { font-size:20px; margin:0; }
+.practiceMeta { display:flex; align-items:center; gap:12px; }
+.practicePrompt { color:#444; font-size:14px; }
+.hintBtn { background:#60d56a; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.hintCount { font-size:13px; color:#666; }
+.practiceMain { margin-top:18px; display:flex; justify-content:center; }
+.deviceCol { width:320px; }

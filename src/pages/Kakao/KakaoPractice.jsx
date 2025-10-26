@@ -3,9 +3,11 @@ import styles from './Kakao.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import kakaoTopics from './KakaoTopics.js';
+import { useNavigate } from 'react-router-dom';
 
 export default function KakaoPractice() {
-  const handleSelect = (opt) => { console.log('Kakao practice select:', opt.key); };
+  const navigate = useNavigate();
+  const handleSelect = (opt) => { navigate(`/kakao/practice/${opt.key}`); };
   return (
     <div className={styles.kakaoPage}>
       <BackButton variant="fixed" to="/home" />

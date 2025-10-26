@@ -21,11 +21,27 @@ import PasswordChangePage from './pages/PasswordChange/PasswordChange.jsx';
 import MissionShare from './pages/MissionShare/MissionShare.jsx'; // 추가
 import SmsLearn from './pages/Sms/SmsLearn.jsx';
 import SmsPractice from './pages/Sms/SmsPractice.jsx';
+import PracticeLesson from './pages/Practice/PracticeLesson.jsx';
 import SmsMsendLesson from './pages/Sms/SmsMsendLesson.jsx';
 import SmsMphotoLesson from './pages/Sms/SmsMphotoLesson.jsx';
 import SmsMdeleteLesson from './pages/Sms/SmsMdeleteLesson.jsx';
 import SmsMdeliverLesson from './pages/Sms/SmsMdeliverLesson.jsx';
 import SmsMsearchLesson from './pages/Sms/SmsMsearchLesson.jsx';
+import CallInterfaceLesson from './pages/Call/CallInterfaceLesson.jsx';
+import CallEtiquetteLesson from './pages/Call/CallEtiquetteLesson.jsx';
+import CallIntroLesson from './pages/Call/CallIntroLesson.jsx';
+import CallHoldLesson from './pages/Call/CallHoldLesson.jsx';
+import CallEndingLesson from './pages/Call/CallEndingLesson.jsx';
+import GptWhatLesson from './pages/Gpt/GptWhatLesson.jsx';
+import GptAskLesson from './pages/Gpt/GptAskLesson.jsx';
+import GptFollowLesson from './pages/Gpt/GptFollowLesson.jsx';
+import GptSafetyLesson from './pages/Gpt/GptSafetyLesson.jsx';
+import GptLimitsLesson from './pages/Gpt/GptLimitsLesson.jsx';
+import KakaoUiLesson from './pages/Kakao/KakaoUiLesson.jsx';
+import KakaoFriendLesson from './pages/Kakao/KakaoFriendLesson.jsx';
+import KakaoRoomLesson from './pages/Kakao/KakaoRoomLesson.jsx';
+import KakaoMediaLesson from './pages/Kakao/KakaoMediaLesson.jsx';
+import KakaoSettingLesson from './pages/Kakao/KakaoSettingLesson.jsx';
 import CallLearn from './pages/Call/CallLearn.jsx';
 import CallPractice from './pages/Call/CallPractice.jsx';
 import GptLearn from './pages/Gpt/GptLearn.jsx';
@@ -103,13 +119,32 @@ export default function App() {
   <Route path="sms/learn/mdelete" element={<SmsMdeleteLesson />} />
   <Route path="sms/learn/mdeliver" element={<SmsMdeliverLesson />} />
   <Route path="sms/learn/msearch" element={<SmsMsearchLesson />} />
+  <Route path="call/learn/interface" element={<CallInterfaceLesson />} />
+  <Route path="call/learn/etiquette" element={<CallEtiquetteLesson />} />
+  <Route path="call/learn/intro" element={<CallIntroLesson />} />
+  <Route path="call/learn/hold" element={<CallHoldLesson />} />
+  <Route path="call/learn/ending" element={<CallEndingLesson />} />
+  <Route path="gpt/learn/what" element={<GptWhatLesson />} />
+  <Route path="gpt/learn/ask" element={<GptAskLesson />} />
+  <Route path="gpt/learn/follow" element={<GptFollowLesson />} />
+  <Route path="gpt/learn/safety" element={<GptSafetyLesson />} />
+  <Route path="gpt/learn/limits" element={<GptLimitsLesson />} />
+  <Route path="kakao/learn/ui" element={<KakaoUiLesson />} />
+  <Route path="kakao/learn/friend" element={<KakaoFriendLesson />} />
+  <Route path="kakao/learn/room" element={<KakaoRoomLesson />} />
+  <Route path="kakao/learn/media" element={<KakaoMediaLesson />} />
+  <Route path="kakao/learn/setting" element={<KakaoSettingLesson />} />
   <Route path="sms/practice" element={<SmsPractice />} />
+  <Route path="sms/practice/:topic" element={<PracticeLesson />} />
   <Route path="call/learn" element={<CallLearn />} />
   <Route path="call/practice" element={<CallPractice />} />
+  <Route path="call/practice/:topic" element={<PracticeLesson />} />
   <Route path="gpt/learn" element={<GptLearn />} />
   <Route path="gpt/practice" element={<GptPractice />} />
+  <Route path="gpt/practice/:topic" element={<PracticeLesson />} />
   <Route path="kakao/learn" element={<KakaoLearn />} />
   <Route path="kakao/practice" element={<KakaoPractice />} />
+  <Route path="kakao/practice/:topic" element={<PracticeLesson />} />
   <Route path="avatar/aging" element={<PrivateRoute><AgePreview /></PrivateRoute>} />
   <Route path="password-change" element={<PasswordChangePage />} />
         <Route path="*" element={<Navigate to="/home" replace />} />

@@ -3,10 +3,12 @@ import styles from './Call.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import callTopics from './CallTopics.js';
+import { useNavigate } from 'react-router-dom';
 
 export default function CallPractice() {
+  const navigate = useNavigate();
   const handleSelect = (opt) => {
-    console.log('Call practice select:', opt.key);
+    navigate(`/call/practice/${opt.key}`);
   };
   return (
     <div className={styles.callPage}>

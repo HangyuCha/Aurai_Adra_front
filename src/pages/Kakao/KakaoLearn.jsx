@@ -1,11 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Kakao.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import kakaoTopics from './KakaoTopics.js';
 
 export default function KakaoLearn() {
-  const handleSelect = (opt) => { console.log('Kakao learn select:', opt.key); };
+  const navigate = useNavigate();
+  const handleSelect = (opt) => { if(!opt || !opt.key) return; navigate(`/kakao/learn/${opt.key}`); };
   return (
     <div className={styles.kakaoPage}>
       <BackButton variant="fixed" to="/home" />
