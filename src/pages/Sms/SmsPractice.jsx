@@ -15,7 +15,7 @@ export default function SmsPractice() {
       <BackButton variant="fixed" to="/home" />
       <header className={styles.smsHead}>
   <h1 className={`${styles.smsTitle} ${styles.practiceTitle}`}>문자 연습하기</h1>
-        <p className={styles.smsDesc}>실전 상황을 가정한 5가지 연습 유형으로 직접 문장을 만들어 보세요.</p>
+        <p className={styles.smsDesc}>문자 배우기에서 배웠던 내용을 스스로 해결해보세요! </p>
       </header>
   <div className={styles.contentArea}>
     <TopicCarousel topics={smsTopics} onSelect={handleSelect} variant="practice" scores={[72, 0, 100, 45, 0]} />

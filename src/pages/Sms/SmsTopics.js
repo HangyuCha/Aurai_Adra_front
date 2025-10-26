@@ -1,10 +1,10 @@
 // 공용 문자 학습/연습 주제
 // 배우기와 연습하기 모두 동일한 주제를 사용합니다.
 export const smsTopics = [
-  { key: 'greeting', title: '기본 인사 표현', text: '처음 인사할 때 쓰는 쉬운 문장들을 배워요.' },
-  { key: 'thanks', title: '감사/칭찬 보내기', text: '고마움, 잘했어요 같은 긍정 표현들.' },
-  { key: 'ask', title: '부탁 / 요청하기', text: '도움을 정중하게 부탁하는 방법.' },
-  { key: 'schedule', title: '약속/시간 잡기', text: '시간, 날짜를 정하고 확인하는 문장.' },
-  { key: 'emotion', title: '기분 표현하기', text: '즐거움/속상함 등 감정을 문자로 표현.' }
+  { key: 'msend', title: '문자 보내기', text: '받은 문자를 확인하고 답장을 보내보아요' },
+  { key: 'mphoto', title: '사진 보내기', text: '문자 앱을 통해 글 말고 사진도 보내보아요' },
+  { key: 'mdelete', title: '문자 삭제하기', text: '보냈던 문자를 삭제해 보아요' },
+  { key: 'mdeliver', title: '문자 전달하기', text: '다른 사람에게 문자를 전달해 보아요' },
+  { key: 'msearch', title: '문자 검색하기', text: '보낸 문자 중에서 특정 단어를 검색해 보아요' }
 ];
 export default smsTopics;
