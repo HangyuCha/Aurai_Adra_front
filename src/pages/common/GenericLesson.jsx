@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from '../Sms/SmsLessonFrame.module.css';
+import lt from '../../styles/learnTitle.module.css';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
@@ -98,8 +99,8 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
     <div className={frameStyles.framePage}>
       <BackButton to={backPath} variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
-        <h1 className={frameStyles.frameTitle}>
-          {headerTitle}
+        <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
+          <span className="titleText">{headerTitle}</span>
           <span className={frameStyles.inlineTagline}>{headerTagline || current.instruction || ''}</span>
         </h1>
       </header>

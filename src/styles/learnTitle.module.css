@@ -1,0 +1,20 @@
+/* Shared accent for lesson/learn titles: left vertical accent bar */
+.withAccent{
+  display:inline-flex;
+  align-items:flex-start;
+  gap:14px;
+}
+.withAccent > .titleText{display:inline-block}
+.withAccent::before{
+  content:'';
+  display:block;
+  width:8px;
+  height:48px;
+  border-radius:8px;
+  background: linear-gradient(180deg,#86c9ff 0%, #1f63e6 100%);
+  box-shadow: 0 10px 22px rgba(31,99,230,0.12), 0 4px 10px rgba(31,99,230,0.06);
+}
+
+@media (max-width:980px){
+  .withAccent::before{height:40px;width:7px}
+}

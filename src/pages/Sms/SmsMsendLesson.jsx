@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from './SmsLessonFrame.module.css';
+import lt from '../../styles/learnTitle.module.css';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
@@ -126,8 +127,8 @@ export default function SmsMsendLesson(){
     <div className={frameStyles.framePage}>
       <BackButton to="/sms/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
-        <h1 className={frameStyles.frameTitle}>
-          문자 보내기
+        <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
+          <span className="titleText">문자 보내기</span>
           <span className={frameStyles.inlineTagline}>문자가 왔을 때 확인하고 직접 답장 입력까지 연습합니다.</span>
         </h1>
       </header>

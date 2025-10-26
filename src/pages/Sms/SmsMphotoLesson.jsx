@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from './SmsLessonFrame.module.css';
+import lt from '../../styles/learnTitle.module.css';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
@@ -102,8 +103,8 @@ export default function SmsMphotoLesson(){
     <div className={frameStyles.framePage}>
       <BackButton to="/sms/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
-        <h1 className={frameStyles.frameTitle}>
-          사진 보내기
+        <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
+          <span className="titleText">사진 보내기</span>
           <span className={frameStyles.inlineTagline}>문자 앱으로 사진을 선택하고 전송하는 흐름을 연습합니다.</span>
         </h1>
       </header>
