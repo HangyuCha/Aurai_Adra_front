@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from '../Sms/SmsLessonFrame.module.css';
+import lt from '../../styles/learnTitle.module.css';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
@@ -100,8 +101,8 @@ export default function KakaoUiLesson(){
     <div className={frameStyles.framePage}>
       <BackButton to="/kakao/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
-        <h1 className={frameStyles.frameTitle}>
-          카카오톡 UI 익히기
+        <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
+          <span className="titleText">카카오톡 UI 익히기</span>
           <span className={frameStyles.inlineTagline}>{current.instruction || '카카오톡의 기본 UI를 확인해 보세요.'}</span>
         </h1>
       </header>

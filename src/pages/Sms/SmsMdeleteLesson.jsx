@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from './SmsLessonFrame.module.css';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
+import lt from '../../styles/learnTitle.module.css';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
@@ -101,8 +102,8 @@ export default function SmsMdeleteLesson(){
     <div className={frameStyles.framePage}>
       <BackButton to="/sms/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
-        <h1 className={frameStyles.frameTitle}>
-          문자 삭제하기
+        <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
+          <span className="titleText">문자 삭제하기</span>
           <span className={frameStyles.inlineTagline}>원하지 않는 문자를 삭제하는 과정을 연습합니다.</span>
         </h1>
       </header>

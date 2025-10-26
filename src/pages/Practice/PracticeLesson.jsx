@@ -9,6 +9,7 @@ import callTopics from '../Call/CallTopics.js';
 import gptTopics from '../Gpt/GptTopics.js';
 import kakaoTopics from '../Kakao/KakaoTopics.js';
 import styles from './Practice.module.css';
+import pa from '../../styles/practiceTitle.module.css';
 
 function getTopicsForApp(app){
   switch(app){
@@ -52,26 +53,42 @@ export default function PracticeLesson(){
   return (
     <div className={styles.practicePage}>
       <BackButton to={`/${app}/practice`} variant="fixed" />
-      <header className={styles.practiceHeader}>
-        <h1 className={styles.practiceTitle}>{current.title}</h1>
-        <div className={styles.practiceMeta}>
-          <span className={styles.practicePrompt}>{current.text || '연습 문제에 도전해보세요.'}</span>
-          <button type="button" className={styles.hintBtn} onClick={useHint} aria-label="힌트 보기">힌트</button>
-          <div className={styles.hintCount}>힌트 사용: {hintCount}</div>
-        </div>
-      </header>
+      {/* Main practice layout: use the msend-style two-column layout for all apps */}
 
       <main className={styles.practiceMain}>
-        <div className={styles.deviceCol}>
-          <PhoneFrame image={screenshot1} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
-            {/* Render a visible target for TapHint to point to */}
-            <button aria-label="practice-target" style={{position:'absolute', right:18, bottom:80, width:52, height:32, borderRadius:8, background:'#60d56a', color:'#fff', border:'none'}}>
-              전송
-            </button>
-            {showHint && (
-              <TapHint selector={'button[aria-label="practice-target"]'} width={'60px'} height={'30px'} offsetX={0} offsetY={0} borderRadius={'8px'} suppressInitial={true} ariaLabel={'연습 힌트'} />
-            )}
-          </PhoneFrame>
+        <div className={styles.smsPracticeWrap}>
+          <div className={styles.smsLeft}>
+            <div className={styles.smsTitleBlock}>
+              {/* Shared practice accent + large title */}
+              <h1 className={`${pa.practiceAccent} ${styles.smsBigTitle}`}><span className="titleText">{current.title}</span></h1>
+              <p className={styles.smsSubtitle}>{current.text || '받은 문자를 확인하고 답장을 보내보아요'}</p>
+            </div>
+
+            <div className={styles.phoneWrapper}>
+              <div className={styles.phoneLarge}>
+                <PhoneFrame image={screenshot1} screenWidth={'380px'} aspect={'278 / 450'} scale={1}>
+                  <button aria-label="practice-target" className={styles.sendBtnLarge}>
+                    전송
+                  </button>
+                  {showHint && (
+                    <TapHint selector={'button[aria-label="practice-target"]'} width={'86px'} height={'44px'} offsetX={0} offsetY={0} borderRadius={'12px'} suppressInitial={true} ariaLabel={'연습 힌트'} />
+                  )}
+                </PhoneFrame>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.smsRight}>
+            <div className={styles.smsCard}>
+              <div className={styles.smsTitle}>{current.title} 연습</div>
+              <div className={styles.smsInstruction}>{current.text || '연습 문제를 읽고 화면의 행동을 따라 해보세요.'}</div>
+              <div className={styles.smsExampleBubble} style={{marginTop:12}}>예시: {current.example || '안녕하세요, 예약 확정되었나요?'}</div>
+              <div style={{marginTop:12, display:'flex', gap:10}}>
+                <button className={styles.hintBtn} onClick={useHint} aria-label="힌트 보기">힌트 보기</button>
+                <div className={styles.hintCount}>힌트 사용: {hintCount}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>

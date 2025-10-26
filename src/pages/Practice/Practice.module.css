@@ -1,10 +1,36 @@
 /* Minimal styles for PracticeLesson */
-.practicePage { padding: 20px; }
-.practiceHeader { display:flex; align-items:center; justify-content:space-between; gap:16px; }
-.practiceTitle { font-size:20px; margin:0; }
-.practiceMeta { display:flex; align-items:center; gap:12px; }
-.practicePrompt { color:#444; font-size:14px; }
-.hintBtn { background:#60d56a; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.practicePage { padding: 28px 24px; max-width:1100px; margin:0 auto; }
+.practiceHeader { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+.practiceTitle { font-size:22px; margin:0; font-weight:700; color:#122; }
+.practiceMeta { display:flex; align-items:center; gap:16px; }
+.practicePrompt { color:#444; font-size:15px; max-width:540px; }
+.hintBtn { background:linear-gradient(135deg,#59A3FF,#2d65c4); color:#fff; border:none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600; box-shadow:0 8px 20px rgba(45,101,196,0.18); }
+.hintBtn:active{ transform:translateY(1px); }
 .hintCount { font-size:13px; color:#666; }
-.practiceMain { margin-top:18px; display:flex; justify-content:center; }
-.deviceCol { width:320px; }
+.practiceMain { margin-top:22px; display:flex; justify-content:center; }
+.deviceCol { width:340px; }
+
+.smsPracticeWrap{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start;justify-content:space-between;width:100%;}
+.smsLeft{display:flex;flex-direction:column;gap:18px;padding-top:6px;}
+.smsTitleBlock{display:flex;flex-direction:column;gap:8px}
+.smsBigTitle{font-size:44px;font-weight:800;color:#0b1220;line-height:1.02;margin:0;padding:0;}
+.smsSubtitle{font-size:16px;color:#475569;margin-top:0}
+.phoneWrapper{display:flex;justify-content:flex-start}
+.phoneLarge{width:380px;position:relative;margin-top:6px}
+.smsCard{background:linear-gradient(180deg,#fff,#fbfdff);border-radius:16px;padding:18px;box-shadow:0 18px 40px rgba(13,40,80,0.06);border:1px solid rgba(30,60,120,0.04);}
+.smsTitle{font-size:18px;font-weight:700;color:#102;}
+.smsInstruction{font-size:15px;color:#344;line-height:1.45;}
+.smsExampleBubble{background:#f5f7fb;border-radius:14px;padding:12px 14px;color:#122;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);} 
+.smsRight{display:flex;align-items:flex-start;justify-content:center;}
+.sendBtnLarge{position:absolute;right:18px;bottom:72px;width:86px;height:44px;border-radius:12px;background:linear-gradient(135deg,#65ee7c,#3ec454);border:0;color:#fff;font-weight:700;box-shadow:0 10px 22px rgba(62,196,84,0.18);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sendBtnLarge:disabled{opacity:0.5;cursor:not-allowed}
+
+/* responsive */
+@media (max-width:980px){
+ 	.smsPracticeWrap{display:flex;flex-direction:column;align-items:center;padding:0 10px}
+ 	.smsTitleBlock{order:1;width:100%;max-width:720px}
+ 	.phoneWrapper{order:2;margin:16px 0}
+ 	.smsRight{order:3;width:100%;max-width:720px}
+ 	.phoneLarge{width:320px}
+ 	.deviceCol{width:320px}
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './Sms.module.css';
+import pa from '../../styles/practiceTitle.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import smsTopics from './SmsTopics.js';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
@@ -14,7 +15,7 @@ export default function SmsPractice() {
     <div className={styles.smsPage}>
       <BackButton variant="fixed" to="/home" />
       <header className={styles.smsHead}>
-  <h1 className={`${styles.smsTitle} ${styles.practiceTitle}`}>문자 연습하기</h1>
+  <h1 className={`${styles.smsTitle} ${styles.practiceTitle} ${pa.practiceAccent}`}><span className="titleText">문자 연습하기</span></h1>
         <p className={styles.smsDesc}>문자 배우기에서 배웠던 내용을 스스로 해결해보세요! </p>
       </header>
   <div className={styles.contentArea}>

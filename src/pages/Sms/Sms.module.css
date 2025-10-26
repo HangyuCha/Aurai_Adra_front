@@ -5,7 +5,7 @@
 .smsTitle { margin:0; font-family:'Jua',system-ui,sans-serif; font-size:clamp(var(--fs-38),6vw,var(--fs-54)); line-height:1.04; letter-spacing:.5px; color:#111; position:relative; padding-left:20px; }
 .smsTitle::before { content:""; position:absolute; left:0; top:50%; transform:translateY(-50%); width:6px; height:70%; border-radius:6px; background:linear-gradient(180deg,#59A3FF,#2d65c4); box-shadow:0 2px 6px rgba(89,163,255,.35); }
 /* 연습하기 제목(문자 연습하기) 초록 그라데이션 변형 */
-.practiceTitle::before { background:linear-gradient(180deg,#60d56a,#169b2b); box-shadow:0 2px 6px rgba(22,155,43,.40); }
+/* practice accent now provided by shared practiceTitle.module.css (.practiceAccent) */
 .smsDesc { margin:4px 0 0; font-size:var(--fs-18); color:#555; line-height:1.45; max-width:680px; }
 
 .optionsGrid { --col-min: 210px; list-style:none; margin:0; padding:0; width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(var(--col-min),1fr)); gap:28px clamp(16px,2.5vw,30px); }
