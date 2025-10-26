@@ -99,11 +99,88 @@ function kakaoDevExchangePlugin(env) {
   }
 }
 
+// Dev-only in-memory progress store for local testing (Do NOT use in production)
+function progressDevMockPlugin(env) {
+  const ENABLED = env.DEV_PROGRESS_MOCK === '1';
+  if (!ENABLED) return { name: 'progress-dev-mock-disabled' };
+
+  // In-memory store: userId -> Set(chapterId)
+  /** @type {Map<string, Set<number>>} */
+  const store = new Map();
+  const TOTAL_CHAPTERS = Number.isFinite(Number(env.PROGRESS_TOTAL_CHAPTERS)) ? Number(env.PROGRESS_TOTAL_CHAPTERS) : 20;
+
+  return {
+    name: 'progress-dev-mock',
+    configureServer(server) {
+      server.middlewares.use('/api/progress/chapters', async (req, res) => {
+        try {
+          if (req.method === 'GET') {
+            const m = req.url.match(/^\/api\/progress\/chapters\/(.+)$/);
+            if (m) {
+              const userId = decodeURIComponent(m[1]);
+              const set = store.get(userId) || new Set();
+              const successes = [...set].sort((a,b)=>a-b);
+              const successCount = successes.length;
+              res.setHeader('Content-Type','application/json');
+              res.end(JSON.stringify({ userId, totalChapters: TOTAL_CHAPTERS, successes, successCount }));
+              return;
+            }
+            res.statusCode = 404; res.end('Not Found'); return;
+          }
+
+          // parse body helper
+          async function readJsonBody() {
+            const chunks = [];
+            for await (const ch of req) chunks.push(ch);
+            const txt = Buffer.concat(chunks).toString('utf8') || '{}';
+            try { return JSON.parse(txt); } catch { return {}; }
+          }
+
+          if (req.method === 'POST') {
+            const body = await readJsonBody();
+            const userId = String(body.userId || '');
+            const chapterId = Number(body.chapterId);
+            const success = Boolean(body.success);
+            if (!userId || !Number.isFinite(chapterId)) { res.statusCode = 400; res.end('Missing userId/chapterId'); return; }
+            const set = store.get(userId) || new Set();
+            if (success) set.add(chapterId);
+            store.set(userId, set);
+            const successes = [...set].sort((a,b)=>a-b);
+            const successCount = successes.length;
+            res.setHeader('Content-Type','application/json');
+            res.end(JSON.stringify({ userId, totalChapters: TOTAL_CHAPTERS, successes, successCount }));
+            return;
+          }
+
+          if (req.method === 'DELETE') {
+            const body = await readJsonBody();
+            const userId = String(body.userId || '');
+            const chapterId = Number(body.chapterId);
+            if (!userId || !Number.isFinite(chapterId)) { res.statusCode = 400; res.end('Missing userId/chapterId'); return; }
+            const set = store.get(userId) || new Set();
+            set.delete(chapterId);
+            store.set(userId, set);
+            const successes = [...set].sort((a,b)=>a-b);
+            const successCount = successes.length;
+            res.setHeader('Content-Type','application/json');
+            res.end(JSON.stringify({ userId, totalChapters: TOTAL_CHAPTERS, successes, successCount }));
+            return;
+          }
+
+          res.statusCode = 405; res.end('Method Not Allowed');
+        } catch (e) {
+          res.statusCode = 500; res.end(`Progress mock error: ${e?.message || e}`);
+        }
+      });
+    }
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    plugins: [react(), kakaoDevExchangePlugin(env)],
+    plugins: [react(), kakaoDevExchangePlugin(env), progressDevMockPlugin(env)],
     server: {
       port: 5174,
       strictPort: true,
