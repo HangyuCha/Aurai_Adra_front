@@ -27,7 +27,7 @@ const steps = [
     speak: "메시지를 입력한 후 초록색 버튼을 눌러 예약을 저장해보세요.",
     completionSpeak:
       "잘하셨어요! 예약 메시지가 저장되었습니다. 아래 완료 버튼을 눌러 학습으로 돌아가세요.",
-    inputPlaceholder: '예약 메시지를 입력하세요',
+    inputPlaceholder: "예약 메시지를 입력하세요",
   },
 ];
 
