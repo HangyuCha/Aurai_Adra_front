@@ -23,6 +23,7 @@ import SmsLearn from './pages/Sms/SmsLearn.jsx';
 import SmsPractice from './pages/Sms/SmsPractice.jsx';
 import PracticeLesson from './pages/Practice/PracticeLesson.jsx';
 import SmsMsendLesson from './pages/Sms/SmsMsendLesson.jsx';
+import SmsMsendPractice from './pages/Sms/SmsMsendPractice.jsx';
 import SmsMphotoLesson from './pages/Sms/SmsMphotoLesson.jsx';
 import SmsMdeleteLesson from './pages/Sms/SmsMdeleteLesson.jsx';
 import SmsMdeliverLesson from './pages/Sms/SmsMdeliverLesson.jsx';
@@ -135,6 +136,7 @@ export default function App() {
   <Route path="kakao/learn/media" element={<KakaoMediaLesson />} />
   <Route path="kakao/learn/setting" element={<KakaoSettingLesson />} />
   <Route path="sms/practice" element={<SmsPractice />} />
+  <Route path="sms/practice/msend" element={<SmsMsendPractice />} />
   <Route path="sms/practice/:topic" element={<PracticeLesson />} />
   <Route path="call/learn" element={<CallLearn />} />
   <Route path="call/practice" element={<CallPractice />} />

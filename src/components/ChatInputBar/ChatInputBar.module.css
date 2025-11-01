@@ -3,7 +3,7 @@
 .chatInputBarSticky:focus,.chatInputBarSticky:focus-within{outline:none;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} 
 
 /* 절대 배치(오버레이) 변형: 디바이스 화면 내부에 겹쳐서 배치 */
-.chatInputBarAbsolute{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:180px;max-width:320px;display:flex;align-items:center;background:#fff;border:1px solid #d2d8dd;border-radius:1000px;padding:0 6px 0 14px;gap:6px;height:24px;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} 
+.chatInputBarAbsolute{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:180px;max-width:320px;display:flex;align-items:center;background:#fff;border:1px solid #d2d8dd;border-radius:1000px;padding:0 6px 0 14px;gap:6px;height:24px;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);transition:bottom .22s cubic-bezier(.2,.9,.2,1);} 
 .chatInputBarAbsolute:focus,.chatInputBarAbsolute:focus-within{outline:none;box-shadow:0 2px 6px -2px rgba(0,0,0,.18);} 
 
 .chatInputBarSticky,.chatInputBarAbsolute,.chatInputField{-webkit-tap-highlight-color:transparent;}
