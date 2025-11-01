@@ -5,7 +5,7 @@ import styles from './TapHint.module.css';
  * TapHint
  * props: x, y, width, height, borderRadius, onActivate, ariaLabel
  */
-export default function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRadius = '10px', onActivate, ariaLabel = 'tap hint', selector, offsetY = 0, offsetX = 0, suppressInitial = false }){
+function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRadius = '10px', onActivate, ariaLabel = 'tap hint', selector, offsetY = 0, offsetX = 0, suppressInitial = false, invisible = false }){
   const ref = useRef(null);
   const [computed, setComputed] = useState(null);
 
@@ -124,6 +124,14 @@ export default function TapHint({ x = '50%', y = '80%', width = '30%', height = 
     transform: 'translate(-50%, -50%)',
   };
 
+  // when invisible requested, hide visual (no animation) but keep pointer events so clicks still work
+  if(invisible){
+    style.opacity = 0;
+    style.animation = 'none';
+    // keep pointer-events so it remains clickable
+    style.pointerEvents = 'auto';
+  }
+
   // If caller asked to suppress initial fallback blink, hide until computed.
   if (suppressInitial && selector && computed === null) {
     style.visibility = 'hidden';
@@ -140,3 +148,5 @@ export default function TapHint({ x = '50%', y = '80%', width = '30%', height = 
     />
   );
 }
+
+export default TapHint;

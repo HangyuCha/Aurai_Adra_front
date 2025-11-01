@@ -118,17 +118,25 @@ export default function TopicCarousel({ topics = [], onSelect, variant, scores, 
                   <>
                     <h3 className={styles.cardTitle}>{t.title}</h3>
                     <p className={styles.cardText}>{t.text}</p>
-                    {variant === 'practice' && clamped !== null && (
-                      <div className={styles.scoreArea} aria-label={`점수 ${clamped}점`}>
-                        <div className={styles.scoreMeta}>
-                          <span className={styles.scoreLabel}>점수</span>
-                          <span className={styles.scoreValue}>{clamped}</span>
-                          <span className={styles.scoreMax}>/100</span>
+                    {variant === 'practice' && (
+                      clamped !== null ? (
+                        <div className={styles.scoreArea} aria-label={`점수 ${clamped}점`}>
+                          <div className={styles.scoreMeta}>
+                            <span className={styles.scoreLabel}>점수</span>
+                            <span className={styles.scoreValue}>{clamped}</span>
+                            <span className={styles.scoreMax}>/100</span>
+                          </div>
+                          <div className={styles.scoreBarOuter} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={clamped}>
+                            <div className={styles.scoreBarFill} style={{ width: clamped + '%' }} />
+                          </div>
                         </div>
-                        <div className={styles.scoreBarOuter} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={clamped}>
-                          <div className={styles.scoreBarFill} style={{ width: clamped + '%' }} />
+                      ) : (
+                        <div className={styles.scoreArea} aria-hidden>
+                          <div className={styles.scoreMeta}>
+                            <span className={styles.pendingText}>미시행</span>
+                          </div>
                         </div>
-                      </div>
+                      )
                     )}
                     {variant !== 'practice' && (
                       <div className={styles.statusArea} aria-label={completed ? '학습 완료' : '미완료'}>
