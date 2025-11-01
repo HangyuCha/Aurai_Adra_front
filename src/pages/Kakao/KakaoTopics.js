@@ -1,9 +1,39 @@
-// 카카오톡 배우기/연습하기 공통 주제
+// 카카오톡 배우기/연습하기 공통 주제 (key를 고유하게 정리)
 export const kakaoTopics = [
-  { key: 'ui', title: '채팅 화면 이해', text: '버블, 입력창, 첨부버튼 구조.' },
-  { key: 'friend', title: '친구 추가/관리', text: '연락처/QR/아이디로 추가하기.' },
-  { key: 'room', title: '오픈채팅 & 단체방', text: '방 만들기와 초대 기본.' },
-  { key: 'media', title: '사진/파일 보내기', text: '전송, 삭제, 재전송 흐름.' },
-  { key: 'setting', title: '알림/환경 설정', text: '알림음, 숨김, 차단 옵션.' }
+  {
+    key: "setting",
+    title: "예약 메시지 보내기",
+    text: "원하는 시간에 자동으로 메시지 보내 보아요",
+  },
+  {
+    key: "ui",
+    title: "이모티콘 보내기",
+    text: "상황에 맞는 이모티콘을 고르고 전송해 보아요",
+  },
+  {
+    key: "friend",
+    title: "친구 추가하기 (카톡 아이디 있을 때)",
+    text: "카톡 아이디로 친구를 검색해 추가해 보아요",
+  },
+  {
+    key: "friend",
+    title: "친구 추가하기 (전화번호 있을 때)",
+    text: "전화번호로 친구를 검색해 추가해 보아요",
+  },
+  {
+    key: "media",
+    title: "사진 묶어 보내기 + 묶어 다운받기",
+    text: "여러 장을 한 번에 공유하고 묶어서 보내고, 저장해 보아요",
+  },
+  {
+    key: "room",
+    title: "톡방 초대하기",
+    text: "대화방에 친구를 초대해 보아요",
+  },
+  {
+    key: "room",
+    title: "단체 톡방 나가기",
+    text: "단체방에서 나가 보아요",
+  },
 ];
 export default kakaoTopics;
