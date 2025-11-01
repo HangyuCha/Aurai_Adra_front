@@ -102,7 +102,7 @@ export default function KakaoUiLesson(){
       <BackButton to="/kakao/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
         <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
-          <span className="titleText">카카오톡 UI 익히기</span>
+          <span className="titleText">이모티콘 보내기</span>
           <span className={frameStyles.inlineTagline}>{current.instruction || '카카오톡의 기본 UI를 확인해 보세요.'}</span>
         </h1>
       </header>
@@ -111,7 +111,7 @@ export default function KakaoUiLesson(){
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
             <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0} offsetY={step === 1 ? 212 : step === 2 ? -67.5 : step === 3 ? 0 : 0} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={step === total} ariaLabel={'전송 버튼 힌트'} />
+              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0} offsetY={step === 1 ? 182 : step === 2 ? 0.5 : step === 3 ? 10 : 10} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={step === total} ariaLabel={'전송 버튼 힌트'} />
               {step === total && (
                 <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}

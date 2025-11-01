@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from '../Sms/SmsLessonFrame.module.css';
@@ -7,13 +7,21 @@ import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
-import screenshot1 from '../../assets/msend3.png';
-import screenshot2 from '../../assets/msend1.png';
-import screenshot3 from '../../assets/msend2.png';
-import screenshot4 from '../../assets/msend4.png';
+import screenshot1_default from '../../assets/msend3.png';
+import screenshot2_default from '../../assets/msend1.png';
+import screenshot3_default from '../../assets/msend2.png';
+import screenshot4_default from '../../assets/msend4.png';
 
-export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null }){
+export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {} }){
   const navigate = useNavigate();
+  // debug mount
+  console.log('[GenericLesson] mount', { headerTitle, stepCount: (steps || []).length });
+
+  // allow callers to override screenshots (e.g., pass { screenshot2: kreser1 })
+  const screenshot1 = images.screenshot1 || screenshot1_default;
+  const screenshot2 = images.screenshot2 || screenshot2_default;
+  const screenshot3 = images.screenshot3 || screenshot3_default;
+  const screenshot4 = images.screenshot4 || screenshot4_default;
   const [step,setStep] = useState(1);
   const total = steps.length || 1;
   const shellRef = useRef(null);
@@ -33,7 +41,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   const [speaking,setSpeaking] = useState(false);
   const [autoPlayed,setAutoPlayed] = useState(false);
   const [voices,setVoices] = useState([]);
-  const current = steps.find(st => st.id === step) || steps[0] || {};
+  const current = useMemo(() => (steps.find(st => st.id === step) || steps[0] || {}), [steps, step]);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const lastKeyRef = useRef({ch:null, t:0});
   const [submittedText, setSubmittedText] = useState('');
@@ -109,9 +117,27 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
             <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0} offsetY={step === 1 ? 212 : step === 2 ? -67.5 : step === 3 ? 0 : 0} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={step === total} ariaLabel={'전송 버튼 힌트'} />
+              {
+                (() => {
+                  // allow per-lesson overrides via tapHintConfig[step]
+                  const override = (tapHintConfig && tapHintConfig[step]) || {};
+                  const defaultProps = {
+                    selector: 'button[aria-label="메시지 보내기"]',
+                    width: step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%',
+                    height: step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%',
+                    offsetX: step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0,
+                    offsetY: step === 1 ? 212 : step === 2 ? -67.5 : step === 3 ? 0 : 0,
+                    borderRadius: '10px',
+                    suppressInitial: step === total,
+                    ariaLabel: '전송 버튼 힌트'
+                  };
+                  const hintProps = { ...defaultProps, ...override };
+                  // if override supplies explicit x/y, let it override selector behaviour
+                  return <TapHint {...hintProps} onActivate={step === total ? submitAnswer : next} />;
+                })()
+              }
               {step === total && (
-                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
+                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={current.inputPlaceholder || '메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}
               {submittedText ? (
                 <div style={{position:'absolute', right:14, left:'auto', bottom:229.5, maxWidth:'45%', padding:'4px 10px', borderRadius:10.5, backgroundColor:'#5AF575', boxShadow:'0 2px 6px rgba(0,0,0,0.12)', color:'#fff', fontSize:'12.75px', fontWeight:400, lineHeight:'1.2', fontFamily:'"Noto Sans KR", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', textAlign:'right', textShadow:'0 1px 2px rgba(0,0,0,0.2)'}}>

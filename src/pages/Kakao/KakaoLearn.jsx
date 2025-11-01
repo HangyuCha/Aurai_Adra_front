@@ -7,7 +7,22 @@ import kakaoTopics from './KakaoTopics.js';
 
 export default function KakaoLearn() {
   const navigate = useNavigate();
-  const handleSelect = (opt) => { if(!opt || !opt.key) return; navigate(`/kakao/learn/${opt.key}`); };
+  // map new topic keys to the existing lesson route keys
+  const keyMap = {
+    reserve: 'setting',
+    emoji: 'ui',
+    addById: 'friend',
+    addByPhone: 'friend',
+    bundleMedia: 'media',
+    inviteRoom: 'room',
+    leaveGroup: 'room'
+  };
+  const handleSelect = (opt) => {
+    if(!opt || !opt.key) return;
+    const target = keyMap[opt.key] || opt.key || 'ui';
+    navigate(`/kakao/learn/${target}`);
+  };
+
   return (
     <div className={styles.kakaoPage}>
       <BackButton variant="fixed" to="/home" />
@@ -15,7 +30,7 @@ export default function KakaoLearn() {
         <h1 className={styles.kakaoTitle}>카카오톡 배우기</h1>
         <p className={styles.kakaoDesc}>카카오톡의 기본 화면과 주요 기능을 차근차근 익혀보세요.</p>
       </header>
-  <TopicCarousel topics={kakaoTopics} onSelect={handleSelect} completions={{ ui:true, friend:false, room:false, media:false, setting:false }} />
+      <TopicCarousel topics={kakaoTopics} onSelect={handleSelect} completions={{ ui:true, friend:false, room:false, media:false, setting:false }} />
     </div>
   );
 }
