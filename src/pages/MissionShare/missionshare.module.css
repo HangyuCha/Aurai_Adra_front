@@ -34,7 +34,7 @@
 /* 큰 정사각형 카드 */
 .squareCard {
   width: 100%;
-  max-width: 700px;
+  max-width: 600px; /* reduce max card size so it doesn't push ranking down */
   aspect-ratio: 1 / 1; /* 정사각형 */
   margin: 0; /* 좌우 여백 제거 (TopicCarousel 아이템 안에서 꽉 차게) */
   display: flex;
@@ -42,31 +42,65 @@
   align-items: center;
   justify-content: center;
   background: #fff;
-  border-radius: 24px;
-  padding: 20px 16px 18px;
+  border-radius: 20px;
+  padding: 14px 12px 12px; /* reduce padding to save vertical space */
+  box-sizing: border-box;
+  max-height: 520px;
 }
-.squareImgBox { width: 96%; height: 92%; display:grid; place-items:center; }
-.squareImg { width: 100%; height: 100%; object-fit: contain; }
-.squareLabel { margin-top: 8px; font-family:'Jua', sans-serif; font-size: 26px; }
+.squareImgBox { width: 96%; height: 84%; display:grid; place-items:center; }
+.squareImg { width: 92%; height: 92%; object-fit: contain; max-width: 420px; max-height: 420px; }
+.squareLabel { margin-top: 8px; font-family:'Jua', sans-serif; font-size: 18px; }
 
-.pager { text-align:center; margin-top: 6px; font-weight: 700; color:#334155; font-size:14px; }
+/* When a trophy is not fully completed (either practice or learning missing), show it as silver */
+.trophySilver {
+  filter: grayscale(100%) brightness(0.88) contrast(0.95);
+  opacity: 0.95;
+}
+
+.pager { text-align:center; margin-top: 6px; font-weight: 700; color:#334155; font-size:14px; position: relative; top: -14px; }
+
+/* raise topic-carousel dots (accessible tablist) closer to trophy if present */
+.trophySection [role="tablist"] { position: relative; top: -18px; }
 
 /* 랭킹 섹션 */
-.rankSection { margin-top: 50px; }
+.rankSection { 
+  margin-top: 36px; 
+  /* allow scrolling so full ranking can be viewed without expanding the capture area */
+  max-height: 42vh; 
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 120px; /* leave space for floating controls */
+}
+
+/* subtle scrollbar styling */
+.rankSection::-webkit-scrollbar { width: 10px; }
+.rankSection::-webkit-scrollbar-thumb { background: rgba(51,65,85,0.08); border-radius: 8px; }
 .emptyBox { background:#fff; padding:20px; border-radius:14px; text-align:center; color:#6b7a90; box-shadow:0 6px 16px rgba(0,0,0,.06); }
 
 /* TopicCarousel 자체 반응형 규칙을 따릅니다 */
 
 .shareBtn {
-  position:absolute; right:32px; bottom:0px; /* 하단 여백 확보로 잘림 방지 */
+  position:absolute; right:28px; bottom:20px; /* lift up to avoid overlapping ranking */
   background:linear-gradient(135deg,#59A3FF,#326bcc);
   color:#fff; border:0; border-radius:14px; padding:14px 26px; font-size:18px; cursor:pointer;
-  box-shadow:none; /* 그림자 제거 */
+  box-shadow:none; /* 그림자 removal kept for default placement */
   font-family:'Jua',sans-serif; letter-spacing:.5px; transition:transform .35s cubic-bezier(.16,.8,.3,1);
 }
 .shareBtn:hover { transform:translateY(-6px); box-shadow:none; }
 .shareBtn:active { transform:translateY(-2px) scale(.97); }
 .shareBtn:focus-visible { outline:4px solid #59A3FF; outline-offset:3px; }
+
+/* When placed inside the character box, anchor the share button to the avatar's bottom-right */
+.characterBox { position: relative; }
+.characterBox .shareBtn {
+  position: absolute;
+  right: 8px;
+  bottom: 96px; /* raised further so the button sits higher over the avatar's lower area */
+  padding: 12px 18px;
+  font-size: 15px;
+  border-radius: 12px;
+  z-index: 30;
+}
 
 /* 네비게이션 아래 우측 상단 뒤로가기 */
 
