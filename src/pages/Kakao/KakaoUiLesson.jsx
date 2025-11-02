@@ -8,9 +8,11 @@ import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
 import screenshot1 from '../../assets/msend3.png';
-import screenshot2 from '../../assets/msend1.png';
-import screenshot3 from '../../assets/msend2.png';
 import screenshot4 from '../../assets/msend4.png';
+import kemot1 from '../../assets/kemot1.png';
+import kemot2 from '../../assets/kemot2.png';
+import kemot3 from '../../assets/kemot3.png';
+import kemot4 from '../../assets/kemot4.png';
 import stepsConfig from './KakaoUiLessonSteps.js';
 
 export default function KakaoUiLesson(){
@@ -40,6 +42,7 @@ export default function KakaoUiLesson(){
   const lastKeyRef = useRef({ch:null, t:0});
   const [submittedText, setSubmittedText] = useState('');
   const [useSubmittedScreenshot, setUseSubmittedScreenshot] = useState(false);
+  const [showKemot4, setShowKemot4] = useState(false);
   // keep reference to submittedText to avoid unused-var lint (we intentionally don't render the SMS bubble in Kakao lessons)
   useEffect(()=>{ void submittedText; }, [submittedText]);
 
@@ -85,8 +88,12 @@ export default function KakaoUiLesson(){
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
-  useEffect(()=>{ if(step === total){ setKeyboardVisible(true); } }, [step, total]);
+  // show keyboard only when the current step actually expects input (has inputPlaceholder)
+  useEffect(()=>{ setKeyboardVisible(Boolean(current && current.inputPlaceholder)); }, [step, total, current]);
   useEffect(()=>{ if(!('speechSynthesis' in window)) return; function loadVoices(){ const list = window.speechSynthesis.getVoices(); if(list && list.length){ setVoices(list); } } loadVoices(); window.speechSynthesis.addEventListener('voiceschanged', loadVoices); return ()=> window.removeEventListener('voiceschanged', loadVoices); },[]);
+
+  // reset kemot4 override when leaving step 3
+  useEffect(()=>{ if(step !== 3 && showKemot4){ setShowKemot4(false); } }, [step, showKemot4]);
 
   function pickPreferredVoice(pref, all){ if(!all || !all.length) return null; const ko = all.filter(v=> (v.lang||'').toLowerCase().startsWith('ko')); if(!ko.length) return null; const maleKeys = ['male','남','man','boy','seong','min']; const femaleKeys = ['female','여','woman','girl','yuna','ara']; const wantMale = pref === 'male'; const keys = wantMale ? maleKeys : femaleKeys; const primary = ko.find(v=> keys.some(k=> (v.name||'').toLowerCase().includes(k)) ); if(primary) return primary; return ko[ wantMale ? (ko.length>1 ? 1 : 0) : 0 ]; }
 
@@ -111,14 +118,16 @@ export default function KakaoUiLesson(){
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? kemot1 : (step === 2 ? kemot2 : (step === 3 ? (showKemot4 ? kemot4 : kemot3) : screenshot1)))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0} offsetY={step === 1 ? 222 : step === 2 ? -57.5 : step === 3 ? 10 : 10} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={step === total} ariaLabel={'전송 버튼 힌트'} />
-              {step === total && (
-                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
+              {!showKemot4 && (
+                <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '26px' : step === 2 ? '50px' : step === 3 ? '26px' : '18%'} height={step === 1 ? '27px' : step === 2 ? '50px' : step === 3 ? '26px' : '8%'} offsetX={step === 1 ? -120 : step === 2 ? 36 : step === 3 ? 123 : 0} offsetY={step === 1 ? -46 : step === 2 ? -15 : step === 3 ? 93 : 10} borderRadius={'10px'} onActivate={() => { if(step === 3){ setShowKemot4(true); return; } if(step === total) { submitAnswer(); } else { next(); } }} suppressInitial={false} ariaLabel={'전송 버튼 힌트'} />
+              )}
+              {current && current.inputPlaceholder && (
+                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={current.inputPlaceholder || '메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}
               {/* For Kakao lessons we don't show the green submitted-text bubble (SMS-specific UI) */}
-              {keyboardVisible && step === total && (
+              {keyboardVisible && current && current.inputPlaceholder && (
                 <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
               )}
             </PhoneFrame>

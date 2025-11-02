@@ -53,69 +53,85 @@ export default function KakaoSettingLesson() {
     return `${y}.${String(mo).padStart(2, '0')}.${String(d).padStart(2, '0')}.${wk} ${mer} ${hour12}시:${String(mm).padStart(2, '0')}분`;
   }
 
-  // 날짜/시간 선택을 위한 팝업 오버레이
-  const extraOverlay = calendarOpen ? (
-    <div
-      aria-hidden
-      style={{
-        position: 'absolute',
-        left: '60%',
-        top: '60%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: 9999,
-        background: '#fff',
-        padding: 8,
-        borderRadius: 8,
-        boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
-        width: 240
-      }}
-    >
-      {dateStage === 'date' ? (
-        // 날짜 선택 단계
-        <div style={{ padding: 6 }}>
-          <label style={{ display: 'block', fontSize: 12, color: '#333', marginBottom: 6 }}>예약 날짜 선택</label>
-          <input
-            type="date"
-            value={selectedDate || ''}
-            onChange={(e) => { setSelectedDate(e.target.value); setDateStage('time'); }}
-            style={{ fontSize: '14px', padding: '6px 8px', width: '100%' }}
-          />
-          <div style={{ marginTop: 8, textAlign: 'right' }}>
-            <button type="button" onClick={() => { setCalendarOpen(false); setDateStage('date'); }} style={{ padding: '6px 10px', fontSize: 13 }}>닫기</button>
-          </div>
-        </div>
-      ) : (
-        // 시간 선택 단계
-        <div style={{ padding: 6 }}>
-          <label style={{ display: 'block', fontSize: 12, color: '#333', marginBottom: 6 }}>예약 시간 선택</label>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <select value={selectedMeridiem} onChange={(e) => setSelectedMeridiem(e.target.value)} style={{ padding: '6px 8px' }}>
-              <option value="">AM/PM</option>
-              <option value="오전">오전</option>
-              <option value="오후">오후</option>
-            </select>
-            <select value={selectedHour} onChange={(e) => setSelectedHour(e.target.value)} style={{ padding: '6px 8px' }}>
-              <option value="">시</option>
-              {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
-                <option key={h} value={String(h)}>{h}</option>
-              ))}
-            </select>
-            <select value={selectedMinute} onChange={(e) => setSelectedMinute(e.target.value)} style={{ padding: '6px 8px' }}>
-              <option value="">분</option>
-              {Array.from({ length: 60 }, (_, i) => i).map(m => (
-                <option key={m} value={String(m).padStart(2, '0')}>{String(m).padStart(2, '0')}</option>
-              ))}
-            </select>
-          </div>
+  // 날짜/시간 선택을 위한 팝업 오버레이 및 선택된 날짜/시간 텍스트(단일 라인)
+  const extraOverlay = (
+    <>
+      {calendarOpen ? (
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            left: '60%',
+            top: '60%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 9999,
+            background: '#fff',
+            padding: 8,
+            borderRadius: 8,
+            boxShadow: '0 6px 20px rgba(0,0,0,0.12)',
+            width: 240
+          }}
+        >
+          {dateStage === 'date' ? (
+            // 날짜 선택 단계
+            <div style={{ padding: 6 }}>
+              <label style={{ display: 'block', fontSize: 12, color: '#333', marginBottom: 6 }}>예약 날짜 선택</label>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <input
+                  type="date"
+                  value={selectedDate || ''}
+                  onChange={(e) => { setSelectedDate(e.target.value); /* don't auto-advance to time; allow calendar arrow navigation to change visible month */ }}
+                  style={{ fontSize: '14px', padding: '6px 8px', flex: 1 }}
+                />
+                <button type="button" disabled={!selectedDate} onClick={() => { if(selectedDate) setDateStage('time'); }} style={{ padding: '6px 10px', fontSize: 13 }}>시간 선택</button>
+              </div>
+              <div style={{ marginTop: 8, textAlign: 'right' }}>
+                <button type="button" onClick={() => { setCalendarOpen(false); setDateStage('date'); }} style={{ padding: '6px 10px', fontSize: 13 }}>닫기</button>
+              </div>
+            </div>
+          ) : (
+            // 시간 선택 단계
+            <div style={{ padding: 6 }}>
+              <label style={{ display: 'block', fontSize: 12, color: '#333', marginBottom: 6 }}>예약 시간 선택</label>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <select value={selectedMeridiem} onChange={(e) => setSelectedMeridiem(e.target.value)} style={{ padding: '6px 8px' }}>
+                  <option value="">AM/PM</option>
+                  <option value="오전">오전</option>
+                  <option value="오후">오후</option>
+                </select>
+                <select value={selectedHour} onChange={(e) => setSelectedHour(e.target.value)} style={{ padding: '6px 8px' }}>
+                  <option value="">시</option>
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
+                    <option key={h} value={String(h)}>{h}</option>
+                  ))}
+                </select>
+                <select value={selectedMinute} onChange={(e) => setSelectedMinute(e.target.value)} style={{ padding: '6px 8px' }}>
+                  <option value="">분</option>
+                  {Array.from({ length: 60 }, (_, i) => i).map(m => (
+                    <option key={m} value={String(m).padStart(2, '0')}>{String(m).padStart(2, '0')}</option>
+                  ))}
+                </select>
+              </div>
 
-          <div style={{ marginTop: 8, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-            <button type="button" onClick={() => { setSelectedMeridiem(''); setSelectedHour(''); setSelectedMinute(''); setDateStage('date'); }} style={{ marginRight: 8, padding: '6px 10px', fontSize: 13 }}>뒤로</button>
-            <button type="button" onClick={() => { composeAndClose(selectedMeridiem || '오전', selectedHour || '12', selectedMinute || '00'); }} style={{ padding: '6px 10px', fontSize: 13 }}>확인</button>
+              <div style={{ marginTop: 8, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                <button type="button" onClick={() => { setSelectedMeridiem(''); setSelectedHour(''); setSelectedMinute(''); setDateStage('date'); }} style={{ marginRight: 8, padding: '6px 10px', fontSize: 13 }}>뒤로</button>
+                <button type="button" onClick={() => { composeAndClose(selectedMeridiem || '오전', selectedHour || '12', selectedMinute || '00'); }} style={{ padding: '6px 10px', fontSize: 13 }}>확인</button>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      {/* 선택된 날짜/시간을 이미지(kreser6) 위에 한 줄로 표시 (step 4에서만) */}
+  {selectedDateTime ? (
+        <div aria-hidden style={{ position: 'absolute', left: '33%', top: '94.2%', transform: 'translate(-50%, -50%)', zIndex: 4, pointerEvents: 'none', width: '60%', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.9)', padding: '4px 8px', borderRadius: 6, fontSize: 12, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {formatKoreanDateTime(selectedDateTime)}
           </div>
         </div>
-      )}
-    </div>
-  ) : null;
+      ) : null}
+    </>
+  );
 
   return (
     <GenericLesson
@@ -129,18 +145,22 @@ export default function KakaoSettingLesson() {
 
       imageOverlayConfig={{
         3: { src: kreser4, x: '45%', y: '65%', width: '90%', transform: 'translate(-50%, -48%)', zIndex: 1, opacity: 1 },
-        4: { src: kreser6, x: '65%', y: '18%', width: '60%', transform: 'translate(-50%, -50%)', zIndex: 2, opacity: 1 }
+        // show kreser6 on step 4 only when a date/time has been selected
+        ...(selectedDateTime ? { 4: { src: kreser6, x: '34%', y: '93.5%', width: '60%', transform: 'translate(-50%, -50%)', zIndex: 2, opacity: 1 } } : {})
       }}
 
       textOverlayConfig={{
         3: { x: '40%', y: '20%', width: '72%', fontSize: '14px', color: '#111', textAlign: 'left', zIndex: 2, whiteSpace: 'pre-wrap' },
-        4: { x: '65%', y: '18%', width: '60%', fontSize: '12px', color: '#0f172a', textAlign: 'left', zIndex: 3, whiteSpace: 'nowrap', value: (selectedDateTime ? formatKoreanDateTime(selectedDateTime) : '') }
+        // For step 4 we omit an explicit `value` so GenericLesson will fall back
+        // to its internal `submittedText` (the message the user composed on step 3),
+        // ensuring the message appears in the same position on step 4.
+        4: { x: '32%', y: '22%', width: '60%', fontSize: '14px', color: '#0f172a', textAlign: 'left', zIndex: 3, whiteSpace: 'nowrap' }
       }}
 
       tapHintConfig={{
         1: { selector: null, x: '7%', y: '86%', width: '26px', height: '24px', borderRadius: '10px', suppressInitial: true, ariaLabel: '더하기 버튼 힌트', offsetY: -20 },
-        2: { selector: null, x: '49%', y: '74%', width: '35px', height: '35px', borderRadius: '10px', suppressInitial: true, ariaLabel: '예약 메시지 버튼 힌트', offsetY: -52.5 },
-        3: { selector: null, x: '90%', y: '85%', width: '30px', height: '25px', borderRadius: '10px', suppressInitial: false, ariaLabel: '예약 전송 힌트', offsetY: -30 },
+        2: { selector: null, x: '49%', y: '74%', width: '35px', height: '35px', borderRadius: '10px', suppressInitial: true, ariaLabel: '예약 메시지 버튼 힌트', offsetY: -20.5 },
+        3: { selector: null, x: '90.1%', y: '85%', width: '25px', height: '25px', borderRadius: '15px', suppressInitial: false, ariaLabel: '예약 전송 힌트', offsetY: 142 },
         4: {
           selector: null,
           x: '80%', y: '85%', width: '190px', height: '28px', borderRadius: '10px', suppressInitial: false,
