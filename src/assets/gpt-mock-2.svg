@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="780" viewBox="0 0 390 780">
+  <defs>
+    <style>
+      .bg{fill:#19191b}
+      .input{fill:#2b2b2b;stroke:#3a3a3a;stroke-width:2}
+      .pill{fill:#3a3a3a}
+      .text-white{fill:#ffffff;font-family: 'Noto Sans KR', sans-serif;font-weight:500}
+      .placeholder{fill:#bfbfbf;font-family: 'Noto Sans KR', sans-serif}
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="390" height="780" rx="24"/>
+  <!-- center prompt -->
+  <text x="50%" y="40%" text-anchor="middle" class="text-white" font-size="26">무엇을 도와드릴까요?</text>
+
+  <!-- bottom input bar mock -->
+  <g transform="translate(12,600)">
+    <rect class="input" x="0" y="0" width="366" height="70" rx="30"/>
+    <g transform="translate(18,20)">
+      <circle cx="20" cy="15" r="12" class="pill" />
+      <text x="52" y="20" class="placeholder" font-size="14">무엇이든 물어보세요</text>
+      <g transform="translate(270,7)">
+        <circle cx="18" cy="18" r="16" fill="#444" />
+        <path d="M16 12 L16 24" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+      </g>
+    </g>
+  </g>
+
+  <!-- bottom nav bar -->
+  <rect x="0" y="720" width="390" height="60" rx="8" fill="#2b2b2b" />
+  <text x="50%" y="755" text-anchor="middle" class="placeholder" font-size="14">chatgpt.com</text>
+</svg>
