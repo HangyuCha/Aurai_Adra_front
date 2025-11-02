@@ -4,6 +4,9 @@ import steps from './KakaoSettingLessonSteps.js';
 import kreser1 from '../../assets/kreser1.png';
 import kreser2 from '../../assets/kreser2.png';
 import kreser3 from '../../assets/kreser3.png';
+import kreser4 from '../../assets/kreser4.png';
+import kreser5 from '../../assets/kreser5.png';
+import kreser6 from '../../assets/kreser6.png';
 
 export default function KakaoSettingLesson(){
   console.log('[KakaoSettingLesson] render');
