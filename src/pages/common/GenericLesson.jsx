@@ -12,7 +12,7 @@ import screenshot2_default from '../../assets/msend1.png';
 import screenshot3_default from '../../assets/msend2.png';
 import screenshot4_default from '../../assets/msend4.png';
 
-export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {} }){
+export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null }){
   const navigate = useNavigate();
   // debug mount
   console.log('[GenericLesson] mount', { headerTitle, stepCount: (steps || []).length });
@@ -22,6 +22,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   const screenshot2 = images.screenshot2 || screenshot2_default;
   const screenshot3 = images.screenshot3 || screenshot3_default;
   const screenshot4 = images.screenshot4 || screenshot4_default;
+  const screenMap = (images && images.screens) || {};
   const [step,setStep] = useState(1);
   const total = steps.length || 1;
   const shellRef = useRef(null);
@@ -89,7 +90,8 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
-  useEffect(()=>{ if(step === total){ setKeyboardVisible(true); } }, [step, total]);
+  // enable keyboardVisible when the current step expects text input (has inputPlaceholder)
+  useEffect(()=>{ setKeyboardVisible(Boolean(current && current.inputPlaceholder)); }, [step, total, current]);
   useEffect(()=>{ if(!('speechSynthesis' in window)) return; function loadVoices(){ const list = window.speechSynthesis.getVoices(); if(list && list.length){ setVoices(list); } } loadVoices(); window.speechSynthesis.addEventListener('voiceschanged', loadVoices); return ()=> window.removeEventListener('voiceschanged', loadVoices); },[]);
 
   function pickPreferredVoice(pref, all){ if(!all || !all.length) return null; const ko = all.filter(v=> (v.lang||'').toLowerCase().startsWith('ko')); if(!ko.length) return null; const maleKeys = ['male','남','man','boy','seong','min']; const femaleKeys = ['female','여','woman','girl','yuna','ara']; const wantMale = pref === 'male'; const keys = wantMale ? maleKeys : femaleKeys; const primary = ko.find(v=> keys.some(k=> (v.name||'').toLowerCase().includes(k)) ); if(primary) return primary; return ko[ wantMale ? (ko.length>1 ? 1 : 0) : 0 ]; }
@@ -102,6 +104,18 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
 
   const next = () => setStep(s => Math.min(total, s+1));
   const prev = () => setStep(s => Math.max(1, s-1));
+  
+  function handleTapHintActivate(){
+    // if current step has input, preserve the committed text into submittedText
+    try{
+      const commit = getCommittedFromComp(compRef.current);
+      const final = (answer + commit).trim();
+      if(current && current.inputPlaceholder && final.length){
+        setSubmittedText(final);
+      }
+  } catch { /* ignore */ }
+    if(step === total){ submitAnswer(); } else { next(); }
+  }
 
   return (
     <div className={frameStyles.framePage}>
@@ -115,7 +129,8 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            {/* choose the screen image per-step: images.screens[step] > submitted screenshot > defaults */}
+            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (screenMap[step] || (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1)))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
               {
                 (() => {
@@ -132,19 +147,79 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
                     ariaLabel: '전송 버튼 힌트'
                   };
                   const hintProps = { ...defaultProps, ...override };
+                  // if the hintProps request the hint to be hidden, don't render it
+                  if(hintProps.hidden) return null;
                   // if override supplies explicit x/y, let it override selector behaviour
-                  return <TapHint {...hintProps} onActivate={step === total ? submitAnswer : next} />;
+                  // allow per-step override for the activation handler (e.g., open a calendar)
+                  return (
+                    <TapHint {...hintProps} onActivate={(override && override.onActivate) ? override.onActivate : handleTapHintActivate}>
+                      {(override && override.inner) ? override.inner : null}
+                    </TapHint>
+                  );
                 })()
               }
-              {step === total && (
-                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
+              {/* Live text overlay (per-step) - rendered inside PhoneFrame.overlay so coordinates are percent-based relative to the screenshot */}
+              {
+                (() => {
+                  // optional image overlay (e.g., kreser4) rendered under the live text
+                  const imgCfg = (imageOverlayConfig && imageOverlayConfig[step]) || null;
+                  if(!imgCfg) return null;
+                  const style = {
+                    position: 'absolute',
+                    left: imgCfg.x || '50%',
+                    top: imgCfg.y || '50%',
+                    transform: imgCfg.transform || 'translate(-50%, -50%)',
+                    width: imgCfg.width || '60%',
+                    pointerEvents: 'none',
+                    zIndex: imgCfg.zIndex || 1,
+                    opacity: imgCfg.opacity != null ? imgCfg.opacity : 1
+                  };
+                  return (
+                    <img aria-hidden src={imgCfg.src} alt="overlay" style={style} />
+                  );
+                })()
+              }
+              {
+                (() => {
+                  const cfg = (textOverlayConfig && textOverlayConfig[step]) || null;
+                  if(!cfg) return null;
+                  // allow callers to inject an explicit value for the text overlay via cfg.value
+                  const value = (cfg && cfg.value !== undefined) ? (cfg.value || '') : (submittedText || (answer + composePreview()) || '');
+                  const style = {
+                    position: 'absolute',
+                    left: cfg.x || '50%',
+                    top: cfg.y || '50%',
+                    transform: cfg.transform || 'translate(-50%, -50%)',
+                    width: cfg.width || '60%',
+                    color: cfg.color || '#111',
+                    fontSize: cfg.fontSize || '14px',
+                    fontWeight: cfg.fontWeight || 400,
+                    textAlign: cfg.textAlign || 'left',
+                    pointerEvents: 'none',
+                    whiteSpace: cfg.whiteSpace || 'pre-wrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    zIndex: cfg.zIndex || 2
+                  };
+                  return (
+                    <div aria-hidden style={style}>
+                      {value}
+                    </div>
+                  );
+                })()
+              }
+              {/* allow a lesson to render custom overlay content (calendar, pickers, etc.) inside the PhoneFrame overlay */}
+              {extraOverlay}
+              {/* Render input bar when the current step expects input (has inputPlaceholder) */}
+              {current && current.inputPlaceholder && (
+                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={current.inputPlaceholder || '메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}
-              {submittedText ? (
+              {showSubmittedBubble && submittedText ? (
                 <div style={{position:'absolute', right:14, left:'auto', bottom:229.5, maxWidth:'45%', padding:'4px 10px', borderRadius:10.5, backgroundColor:'#5AF575', boxShadow:'0 2px 6px rgba(0,0,0,0.12)', color:'#fff', fontSize:'12.75px', fontWeight:400, lineHeight:'1.2', fontFamily:'"Noto Sans KR", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', textAlign:'right', textShadow:'0 1px 2px rgba(0,0,0,0.2)'}}>
                   {submittedText}
                 </div>
               ) : null}
-              {keyboardVisible && step === total && (
+              {keyboardVisible && (current && current.inputPlaceholder) && (
                 <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
               )}
             </PhoneFrame>
