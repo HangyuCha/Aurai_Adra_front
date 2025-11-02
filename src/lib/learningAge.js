@@ -21,7 +21,7 @@ export function toDecade(actualAge) {
  */
 export function getLearningDecade(actualAgeYears, successCount, totalChapters = 20) {
   const startDecade = toDecade(actualAgeYears); // 시작 디케이드 (예: 80)
-  const minDecade = 10;                         // 목표 최저 디케이드
+  const minDecade = 20;                         // 목표 최저 디케이드 (최소 20대까지)
   const steps = Math.max(0, (startDecade - minDecade) / 10); // 내려갈 수 있는 단계 수
   if (steps === 0) return minDecade; // 이미 10대 이하면 10대 유지
 
@@ -36,7 +36,7 @@ export function getLearningDecade(actualAgeYears, successCount, totalChapters = 
 
 /** 10년대 숫자를 한글 라벨로 변환 (예: 70 → '70대') */
 export function getLearningAgeLabelFromDecade(decade) {
-  const d = Math.max(10, Math.floor(decade / 10) * 10);
+  const d = Math.max(20, Math.floor(decade / 10) * 10);
   return `${d}대`;
 }
 

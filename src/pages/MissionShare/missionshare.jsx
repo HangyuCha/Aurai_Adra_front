@@ -1,7 +1,8 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 // import 경로의 대소문자 주의 (파일명은 소문자)
 import styles from './missionshare.module.css';
+import api from '../../lib/api';
 import RankList from '../../components/RankList/RankList';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import BackButton from '../../components/BackButton/BackButton';
@@ -60,8 +61,38 @@ export default function MissionShare() {
     default: avatarDefault,
   }), []);
 
-  // localStorage에서 배움 나이와 성별 로드 → 학습 아바타 결정
+  // 서버에서 가져온 프로그레스(선호) — 백엔드가 준비되어 있으면 appProgress와 learning view를 포함
+  const [serverSnapshot, setServerSnapshot] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        // Use axios instance which injects Authorization header from localStorage if available
+        const resp = await api.get('/progress/chapters/me');
+        if (mounted && resp && resp.data) setServerSnapshot(resp.data);
+      } catch {
+        // ignore network/auth errors; fall back to localStorage
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
   const { learningAgeDisplay, avatarSrc } = useMemo(() => {
+    // Prefer server-provided learning view when available
+    if (serverSnapshot && serverSnapshot.learning && serverSnapshot.learning.label) {
+      const label = serverSnapshot.learning.label;
+      // gender/age band still from localStorage (avatar mapping stored locally)
+      const arRaw = localStorage.getItem('ageRange') || localStorage.getItem('age') || localStorage.getItem('signup_ageRange') || '';
+      const gdRaw = localStorage.getItem('gender') || localStorage.getItem('signup_gender') || '';
+      const age = parseAgeRange(arRaw);
+      const band = age.band;
+      const gender = parseGender(gdRaw);
+      const key = band && gender ? `${band}${gender}` : 'default';
+      const src = avatarMap[key] || avatarDefault;
+      return { learningAgeDisplay: label || age.display, avatarSrc: src };
+    }
+
+    // localStorage fallback (original behavior)
     const laRaw = localStorage.getItem('learningAge') || '';
     const arRaw = localStorage.getItem('ageRange') || localStorage.getItem('age') || localStorage.getItem('signup_ageRange') || '';
     const gdRaw = localStorage.getItem('gender') || localStorage.getItem('signup_gender') || '';
@@ -77,7 +108,7 @@ export default function MissionShare() {
     const key = band && gender ? `${band}${gender}` : 'default';
     const src = avatarMap[key] || avatarDefault;
     return { learningAgeDisplay: display, avatarSrc: src };
-  }, [avatarMap]);
+  }, [avatarMap, serverSnapshot]);
 
   // 데이터 모델: 4개의 앱, 각 앱은 5개의 과제. 모두 완료 시 트로피 획득
   // 실제 연동 시에는 API 또는 상위 상태에서 주입받도록 교체 가능
@@ -95,10 +126,35 @@ export default function MissionShare() {
     ];
   }, []);
 
-  const trophies = useMemo(() => appsProgress.map(app => ({
-    ...app,
-    earned: app.tasksCompleted >= app.totalTasks,
-  })), [appsProgress]);
+  const trophies = useMemo(() => appsProgress.map(app => {
+    // Prefer server-provided appProgress when available (server is authoritative)
+    const serverApp = serverSnapshot && serverSnapshot.appProgress ? serverSnapshot.appProgress[app.id] : null;
+
+    // Fallback policy when server snapshot is not available:
+    // - Do NOT derive practiceDone from the example `tasksCompleted` field, because
+    //   that can be a static/sample value and may incorrectly mark an app as completed.
+    // - Instead trust explicit localStorage flags set by the app when a user finishes
+    //   learn/practice (e.g. `${appId}_learnDone`, `${appId}_practiceDone`).
+    const practiceDone = serverApp ? Boolean(serverApp.practiceDone) : (() => {
+      try { return localStorage.getItem(`${app.id}_practiceDone`) === 'true'; } catch { return false; }
+    })();
+
+    const learnDone = serverApp ? Boolean(serverApp.learnDone) : (() => {
+      try { return localStorage.getItem(`${app.id}_learnDone`) === 'true'; } catch { return false; }
+    })();
+
+    // earned: show that the user has *earned* a trophy (visible) when at least one
+    // of practice/learn is completed. The visual distinction (gold vs silver) is
+    // handled by `fullyCompleted` in the render (gold only when both are true).
+    const earned = Boolean(practiceDone || learnDone);
+
+    return {
+      ...app,
+      practiceDone,
+      learnDone,
+      earned,
+    };
+  }), [appsProgress, serverSnapshot]);
 
   const ranking = useMemo(() => {
     const earned = trophies.filter(t => t.earned && t.trophyDate);
@@ -133,6 +189,9 @@ export default function MissionShare() {
             <div className={styles.characterBox}>
               <img className={styles.characterImg} src={avatarSrc} alt="캐릭터" onError={(e)=>{ e.currentTarget.src = avatarDefault; }} />
               <div className={styles.characterCaption}>배움 나이: {learningAgeDisplay}</div>
+              <button className={styles.shareBtn} onClick={() => setModalOpen(true)}>
+                자랑하기
+              </button>
             </div>
           </aside>
           {/* 우측: 상단 트로피, 하단 랭킹 */}
@@ -157,10 +216,17 @@ export default function MissionShare() {
                 else if (t.id === 'gpt') iconSrc = gptTrophy;
                 else if (t.id === 'kakao') iconSrc = kakaoTrophy;
               }
+              // fullyCompleted when both practice and learning sessions are done
+              const fullyCompleted = Boolean(t?.practiceDone && t?.learnDone);
               return (
                 <div className={styles.squareCard} role="group" aria-label={`${t?.name} 트로피`}>
                   <div className={styles.squareImgBox}>
-                    <img className={styles.squareImg} src={iconSrc} alt="" aria-hidden="true" />
+                    <img
+                      className={`${styles.squareImg} ${!fullyCompleted ? styles.trophySilver : ''}`}
+                      src={iconSrc}
+                      alt=""
+                      aria-hidden="true"
+                    />
                   </div>
                   <div className={styles.squareLabel}>{t?.name}</div>
                 </div>
@@ -183,9 +249,7 @@ export default function MissionShare() {
           </main>
         </div>
 
-        <button className={styles.shareBtn} onClick={() => setModalOpen(true)}>
-          자랑하기
-        </button>
+        {/* share button moved into the character box to allow precise overlay positioning */}
       </div>
 
       {modalOpen && (

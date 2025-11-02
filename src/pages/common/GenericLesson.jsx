@@ -12,7 +12,7 @@ import screenshot2_default from '../../assets/msend1.png';
 import screenshot3_default from '../../assets/msend2.png';
 import screenshot4_default from '../../assets/msend4.png';
 
-export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null }){
+export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null, appId = null }){
   const navigate = useNavigate();
   // debug mount
   console.log('[GenericLesson] mount', { headerTitle, stepCount: (steps || []).length });
@@ -84,8 +84,26 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   };
 
   const onSubmitAnswer = (e) => { e.preventDefault(); submitAnswer(); };
+  async function markLearnCompleteIfNeeded(){
+    try{
+      const derived = appId || (donePath || backPath || '').split('/')[1] || null;
+      if(!derived) return;
+  // local flag for quick UI
+  try { localStorage.setItem(`${derived}_learnDone`, 'true'); } catch { /* ignore */ }
+      // inform backend (best-effort)
+      try{
+        // use centralized helper which will include Authorization header when available
+        const { markAppProgress } = await import('../../lib/appProgressApi');
+        await markAppProgress(derived, 'learn');
+      } catch { /* ignore network errors */ }
+  } catch { /* ignore */ }
+  }
 
-  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } if(donePath){ navigate(donePath); } } }
+  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } if(donePath){
+      // mark learning complete (non-blocking)
+      markLearnCompleteIfNeeded().catch(()=>{});
+      navigate(donePath);
+    } } }
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
@@ -242,7 +260,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
               {step < total ? (
                 <button type="button" onClick={next} className={frameStyles.primaryBtn}>다음</button>
               ) : (
-                <button type="button" onClick={()=>navigate(backPath)} className={frameStyles.primaryBtn}>완료</button>
+                <button type="button" onClick={()=>{ markLearnCompleteIfNeeded().catch(()=>{}); navigate(backPath); }} className={frameStyles.primaryBtn}>완료</button>
               )}
             </div>
           </div>
