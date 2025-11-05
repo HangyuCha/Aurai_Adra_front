@@ -12,7 +12,14 @@ import screenshot2_default from '../../assets/msend1.png';
 import screenshot3_default from '../../assets/msend2.png';
 import screenshot4_default from '../../assets/msend4.png';
 
-export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null, appId = null }){
+// Hangul composition tables - module scope so they're stable across renders
+const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+const JUNG = ['\u0000','ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
+const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+const VCOMB = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
+const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
+
+export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null }){
   const navigate = useNavigate();
   // debug mount
   console.log('[GenericLesson] mount', { headerTitle, stepCount: (steps || []).length });
@@ -47,13 +54,9 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   const lastKeyRef = useRef({ch:null, t:0});
   const [submittedText, setSubmittedText] = useState('');
   const [useSubmittedScreenshot, setUseSubmittedScreenshot] = useState(false);
+  const lastStepRef = useRef(step);
 
-  // minimal composer helpers (copied)
-  const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-  const JUNG = ['\u0000','ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
-  const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-  const VCOMB = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
-  const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
+  
 
   function combineVowel(a,b){ if(!a||!b) return null; const key = `${a}${b}`; return VCOMB[key]||null; }
   function combineJong(a,b){ if(!a||!b) return null; const key = `${a}${b}`; return JCOMB[key]||null; }
@@ -84,26 +87,8 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   };
 
   const onSubmitAnswer = (e) => { e.preventDefault(); submitAnswer(); };
-  async function markLearnCompleteIfNeeded(){
-    try{
-      const derived = appId || (donePath || backPath || '').split('/')[1] || null;
-      if(!derived) return;
-  // local flag for quick UI
-  try { localStorage.setItem(`${derived}_learnDone`, 'true'); } catch { /* ignore */ }
-      // inform backend (best-effort)
-      try{
-        // use centralized helper which will include Authorization header when available
-        const { markAppProgress } = await import('../../lib/appProgressApi');
-        await markAppProgress(derived, 'learn');
-      } catch { /* ignore network errors */ }
-  } catch { /* ignore */ }
-  }
 
-  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } if(donePath){
-      // mark learning complete (non-blocking)
-      markLearnCompleteIfNeeded().catch(()=>{});
-      navigate(donePath);
-    } } }
+  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } if(donePath){ navigate(donePath); } } }
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
@@ -134,6 +119,36 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   } catch { /* ignore */ }
     if(step === total){ submitAnswer(); } else { next(); }
   }
+
+  // when navigating forward from a step that had inputPlaceholder, preserve the typed message
+  // commit typed input when advancing from an input step
+  useEffect(()=>{
+    const prev = lastStepRef.current;
+    if(step === prev + 1){
+      try{
+        const prevStep = steps.find(s => s.id === prev) || {};
+        if(prevStep.inputPlaceholder){
+          // compute committed composition without depending on the helper function to avoid hook deps
+          const snap = compRef.current;
+          const lead = snap.lead, vowel = snap.vowel, tail = snap.tail;
+          let commit = '';
+          if(lead || vowel || tail){
+            if(!lead && vowel) commit = vowel;
+            else {
+              const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1;
+              const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1;
+              const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0;
+              if(L>0 && V>0){ commit = String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); }
+              else { commit = (lead||'') + (vowel||'') + (tail||''); }
+            }
+          }
+          const final = (answer + (commit || '')).trim();
+          if(final.length){ setSubmittedText(final); }
+        }
+      } catch { /* ignore */ }
+    }
+    lastStepRef.current = step;
+  }, [step, answer, steps]);
 
   return (
     <div className={frameStyles.framePage}>
@@ -238,7 +253,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
                 </div>
               ) : null}
               {keyboardVisible && (current && current.inputPlaceholder) && (
-                <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
+                <VirtualKeyboard allowEnglish={Boolean(current && current.allowEnglish)} onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
               )}
             </PhoneFrame>
           </div>
@@ -260,7 +275,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
               {step < total ? (
                 <button type="button" onClick={next} className={frameStyles.primaryBtn}>다음</button>
               ) : (
-                <button type="button" onClick={()=>{ markLearnCompleteIfNeeded().catch(()=>{}); navigate(backPath); }} className={frameStyles.primaryBtn}>완료</button>
+                <button type="button" onClick={()=>navigate(backPath)} className={frameStyles.primaryBtn}>완료</button>
               )}
             </div>
           </div>
