@@ -7,8 +7,8 @@ import styles from './VirtualKeyboard.module.css';
 // - onBackspace() : called when backspace pressed
 // - onEnter() : called when return pressed
 // - className : optional
-export default function VirtualKeyboard({onKey, onBackspace, onEnter, className=''}){
-  const [mode, setMode] = useState('k'); // 'k' = korean, 'n' = number, 's' = symbol
+export default function VirtualKeyboard({onKey, onBackspace, onEnter, className='', allowEnglish=false}){
+  const [mode, setMode] = useState('k'); // 'k' = korean, 'n' = number, 's' = symbol, 'e' = english
   const [shift, setShift] = useState(false);
   const lastLocalRef = React.useRef({ch:null, t:0});
 
@@ -42,8 +42,15 @@ export default function VirtualKeyboard({onKey, onBackspace, onEnter, className=
     ['ABC','space','return']
   ];
 
+  const engRows = [
+    ['q','w','e','r','t','y','u','i','o','p'],
+    ['a','s','d','f','g','h','j','k','l'],
+    ['⇧','z','x','c','v','b','n','m','⌫'],
+    ['123','space','한']
+  ];
+
   // sanitize rows depending on mode
-  const rows = mode === 'k' ? jamoRows : (mode === 'n' ? numRows : symRows);
+  const rows = mode === 'k' ? jamoRows : (mode === 'n' ? numRows : (mode === 'e' ? engRows : symRows));
 
   function handleKey(k){
     const nowLocal = Date.now();
@@ -56,9 +63,10 @@ export default function VirtualKeyboard({onKey, onBackspace, onEnter, className=
     if(k === '⌫') return onBackspace && onBackspace();
   if(k === 'return') return onEnter && onEnter();
     if(k === 'space') return onKey && onKey(' ');
-    if(k === '123') { setMode('n'); return; }
-    if(k === 'ABC') { setMode('k'); return; }
-    if(k === '#+=') { setMode('s'); return; }
+  if(k === '123') { setMode('n'); return; }
+  if(k === 'ABC') { setMode(allowEnglish ? 'e' : 'k'); return; }
+  if(k === '#+=') { setMode('s'); return; }
+  if(k === '한') { setMode('k'); return; }
     if(k === '⇧') { setShift(s => !s); return; }
 
     // apply shift mapping for double consonants (one-shot)
