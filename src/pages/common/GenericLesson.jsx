@@ -53,6 +53,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const lastKeyRef = useRef({ch:null, t:0});
   const [submittedText, setSubmittedText] = useState('');
+  const [submittedByStep, setSubmittedByStep] = useState({});
   const [useSubmittedScreenshot, setUseSubmittedScreenshot] = useState(false);
   const lastStepRef = useRef(step);
 
@@ -143,7 +144,10 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
             }
           }
           const final = (answer + (commit || '')).trim();
-          if(final.length){ setSubmittedText(final); }
+          if(final.length){ 
+            setSubmittedText(final);
+            setSubmittedByStep(m=> ({ ...m, [prev]: final }));
+          }
         }
       } catch { /* ignore */ }
     }
@@ -217,7 +221,15 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
                   const cfg = (textOverlayConfig && textOverlayConfig[step]) || null;
                   if(!cfg) return null;
                   // allow callers to inject an explicit value for the text overlay via cfg.value
-                  const value = (cfg && cfg.value !== undefined) ? (cfg.value || '') : (submittedText || (answer + composePreview()) || '');
+                  // or request the submitted text from a specific earlier step via cfg.valueFromStep
+                  let value = '';
+                  if(cfg && cfg.valueFromStep !== undefined){
+                    value = (submittedByStep && submittedByStep[cfg.valueFromStep]) || '';
+                  } else if(cfg && cfg.value !== undefined){
+                    value = (cfg.value || '');
+                  } else {
+                    value = (submittedText || (answer + composePreview()) || '');
+                  }
                   const style = {
                     position: 'absolute',
                     left: cfg.x || '50%',

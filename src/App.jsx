@@ -18,7 +18,7 @@ import WritePage from './pages/Write/Write.jsx';
 import SuggestionDetailPage from './pages/SuggestionDetail/SuggestionDetail.jsx';
 import MyInfoPage from './pages/MyInfo/myinfo.jsx';
 import PasswordChangePage from './pages/PasswordChange/PasswordChange.jsx';
-import MissionShare from './pages/MissionShare/MissionShare.jsx'; // 추가
+import MissionShare from './pages/MissionShare/missionshare.jsx'; // 추가
 import SmsLearn from './pages/Sms/SmsLearn.jsx';
 import SmsPractice from './pages/Sms/SmsPractice.jsx';
 import PracticeLesson from './pages/Practice/PracticeLesson.jsx';
@@ -40,6 +40,7 @@ import GptSafetyLesson from './pages/Gpt/GptSafetyLesson.jsx';
 import GptLimitsLesson from './pages/Gpt/GptLimitsLesson.jsx';
 import KakaoUiLesson from './pages/Kakao/KakaoUiLesson.jsx';
 import KakaoFriendLesson from './pages/Kakao/KakaoFriendLesson.jsx';
+import KakaoFriendNumLesson from './pages/Kakao/KakaoFriendNumLesson.jsx';
 import KakaoRoomLesson from './pages/Kakao/KakaoRoomLesson.jsx';
 import KakaoMediaLesson from './pages/Kakao/KakaoMediaLesson.jsx';
 import KakaoSettingLesson from './pages/Kakao/KakaoSettingLesson.jsx';
@@ -132,6 +133,7 @@ export default function App() {
   <Route path="gpt/learn/limits" element={<GptLimitsLesson />} />
   <Route path="kakao/learn/ui" element={<KakaoUiLesson />} />
   <Route path="kakao/learn/friend" element={<KakaoFriendLesson />} />
+  <Route path="kakao/learn/friend/num" element={<KakaoFriendNumLesson />} />
   <Route path="kakao/learn/room" element={<KakaoRoomLesson />} />
   <Route path="kakao/learn/media" element={<KakaoMediaLesson />} />
   <Route path="kakao/learn/setting" element={<KakaoSettingLesson />} />
