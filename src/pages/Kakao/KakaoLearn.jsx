@@ -12,7 +12,7 @@ export default function KakaoLearn() {
     reserve: 'setting',
     emoji: 'ui',
     addById: 'friend',
-    addByPhone: 'friend',
+    addByPhone: 'friend/num',
     bundleMedia: 'media',
     inviteRoom: 'room',
     leaveGroup: 'room'

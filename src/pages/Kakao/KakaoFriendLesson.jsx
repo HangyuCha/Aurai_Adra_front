@@ -1,6 +1,6 @@
 import React from 'react';
 import GenericLesson from '../common/GenericLesson';
-import steps from './KakaoFriendLessonSteps.js';
+import steps from './kakaofriendlessonsteps.js';
 import kaddid from '../../assets/kaddid.png';
 import kaddid1 from '../../assets/kaddid1.png';
 import kaddid2 from '../../assets/kaddid2.png';
