@@ -11,9 +11,9 @@ import screenshot1 from '../../assets/msend3.png';
 import screenshot2 from '../../assets/msend1.png';
 import screenshot3 from '../../assets/msend2.png';
 import screenshot4 from '../../assets/msend4.png';
-import stepsConfig from './CallInterfaceLessonSteps.js';
+import stepsConfig from './CallCallingLessonSteps.js';
 
-export default function CallInterfaceLesson(){
+export default function CallCallingLesson(){
   const navigate = useNavigate();
   const [step,setStep] = useState(1);
   const steps = stepsConfig;
@@ -41,7 +41,7 @@ export default function CallInterfaceLesson(){
   const [submittedText, setSubmittedText] = useState('');
   const [useSubmittedScreenshot, setUseSubmittedScreenshot] = useState(false);
 
-  // Composer helpers (minimal copy)
+  // minimal composer helpers (copied)
   const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
   const JUNG = ['\u0000','ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
   const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -102,8 +102,8 @@ export default function CallInterfaceLesson(){
       <BackButton to="/call/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
         <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
-          <span className="titleText">전화 화면 익히기</span>
-          <span className={frameStyles.inlineTagline}>{current.instruction || '전화의 기본 UI를 확인해 보세요.'}</span>
+          <span className="titleText">전화걸기</span>
+          <span className={frameStyles.inlineTagline}>{current.instruction || '전화를 걸고 통화하는 기본 흐름을 연습해 보세요.'}</span>
         </h1>
       </header>
       <div className={frameStyles.lessonRow}>
