@@ -16,10 +16,17 @@ const steps = [
     title: "예약 메시지 누르기",
     instruction: "예약 메시지 버튼을 눌러보세요.",
     focusAreas: [{ x: 32, y: 34.4, w: 60, h: 7 }],
-    speak: "예약 메시지 버튼을 찾고, 눌러보세요.ㅂ",
+    speak: "예약 메시지 버튼을 찾고, 눌러보세요.",
   },
   {
     id: 3,
+    title: "예약 작성 미리보기",
+    instruction: "예약 내용을 작성하기 전에 화면 구성을 확인하세요.",
+    focusAreas: [{ x: 4, y: 30, w: 92, h: 25 }],
+    speak: "예약 내용을 작성하기 전에 화면을 확인해보세요.",
+  },
+  {
+    id: 4,
     title: "예약 저장 및 전송",
     instruction:
       "작성한 메시지를 확인한 뒤 초록색 예약(전송) 버튼을 눌러 예약을 완료하세요.",
@@ -30,12 +37,11 @@ const steps = [
     inputPlaceholder: "예약 메시지를 입력하세요",
   },
   {
-    id: 4,
-    title: "예약 확인 화면",
-    instruction:
-      "작성한 예약 메시지를 확인하세요. 입력한 내용이 왼쪽에 표시됩니다.",
+    id: 5,
+    title: "예약 날짜와 시간 선택",
+    instruction: "예약할 날짜와 시간을 선택해보세요.",
     focusAreas: [{ x: 4, y: 45, w: 92, h: 10, pill: true }],
-    speak: "예약된 메시지를 확인해보세요.",
+    speak: "예약할 날짜와 시간을 선택하세요.",
     completionSpeak:
       "잘하셨어요! 예약 메시지가 저장되었습니다. 아래 완료 버튼을 눌러 학습으로 돌아가세요.",
     // no inputPlaceholder: this page is display-only (shows the entered text)
