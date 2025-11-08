@@ -104,10 +104,10 @@ export default function SmsMsendLesson(){
   } catch { /* ignore */ }
     }
   }
-  // mark sms app learning complete (non-blocking)
-  try { localStorage.setItem('sms_learnDone', 'true'); } catch { /* ignore */ }
+  // mark sms app learning complete (non-blocking) — store per-session flag and notify server
+  try { localStorage.setItem('sms_msend_learnDone', 'true'); } catch { /* ignore */ }
   // best-effort notify server (fire-and-forget)
-  try { markAppProgress('sms', 'learn'); } catch { /* ignore */ }
+  try { markAppProgress('sms', 'learn', 'msend', null); } catch { /* ignore */ }
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
@@ -174,7 +174,7 @@ export default function SmsMsendLesson(){
               {step < total ? (
                 <button type="button" onClick={next} className={frameStyles.primaryBtn}>다음</button>
               ) : (
-                <button type="button" onClick={()=>{ try { localStorage.setItem('sms_learnDone','true'); } catch { /* ignore */ }; try { markAppProgress('sms','learn'); } catch { /* ignore */ }; navigate('/sms/learn'); }} className={frameStyles.primaryBtn}>완료</button>
+                <button type="button" onClick={()=>{ try { localStorage.setItem('sms_msend_learnDone','true'); } catch { /* ignore */ }; try { markAppProgress('sms','learn','msend', null); } catch { /* ignore */ }; navigate('/sms/learn'); }} className={frameStyles.primaryBtn}>완료</button>
               )}
             </div>
           </div>
