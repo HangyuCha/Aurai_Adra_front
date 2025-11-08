@@ -1,9 +1,9 @@
 // 전화 배우기/연습하기 공통 주제
 export const callTopics = [
-  { key: 'interface', title: '전화 화면 익히기', text: '수신/발신, 음소거, 스피커 등 기본 UI 구성.' },
-  { key: 'etiquette', title: '전화 예절', text: '첫 인사, 마무리 멘트, 기본 매너.' },
-  { key: 'intro', title: '자기소개 말하기', text: '간단하고 또렷하게 자신 알리기.' },
-  { key: 'hold', title: '대기/연결 표현', text: '잠시만요, 다시 전화할게요 같은 표현.' },
-  { key: 'ending', title: '통화 마무리', text: '감사 인사와 자연스러운 종료 멘트.' }
+  { key: 'calling', title: '전화걸기', text: '전화 걸기, 번호 입력과 발신 흐름을 연습합니다.' },
+  { key: 'save', title: '연락처 저장하기', text: '새 연락처 추가와 저장 흐름을 익혀요.' },
+  { key: 'fix', title: '연락처 수정하기', text: '기존 연락처를 수정하고 저장하는 방법을 배워요.' },
+  { key: 'face', title: '영상통화 하기', text: '영상통화 시작, 화면 전환, 종료를 연습합니다.' },
+  { key: 'favorite', title: '즐겨찾기 등록하기', text: '자주 쓰는 연락처를 즐겨찾기에 추가해 보세요.' }
 ];
 export default callTopics;
