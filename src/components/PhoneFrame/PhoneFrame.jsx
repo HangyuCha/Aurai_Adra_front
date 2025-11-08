@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './PhoneFrame.module.css';
+// 외부 SVG 파일 로드 실패 시를 대비해 inline SVG 사용 (파일 없어도 표시)
 
 /**
  * PhoneFrame
@@ -35,15 +36,18 @@ export default function PhoneFrame({
   };
   return (
     <div className={styles.phone} style={styleVars}>
-      <div className={styles.bezel}>
+      <div className={styles.outerBezel}>
+        <div className={styles.bezel}>
         <div className={styles.screen}>
           {showStatusBar && (
             <div className={styles.statusBar} aria-hidden>
+              <div className={styles.notchBar} aria-hidden />
               <span className={styles.time}>9:41</span>
               <div className={styles.statusIcons}>
-                <span className={styles.signal}/>
-                <span className={styles.wifi}/>
-                <span className={styles.battery}/>
+                {/* 인라인 벡터: 자산 누락/경로 문제라도 항상 렌더 */}
+                <svg className={styles.statusImg} viewBox="0 0 24 16" aria-hidden="true"><g fill="#111"><rect x="2" y="12" width="3" height="3" rx="0.5"/><rect x="7" y="9" width="3" height="6" rx="0.5"/><rect x="12" y="6" width="3" height="9" rx="0.5"/><rect x="17" y="3" width="3" height="12" rx="0.5"/></g></svg>
+                <svg className={styles.statusImg} viewBox="0 0 24 16" aria-hidden="true"><g fill="none" stroke="#111" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6.5c2.5-2 6-3.2 9-3.2s6.5 1.2 9 3.2"/><path d="M6 9.5c1.9-1.4 4.1-2.1 6-2.1s4.1.7 6 2.1"/><path d="M9 12.2c1-.7 2.1-1.1 3-1.1s2 .4 3 1.1"/><circle cx="12" cy="14" r="1.2" fill="#111" stroke="none"/></g></svg>
+                <svg className={styles.statusImg} viewBox="0 0 26 16" aria-hidden="true"><rect x="1" y="3" width="20" height="10" rx="2" ry="2" fill="none" stroke="#111" strokeWidth="1.8"/><rect x="3.5" y="5.5" width="11" height="5" rx="1" ry="1" fill="#111"/><rect x="21.5" y="6" width="3" height="6" rx="1" ry="1" fill="#111" stroke="#111" strokeWidth="1"/></svg>
               </div>
             </div>
           )}
@@ -52,9 +56,9 @@ export default function PhoneFrame({
             {/* 오버레이 영역 (이미지 위) */}
             {children && <div className={styles.overlay}>{children}</div>}
           </div>
-          <div className={styles.notch} aria-hidden />
           {/* 하단에도 상태바 높이만큼 간격(스페이서) - 이미지 영역 밖 */}
           {showStatusBar && <div className={styles.bottomBar} aria-hidden />}
+        </div>
         </div>
       </div>
     </div>
