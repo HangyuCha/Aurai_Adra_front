@@ -22,8 +22,8 @@ export const kakaoTopics = [
   },
   {
     key: "media",
-    title: "사진 묶어 보내기 + 묶어 다운받기",
-    text: "여러 장을 한 번에 공유하고 묶어서 보내고, 저장해 보아요",
+    title: "사진 묶어 보내기",
+    text: "여러 장을 한 번에 묶어서 보내 보아요",
   },
   {
     key: "inviteRoom",

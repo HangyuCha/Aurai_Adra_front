@@ -6,9 +6,10 @@ import kaddid1 from '../../assets/kaddid1.png';
 import kaddid2 from '../../assets/kaddid2.png';
 import kaddid3 from '../../assets/kaddid3.png';
 import kaddid4 from '../../assets/kaddid4.png';
+import kaddid5 from '../../assets/kaddid5.png';
 
 export default function KakaoFriendLesson(){
-  const images = { screens: { 1: kaddid, 2: kaddid1, 3: kaddid2, 4: kaddid3, 5: kaddid4 } };
+  const images = { screens: { 1: kaddid, 2: kaddid1, 3: kaddid2, 4: kaddid3, 5: kaddid4, 6: kaddid5 } };
     // make the TapHint on step 1 a bit smaller and keep the vertical nudge
     // also ensure the TapHint is visible on step 3 (explicit override)
     const tapHintConfig = {
@@ -38,5 +39,5 @@ export default function KakaoFriendLesson(){
       }
     };
 
-    return <GenericLesson steps={steps} images={images} tapHintConfig={tapHintConfig} textOverlayConfig={textOverlayConfig} backPath="/kakao/learn" headerTitle="친구 추가/관리" headerTagline="친구를 추가하고 관리하는 방법을 배워요." donePath="/kakao/learn" showSubmittedBubble={false} />;
+  return <GenericLesson steps={steps} images={images} tapHintConfig={tapHintConfig} textOverlayConfig={textOverlayConfig} backPath="/kakao/learn" headerTitle="친구 추가하기 (아이디)" headerTagline="친구를 아이디로 추가하는 방법을 연습합니다." donePath="/kakao/learn" showSubmittedBubble={false} />;
 }

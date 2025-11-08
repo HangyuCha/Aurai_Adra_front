@@ -149,7 +149,7 @@ export default function KakaoSettingLesson() {
       steps={steps}
       backPath="/kakao/learn"
       headerTitle="예약 메시지 보내기"
-      headerTagline="원하는 시간과 날짜를 지정하여 메시지를 작성하고, 자동으로 발송되는 기능까지 완벽하게 예약하고 취소하는 과정을 연습합니다."
+      headerTagline="원하는 시간과 날짜를 지정하여 메시지를 작성하고, 자동으로 발송되는 기능까지 완벽하게 예약하는 과정을 연습합니다."
       donePath="/kakao/learn"
       images={{ screenshot1: kreser3, screenshot2: kreser1, screenshot3: kreser2, screens: { 1: kreser1, 2: kreser2, 3: kreser3, 4: kreser3, 5: kreser5 } }}
       showSubmittedBubble={false}
@@ -169,7 +169,7 @@ export default function KakaoSettingLesson() {
       }}
 
       tapHintConfig={{
-        1: { selector: null, x: '7%', y: '86%', width: '26px', height: '24px', borderRadius: '10px', suppressInitial: true, ariaLabel: '더하기 버튼 힌트', offsetY: -20 },
+        1: { selector: null, x: '7%', y: '88%', width: '26px', height: '24px', borderRadius: '10px', suppressInitial: true, ariaLabel: '더하기 버튼 힌트', offsetY: -20 },
         2: { selector: null, x: '49%', y: '80%', width: '35px', height: '35px', borderRadius: '10px', suppressInitial: true, ariaLabel: '예약 메시지 버튼 힌트', offsetY: -20.5 },
         3: { selector: null, x: '30%', y: '19%', width: '155px', height: '35px', borderRadius: '10px', suppressInitial: true, ariaLabel: '예약 메시지 버튼 힌트', offsetY: -20.5 },
         // send hint is now on step 4 (was step 3)

@@ -27,31 +27,22 @@ const steps = [
     focusAreas: [{ x: 6, y: 46, w: 88, h: 10, pill: true }],
     inputPlaceholder: "메시지를 입력하세요",
     allowEnglish: true,
-    speak: "친구에게 인사말을 보내보세요.",
+    speak: "친구의 카카오톡 ID를 입력해보세요.",
   },
   {
     id: 5,
-    title: "친구 추가 완료",
+    title: "친구 추가하기",
     instruction: "친구 추가 탭을 눌러보세요.",
     focusAreas: [{ x: 6, y: 46, w: 88, h: 10, pill: true }],
     speak: "친구 추가 탭을 눌러 친구 추가를 완료해보세요.",
   },
   {
     id: 6,
-    title: "추가 정보 확인",
-    instruction: "추가로 표시되는 정보를 확인해보세요.",
-    focusAreas: [{ x: 6, y: 46, w: 88, h: 10, pill: true }],
-    inputPlaceholder: "메시지를 입력하세요",
-    speak: "화면에 표시된 추가 정보를 확인해보세요.",
-  },
-  {
-    id: 7,
     title: "완료 및 확인",
-    instruction: "작업이 완료되었는지 최종 확인해보세요.",
+    instruction: "친구 추가가 성공적으로 완료되었어요.",
     focusAreas: [{ x: 6, y: 46, w: 88, h: 10, pill: true }],
-    speak: "모든 작업을 확인하셨다면 완료해보세요.",
-    completionSpeak:
-      "잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?",
+    speak:
+      "친구 추가가 성공적으로 완료되었어요. 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?",
   },
 ];
 export default steps;

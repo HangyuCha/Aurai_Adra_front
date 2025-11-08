@@ -172,7 +172,9 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
               {
                 (() => {
                   // allow per-lesson overrides via tapHintConfig[step]
-                  const override = (tapHintConfig && tapHintConfig[step]) || {};
+                  // support either a single config object or an array of configs to render multiple hints
+                  const raw = (tapHintConfig && tapHintConfig[step]);
+                  const overrides = Array.isArray(raw) ? raw : [raw || {}];
                   const defaultProps = {
                     selector: 'button[aria-label="메시지 보내기"]',
                     width: step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%',
@@ -183,16 +185,16 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
                     suppressInitial: step === total,
                     ariaLabel: '전송 버튼 힌트'
                   };
-                  const hintProps = { ...defaultProps, ...override };
-                  // if the hintProps request the hint to be hidden, don't render it
-                  if(hintProps.hidden) return null;
-                  // if override supplies explicit x/y, let it override selector behaviour
-                  // allow per-step override for the activation handler (e.g., open a calendar)
-                  return (
-                    <TapHint {...hintProps} onActivate={(override && override.onActivate) ? override.onActivate : handleTapHintActivate}>
-                      {(override && override.inner) ? override.inner : null}
-                    </TapHint>
-                  );
+                  return overrides.map((override, idx) => {
+                    const hintProps = { ...defaultProps, ...override };
+                    if(hintProps.hidden) return null;
+                    const onAct = (override && override.onActivate) ? override.onActivate : handleTapHintActivate;
+                    return (
+                      <TapHint key={idx} {...hintProps} onActivate={onAct}>
+                        {(override && override.inner) ? override.inner : null}
+                      </TapHint>
+                    );
+                  });
                 })()
               }
               {/* Live text overlay (per-step) - rendered inside PhoneFrame.overlay so coordinates are percent-based relative to the screenshot */}
