@@ -9,7 +9,7 @@ import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
 import screenshot1 from '../../assets/msend3.png';
 import screenshot4 from '../../assets/msend4.png';
-import kemot1 from '../../assets/kemot1.png';
+import kemot1 from '../../assets/kreser1.png';
 import kemot2 from '../../assets/kemot2.png';
 import kemot3 from '../../assets/kemot3.png';
 import kemot4 from '../../assets/kemot4.png';
@@ -112,7 +112,7 @@ export default function KakaoUiLesson(){
       <header className={frameStyles.frameHeader} ref={headerRef}>
         <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
           <span className="titleText">이모티콘 보내기</span>
-          <span className={frameStyles.inlineTagline}>{current.instruction || '카카오톡의 기본 UI를 확인해 보세요.'}</span>
+          <span className={frameStyles.inlineTagline}>각종 이모티콘을 보내는 방법을 연습합니다.</span>
         </h1>
       </header>
       <div className={frameStyles.lessonRow}>
@@ -121,7 +121,7 @@ export default function KakaoUiLesson(){
             <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? kemot1 : (step === 2 ? kemot2 : (step === 3 ? (showKemot4 ? kemot4 : kemot3) : screenshot1)))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
               {!showKemot4 && (
-                <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '26px' : step === 2 ? '50px' : step === 3 ? '26px' : '18%'} height={step === 1 ? '27px' : step === 2 ? '50px' : step === 3 ? '26px' : '8%'} offsetX={step === 1 ? -120 : step === 2 ? 36 : step === 3 ? 123 : 0} offsetY={step === 1 ? -46 : step === 2 ? -15 : step === 3 ? 93 : 10} borderRadius={'10px'} onActivate={() => { if(step === 3){ setShowKemot4(true); return; } if(step === total) { submitAnswer(); } else { next(); } }} suppressInitial={false} ariaLabel={'전송 버튼 힌트'} />
+                <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '26px' : step === 2 ? '50px' : step === 3 ? '26px' : '18%'} height={step === 1 ? '27px' : step === 2 ? '50px' : step === 3 ? '26px' : '8%'} offsetX={step === 1 ? -120 : step === 2 ? 36 : step === 3 ? 123 : 0} offsetY={step === 1 ? -58 : step === 2 ? -15 : step === 3 ? 93 : 10} borderRadius={'10px'} onActivate={() => { if(step === 3){ setShowKemot4(true); return; } if(step === total) { submitAnswer(); } else { next(); } }} suppressInitial={false} ariaLabel={'전송 버튼 힌트'} />
               )}
               {current && current.inputPlaceholder && (
                 <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={current.inputPlaceholder || '메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />

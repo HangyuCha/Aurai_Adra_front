@@ -66,8 +66,8 @@ export default function KakaoFriendNumLesson(){
       tapHintConfig={tapHintConfig}
       textOverlayConfig={textOverlayConfig}
       backPath="/kakao/learn"
-      headerTitle="친구 추가/관리"
-      headerTagline="친구를 추가하고 관리하는 방법을 배워요."
+      headerTitle="친구 추가하기 (전화번호)"
+      headerTagline="친구를 전화번호로 추가하는 방법을 연습합니다."
       donePath="/kakao/learn"
       showSubmittedBubble={false}
     />
