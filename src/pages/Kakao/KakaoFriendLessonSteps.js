@@ -35,8 +35,6 @@ const steps = [
     instruction: "친구 추가 탭을 눌러보세요.",
     focusAreas: [{ x: 6, y: 46, w: 88, h: 10, pill: true }],
     speak: "친구 추가 탭을 눌러 친구 추가를 완료해보세요.",
-    completionSpeak:
-      "잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?",
   },
   {
     id: 6,
@@ -52,6 +50,8 @@ const steps = [
     instruction: "작업이 완료되었는지 최종 확인해보세요.",
     focusAreas: [{ x: 6, y: 46, w: 88, h: 10, pill: true }],
     speak: "모든 작업을 확인하셨다면 완료해보세요.",
+    completionSpeak:
+      "잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?",
   },
 ];
 export default steps;

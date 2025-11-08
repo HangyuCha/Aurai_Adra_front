@@ -34,6 +34,17 @@ export default function KakaoSettingLesson() {
     if (selectedDate) setSelectedDateTime(`${selectedDate} ${hh}:${mm}`);
     setCalendarOpen(false);
     setDateStage('date');
+    // Play the completionSpeak for the final step (step id 5) so the user hears confirmation
+    try{
+      if(typeof window !== 'undefined' && 'speechSynthesis' in window){
+        const finalStep = (steps || []).find(s => s.id === 5) || {};
+        const msg = finalStep.completionSpeak || '잘하셨어요! 예약 메시지가 저장되었습니다.';
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(msg);
+        u.lang = 'ko-KR';
+        window.speechSynthesis.speak(u);
+      }
+    }catch{ /* ignore speech errors */ }
   }
 
   // 'YYYY-MM-DD HH:MM' 형식을 'YYYY.MM.DD.요일 오전/오후 H시:MM분' 형식으로 변환합니다.
@@ -140,28 +151,31 @@ export default function KakaoSettingLesson() {
       headerTitle="예약 메시지 보내기"
       headerTagline="원하는 시간과 날짜를 지정하여 메시지를 작성하고, 자동으로 발송되는 기능까지 완벽하게 예약하고 취소하는 과정을 연습합니다."
       donePath="/kakao/learn"
-      images={{ screenshot1: kreser3, screenshot2: kreser1, screenshot3: kreser2, screens: { 1: kreser1, 2: kreser2, 3: kreser3, 4: kreser5 } }}
+      images={{ screenshot1: kreser3, screenshot2: kreser1, screenshot3: kreser2, screens: { 1: kreser1, 2: kreser2, 3: kreser3, 4: kreser3, 5: kreser5 } }}
       showSubmittedBubble={false}
 
       imageOverlayConfig={{
-        3: { src: kreser4, x: '45%', y: '65%', width: '90%', transform: 'translate(-50%, -48%)', zIndex: 1, opacity: 1 },
-        // show kreser6 on step 4 only when a date/time has been selected
-        ...(selectedDateTime ? { 4: { src: kreser6, x: '34%', y: '93.5%', width: '60%', transform: 'translate(-50%, -50%)', zIndex: 2, opacity: 1 } } : {})
+        // move the explanatory overlay to the input step (now step 4)
+        4: { src: kreser4, x: '45%', y: '70%', width: '90%', transform: 'translate(-50%, -48%)', zIndex: 1, opacity: 1 },
+        // show kreser6 on step 5 only when a date/time has been selected
+        ...(selectedDateTime ? { 5: { src: kreser6, x: '34%', y: '93.5%', width: '60%', transform: 'translate(-50%, -50%)', zIndex: 2, opacity: 1 } } : {})
       }}
 
       textOverlayConfig={{
-        3: { x: '40%', y: '20%', width: '72%', fontSize: '14px', color: '#111', textAlign: 'left', zIndex: 2, whiteSpace: 'pre-wrap' },
-        // For step 4 we omit an explicit `value` so GenericLesson will fall back
-        // to its internal `submittedText` (the message the user composed on step 3),
-        // ensuring the message appears in the same position on step 4.
-        4: { x: '32%', y: '22%', width: '60%', fontSize: '14px', color: '#0f172a', textAlign: 'left', zIndex: 3, whiteSpace: 'nowrap' }
+        // previous step 3 overlay is now on step 4 (input step)
+        4: { x: '40%', y: '20%', width: '72%', fontSize: '14px', color: '#111', textAlign: 'left', zIndex: 2, whiteSpace: 'pre-wrap' },
+        // For step 5 we show the submitted message from step 4 (use submittedText)
+        5: { valueFromStep: 4, x: '32%', y: '22%', width: '60%', fontSize: '14px', color: '#0f172a', textAlign: 'left', zIndex: 3, whiteSpace: 'nowrap' }
       }}
 
       tapHintConfig={{
         1: { selector: null, x: '7%', y: '86%', width: '26px', height: '24px', borderRadius: '10px', suppressInitial: true, ariaLabel: '더하기 버튼 힌트', offsetY: -20 },
-        2: { selector: null, x: '49%', y: '74%', width: '35px', height: '35px', borderRadius: '10px', suppressInitial: true, ariaLabel: '예약 메시지 버튼 힌트', offsetY: -20.5 },
-        3: { selector: null, x: '90.1%', y: '85%', width: '25px', height: '25px', borderRadius: '15px', suppressInitial: false, ariaLabel: '예약 전송 힌트', offsetY: 142 },
-        4: {
+        2: { selector: null, x: '49%', y: '80%', width: '35px', height: '35px', borderRadius: '10px', suppressInitial: true, ariaLabel: '예약 메시지 버튼 힌트', offsetY: -20.5 },
+        3: { selector: null, x: '30%', y: '19%', width: '155px', height: '35px', borderRadius: '10px', suppressInitial: true, ariaLabel: '예약 메시지 버튼 힌트', offsetY: -20.5 },
+        // send hint is now on step 4 (was step 3)
+        4: { selector: null, x: '90.1%', y: '85%', width: '25px', height: '25px', borderRadius: '15px', suppressInitial: false, ariaLabel: '예약 전송 힌트', offsetY: 142 },
+        // calendar/confirmation hint moved to step 5
+        5: {
           selector: null,
           x: '80%', y: '85%', width: '190px', height: '28px', borderRadius: '10px', suppressInitial: false,
           ariaLabel: '예약 완료 힌트', offsetY: -37, offsetX: -120, onActivate: openCalendar,
