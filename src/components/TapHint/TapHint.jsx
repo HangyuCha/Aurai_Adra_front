@@ -142,6 +142,7 @@ function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRad
       ref={ref}
       type="button"
       aria-label={ariaLabel}
+      data-tap-hint="1"
       className={styles.hint}
       style={style}
       onClick={onActivate}
