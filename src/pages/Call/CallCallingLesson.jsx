@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from '../Sms/SmsLessonFrame.module.css';
@@ -7,17 +7,14 @@ import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
-import screenshot1 from '../../assets/msend3.png';
-import screenshot2 from '../../assets/msend1.png';
-import screenshot3 from '../../assets/msend2.png';
-import screenshot4 from '../../assets/msend4.png';
-import stepsConfig from './CallCallingLessonSteps.js';
+import { buildCallLessonConfig, topicMeta } from './callDynamicSteps.js';
 
 export default function CallCallingLesson(){
   const navigate = useNavigate();
+  const { steps: dynSteps, screens } = useMemo(() => buildCallLessonConfig('calling'), []);
   const [step,setStep] = useState(1);
-  const steps = stepsConfig;
-  const total = steps.length;
+  const steps = dynSteps;
+  const total = steps.length || 1;
   const shellRef = useRef(null);
   const shellAreaRef = useRef(null);
   const [isSide,setIsSide] = useState(false);
@@ -35,11 +32,11 @@ export default function CallCallingLesson(){
   const [speaking,setSpeaking] = useState(false);
   const [autoPlayed,setAutoPlayed] = useState(false);
   const [voices,setVoices] = useState([]);
-  const current = steps.find(st => st.id === step) || steps[0];
+  const current = useMemo(() => (steps.find(st => st.id === step) || steps[0] || {}), [steps, step]);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const lastKeyRef = useRef({ch:null, t:0});
   const [submittedText, setSubmittedText] = useState('');
-  const [useSubmittedScreenshot, setUseSubmittedScreenshot] = useState(false);
+  const [dialed, setDialed] = useState('');
 
   // minimal composer helpers (copied)
   const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -78,7 +75,7 @@ export default function CallCallingLesson(){
 
   const onSubmitAnswer = (e) => { e.preventDefault(); submitAnswer(); };
 
-  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } } }
+  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } } }
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
@@ -102,16 +99,148 @@ export default function CallCallingLesson(){
       <BackButton to="/call/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
         <h1 className={`${frameStyles.frameTitle} ${lt.withAccent}`}>
-          <span className="titleText">전화걸기</span>
-          <span className={frameStyles.inlineTagline}>{current.instruction || '전화를 걸고 통화하는 기본 흐름을 연습해 보세요.'}</span>
+          <span className="titleText">{topicMeta.calling.title}</span>
+          <span className={frameStyles.inlineTagline}>{topicMeta.calling.tagline || current.instruction || '전화를 걸고 통화하는 기본 흐름을 연습해 보세요.'}</span>
         </h1>
       </header>
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            <PhoneFrame image={screens[step]} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0} offsetY={step === 1 ? 212 : step === 2 ? -67.5 : step === 3 ? 0 : 0} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={step === total} ariaLabel={'전송 버튼 힌트'} />
+              {/* Step 1, 2, 3: Dialed number display logic */}
+              {(step === 1 || step === 2 || step === 3) && (
+                <>
+                  {/* Step 2/3: Status text above the phone number */}
+                  {(step === 2 || step === 3) && (
+                    <div aria-hidden="true" style={{
+                      position:'absolute', left:'50%', top:'3.5%', transform:'translateX(-50%)',
+                      width:'84%', minHeight:'22px', textAlign:'center',
+                      fontSize:'13px', fontWeight:400, color: (step === 3 ? '#666' : '#333'),
+                      letterSpacing:'1px', zIndex:3, pointerEvents:'none',
+                      textShadow:'0 1px 2px rgba(255,255,255,0.6)'
+                    }}>
+                      휴대전화 연결 중...
+                    </div>
+                  )}
+                  {/* Dialed number display (top of keypad) */}
+                  <div aria-live="polite" style={{
+                    position:'absolute', left:'50%', top:'8%', transform:'translateX(-50%)',
+                    width:'80%', minHeight:'24px', textAlign:'center',
+                      fontSize: step === 1 ? '22px' : '20px', fontWeight:400, color: (step === 3 ? '#707070ff' : '#111'),
+                    letterSpacing:'2px', zIndex:3, pointerEvents:'none',
+                    textShadow:'0 1px 2px rgba(255,255,255,0.6)'
+                  }}>
+                    {dialed}
+                  </div>
+                </>
+              )}
+
+              {/* Step 1: Dialpad interactive overlay */}
+              {step === 1 && (
+                <>
+                  {/* (dialed number already rendered above) */}
+
+                  {/* Helper to render circular hit areas for digits */}
+                  {[
+                    // 간격 재조정: 각 행 간격을 13%로 (이전 9%보다 넓게, 원래 17%의 절반 증가)
+                    // 선택된 Y: 30, 43, 56, 69 (첫 행 유지, 이후 +13%)
+                    // 요청: 숫자 버튼들을 위로 6px 이동
+                    {ch:'1', x:'25%', y:'calc(30% - 6px)'}, {ch:'2', x:'50%', y:'calc(30% - 6px)'}, {ch:'3', x:'75%', y:'calc(30% - 6px)'},
+                    {ch:'4', x:'25%', y:'calc(43% - 6px)'}, {ch:'5', x:'50%', y:'calc(43% - 6px)'}, {ch:'6', x:'75%', y:'calc(43% - 6px)'},
+                    {ch:'7', x:'25%', y:'calc(56% - 6px)'}, {ch:'8', x:'50%', y:'calc(56% - 6px)'}, {ch:'9', x:'75%', y:'calc(56% - 6px)'},
+                    {ch:'*', x:'25%', y:'calc(69% - 6px)'}, {ch:'0', x:'50%', y:'calc(69% - 6px)'}, {ch:'#', x:'75%', y:'calc(69% - 6px)'}
+                  ].map((b, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      aria-label={`키패드 ${b.ch}`}
+                      onClick={()=> setDialed(d => (d + b.ch))}
+                      style={{
+                        position:'absolute', left:b.x, top:b.y, transform:'translate(-50%, -50%)',
+                        width:'55px', height:'55px', borderRadius:'50%',
+                        background:'transparent', backdropFilter:'none',
+                        border:'none', cursor:'pointer',
+                        boxShadow:'none',
+                        transition:'background .12s, transform .15s',
+                        zIndex:3
+                      }}
+                      onMouseDown={e=>{ e.currentTarget.style.background='rgba(0,0,0,0.10)'; e.currentTarget.style.transform='translate(-50%, -50%) scale(0.95)'; }}
+                      onMouseUp={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                      onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                      onTouchStart={e=>{ e.currentTarget.style.background='rgba(0,0,0,0.12)'; e.currentTarget.style.transform='translate(-50%, -50%) scale(0.95)'; }}
+                      onTouchEnd={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                      onTouchCancel={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                    />
+                  ))}
+
+                  {/* Call button (green) */}
+                  <button
+                    type="button"
+                    aria-label="발신"
+                    disabled={!dialed.length}
+                    onClick={()=> { if(dialed.length) next(); }}
+                    style={{
+                      position:'absolute', left:'50%', top:'calc(84% - 10px)', transform:'translate(-50%, -50%)',
+                      width:'55px', height:'55px', borderRadius:'50%',
+                      background:'transparent',
+                      border:'none', cursor: dialed.length ? 'pointer' : 'default',
+                      boxShadow:'none', color:'transparent', fontSize:'0', zIndex:3
+                    }}
+                    onMouseDown={e=>{ if(!dialed.length) return; e.currentTarget.style.background='rgba(40,190,60,0.25)'; e.currentTarget.style.transform='translate(-50%, -50%) scale(0.95)'; }}
+                    onMouseUp={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                    onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                    onTouchStart={e=>{ if(!dialed.length) return; e.currentTarget.style.background='rgba(40,190,60,0.25)'; e.currentTarget.style.transform='translate(-50%, -50%) scale(0.95)'; }}
+                    onTouchEnd={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                    onTouchCancel={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                  />
+
+                  {/* TapHint aligned to call button (step 1 only) */}
+                  <TapHint
+                    selector={'button[aria-label="발신"]'}
+                    width={'55px'}
+                    height={'55px'}
+                    offsetX={0}
+                    offsetY={0}
+                    borderRadius={'50%'}
+                    onActivate={()=>{ if(dialed.length) next(); }}
+                    ariaLabel={'발신 버튼 힌트'}
+                  />
+
+                  {/* Backspace (bottom-right small) */}
+                  <button
+                    type="button"
+                    aria-label="지우기"
+                    disabled={!dialed.length}
+                    onClick={()=> setDialed(d => d.slice(0, -1))}
+                    style={{
+                      position:'absolute', left:'calc(82% - 20px)', top:'calc(84% - 10px)', transform:'translate(-50%, -50%)',
+                      width:'5.5%', height:'4%', borderRadius:'8px',
+                      background:'transparent',
+                      border:'none', cursor: dialed.length ? 'pointer' : 'default', zIndex:3
+                    }}
+                    onMouseDown={e=>{ if(!dialed.length) return; e.currentTarget.style.background='rgba(0,0,0,0.10)'; e.currentTarget.style.transform='translate(-50%, -50%) scale(0.95)'; }}
+                    onMouseUp={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                    onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                    onTouchStart={e=>{ if(!dialed.length) return; e.currentTarget.style.background='rgba(0,0,0,0.12)'; e.currentTarget.style.transform='translate(-50%, -50%) scale(0.95)'; }}
+                    onTouchEnd={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                    onTouchCancel={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.transform='translate(-50%, -50%) scale(1)'; }}
+                  />
+                </>
+              )}
+              {step !== 1 && (
+                <TapHint
+                  selector={'button[aria-label="메시지 보내기"]'}
+                  width={step === 2 ? '180px' : step === 3 ? '60px' : '18%'}
+                  height={step === 2 ? '25px' : step === 3 ? '30px' : '8%'}
+                  offsetX={step === 2 ? 38 : step === 3 ? 0 : 0}
+                  offsetY={step === 2 ? -67.5 : step === 3 ? 0 : 0}
+                  borderRadius={'10px'}
+                  onActivate={step === total ? submitAnswer : next}
+                  suppressInitial={step === total}
+                  ariaLabel={'전송 버튼 힌트'}
+                />
+              )}
               {step === total && (
                 <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}

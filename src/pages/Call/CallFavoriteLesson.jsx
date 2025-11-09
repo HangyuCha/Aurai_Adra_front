@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import GenericLesson from '../common/GenericLesson';
-import steps from './CallFavoriteLessonSteps.js';
+import { buildCallLessonConfig, topicMeta } from './callDynamicSteps.js';
 
 export default function CallFavoriteLesson(){
-  return <GenericLesson steps={steps} backPath="/call/learn" headerTitle="즐겨찾기 등록하기" headerTagline="중요한 연락처를 즐겨찾기에 추가해 보세요." donePath="/call/learn" chapterId={10} />;
+  const { steps, screens } = useMemo(() => buildCallLessonConfig('favorite'), []);
+  const meta = topicMeta.favorite;
+  return (
+    <GenericLesson
+      steps={steps}
+      images={{ screens }}
+      backPath="/call/learn"
+      headerTitle={meta.title}
+      headerTagline={meta.tagline}
+      donePath="/call/learn"
+      chapterId={10}
+    />
+  );
 }
