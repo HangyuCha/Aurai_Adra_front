@@ -3,7 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from '../Sms/SmsLessonFrame.module.css';
 import steps from './GptAskLessonSteps.js';
-import gptMock from '../../assets/gpt-mock-2.svg';
+import gptAsk from '../../assets/gptAsk.png';
+import gptAsk2 from '../../assets/gptAsk2.png';
+import gptAsk3 from '../../assets/gptAsk3.png';
+import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
+import TapHint from '../../components/TapHint/TapHint';
+import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
 
 export default function GptAskLesson(){
   const navigate = useNavigate();
@@ -15,6 +20,33 @@ export default function GptAskLesson(){
   const headerRef = useRef(null);
   const [scale,setScale] = useState(1);
   const [deviceWidth,setDeviceWidth] = useState(null);
+  const [inputText, setInputText] = useState('');
+  const [notice, setNotice] = useState('');
+  const noticeTimerRef = useRef(null);
+  const [noticePersistent, setNoticePersistent] = useState(false);
+  const [comp, setComp] = useState({lead:'', vowel:'', tail:''});
+  const compRef = useRef({lead:'', vowel:'', tail:''});
+  function updateComp(next){ setComp(next); compRef.current = next; }
+  function updateCompFn(fn){ setComp(prev=>{ const next = fn(prev); compRef.current = next; return next; }); }
+  const lastKeyRef = useRef({ch:null, t:0});
+
+  // Hangul composition tables (same logic used in SMS lessons)
+  const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  const JUNG = ['\u0000','ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
+  const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+  const VCOMB = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
+  const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
+
+  function combineVowel(a,b){ if(!a||!b) return null; const key = `${a}${b}`; return VCOMB[key]||null; }
+  function combineJong(a,b){ if(!a||!b) return null; const key = `${a}${b}`; return JCOMB[key]||null; }
+
+  function flushComposition(snapshot){ const {lead, vowel, tail} = snapshot || compRef.current; updateComp({lead:'', vowel:'', tail:''}); if(!lead && !vowel && !tail) return; if(!lead && vowel){ setInputText(a=> a + vowel); return; } const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ const syll = String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); setInputText(a=> a + syll); } else { const raw = (lead||'') + (vowel||'') + (tail||''); setInputText(a=> a + raw); } }
+
+  function getCommittedFromComp(snapshot){ const {lead, vowel, tail} = snapshot || compRef.current; if(!lead && !vowel && !tail) return ''; if(!lead && vowel) return vowel; const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ return String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); } return (lead||'') + (vowel||'') + (tail||''); }
+
+  function handleJamoInput(ch){ const prev = compRef.current; if(JUNG.includes(ch)){ if(prev.tail){ const isCompositeTail = Object.values(JCOMB).includes(prev.tail); if(isCompositeTail){ let left=null,right=null; for(const k in JCOMB){ if(JCOMB[k]===prev.tail){ left=k.charAt(0); right=k.charAt(1); break; } } if(left && right){ const snapLeft = {lead: prev.lead, vowel: prev.vowel, tail: left}; flushComposition(snapLeft); updateComp({lead: right, vowel: ch, tail: ''}); return; } flushComposition(prev); updateComp({lead:'', vowel: ch, tail: ''}); return; } const tailChar = prev.tail; const snap2 = {lead: prev.lead, vowel: prev.vowel, tail: ''}; flushComposition(snap2); updateComp({lead: tailChar, vowel: ch, tail: ''}); return; } if(prev.lead && prev.vowel){ const comb = combineVowel(prev.vowel, ch); if(comb){ updateComp({...prev, vowel: comb}); return; } flushComposition(prev); updateComp({lead:'', vowel: ch, tail:''}); return; } if(prev.lead && !prev.vowel){ updateComp({...prev, vowel: ch}); return; } if(!prev.lead){ setInputText(a=> a + ch); return; } flushComposition(prev); setInputText(a=> a + ch); return; } if(CHO.includes(ch)){ if(!prev.lead){ updateComp({...prev, lead: ch}); return; } if(prev.lead && !prev.vowel){ flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } if(prev.lead && prev.vowel && !prev.tail){ if(JONG.includes(ch)){ updateComp({...prev, tail: ch}); return; } flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } if(prev.lead && prev.vowel && prev.tail){ const combined = combineJong(prev.tail, ch); if(combined){ updateComp({...prev, tail: combined}); return; } flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } } flushComposition(prev); setInputText(a=> a + ch); return; }
+
+  function composePreview(){ const {lead, vowel, tail} = comp; if(!lead && !vowel && !tail) return ''; if(!lead && vowel) return vowel; const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ return String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); } return (lead||'') + (vowel||'') + (tail||''); }
   const [voices,setVoices] = useState([]);
   const [speaking,setSpeaking] = useState(false);
   const [autoPlayed,setAutoPlayed] = useState(false);
@@ -46,12 +78,51 @@ export default function GptAskLesson(){
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[step, voices]);
 
+  // clear any notice timer when unmounting
+  useEffect(()=>{
+    return ()=>{ if(noticeTimerRef.current){ clearTimeout(noticeTimerRef.current); noticeTimerRef.current = null; } };
+  },[]);
+
+  function showNotice(msg, { autoHide = true, duration = 1800 } = {}){
+    setNotice(msg);
+    setNoticePersistent(!autoHide);
+    if(noticeTimerRef.current){ clearTimeout(noticeTimerRef.current); noticeTimerRef.current = null; }
+    if(autoHide){
+      noticeTimerRef.current = setTimeout(()=>{ setNotice(''); noticeTimerRef.current = null; }, duration);
+    }
+  }
+
+
   useEffect(()=>{
     if(!globalThis.speechSynthesis) return;
     function loadVoices(){ const list = globalThis.speechSynthesis.getVoices?.() || []; if(list.length) setVoices(list); }
     loadVoices();
     globalThis.speechSynthesis.addEventListener('voiceschanged', loadVoices);
     return ()=> globalThis.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+  },[]);
+
+  // remove the outer device shell's heavy border/shadow for this page only
+  useEffect(()=>{
+    const el = shellRef.current;
+    if(!el) return;
+    const prevBorder = el.style.border;
+    const prevBoxShadow = el.style.boxShadow;
+    const prevBackground = el.style.background;
+    const prevBorderRadius = el.style.borderRadius;
+
+    // neutralize the visual chrome but keep layout intact
+    el.style.border = 'none';
+    el.style.boxShadow = 'none';
+    el.style.background = 'transparent';
+
+    return ()=>{
+      // restore previous inline styles
+      if(!el) return;
+      el.style.border = prevBorder || '';
+      el.style.boxShadow = prevBoxShadow || '';
+      el.style.background = prevBackground || '';
+      el.style.borderRadius = prevBorderRadius || '';
+    };
   },[]);
 
   useEffect(()=>{
@@ -156,21 +227,115 @@ export default function GptAskLesson(){
   <div className={frameStyles.framePage} style={{height: '100vh', overflow: 'hidden', padding: 0, boxSizing: 'border-box', display: 'flex', flexDirection: 'column'}}>
       <BackButton to="/gpt/learn" variant="fixed" />
       <header className={frameStyles.frameHeader} ref={headerRef}>
-        <h1 className={frameStyles.frameTitle}>질문 잘 하기</h1>
-        <span className={frameStyles.inlineTagline}>명확하고 구체적인 프롬프트 작성법</span>
+  <h1 className={frameStyles.frameTitle}>글로 질문하기</h1>
+        <span className={frameStyles.inlineTagline}>궁금한 것을 글로 질문하기</span>
       </header>
   <div className={frameStyles.lessonRow} style={{flex: 1, overflow: 'hidden'}}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} className={frameStyles.deviceShell} style={{...shellStyle, overflow: 'hidden'}}>
-            <div className={frameStyles.deviceInner}>
-              <div className={frameStyles.statusStrip}><span className={frameStyles.statusTime}>9:41</span><div className={frameStyles.statusIcons}><span className={frameStyles.signal} /><span className={frameStyles.wifi} /><span className={frameStyles.battery} /></div></div>
-              <div className={frameStyles.screenArea}>
-                <div style={{position:'relative',width:'100%',height:'100%',padding:12,boxSizing:'border-box', overflow:'hidden'}}>
-                  {/* show the provided GPT mock screenshot inside the phone without scroll */}
-                  <img src={gptMock} alt="gpt mock" style={{display:'block',width:'100%',height:'100%',objectFit:'cover',borderRadius:10}} />
-                </div>
-              </div>
-            </div>
+            {/* Use shared PhoneFrame so GPT screen matches other apps */}
+            <PhoneFrame image={step === 2 ? gptAsk2 : (step === 3 ? gptAsk3 : gptAsk)} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+              {/* a small target marker positioned over the screenshot area we want to highlight
+                  This marker lives inside the PhoneFrame.overlay so TapHint can query it by selector.
+                  Adjust left/top/width/height as needed to fine-tune the highlighted area. */}
+              {step === 1 && (
+                <>
+                  <div
+                    aria-hidden
+                    className="gpt-tap-target"
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '87%',
+                      width: '95%',
+                      height: '10%',
+                      transform: 'translate(-50%, -50%)',
+                      pointerEvents: 'none',
+                    }}
+                  />
+
+                  {/* TapHint will position itself over the .gpt-tap-target element; clicking advances to step 2 */}
+                  <TapHint selector={'.gpt-tap-target'} ariaLabel={'사진 탭힌트'} suppressInitial={true} onActivate={() => setStep(2)} />
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  {/* in-phone text display bar that shows typed characters */}
+                  <div
+                    aria-live="polite"
+                    className="gpt-input-display"
+                    style={{
+                      position: 'absolute',
+                      left: '40%',
+                      bottom: '225px', /* place above keyboard */
+                      transform: 'translateX(-50%)',
+                      width: '70%', /* shorter so the photo icon on the right is visible */
+                      minHeight: '38px',
+                      background: '#1f2937', /* solid dark so underlying content is hidden */
+                      color: '#fff',
+                      padding: '8px 12px',
+                      borderRadius: '999px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      zIndex: 120,
+                      boxSizing: 'border-box',
+                      pointerEvents: 'auto',
+                      fontSize: 12,
+                    }}
+                  >
+                    <span style={{opacity:0.85, fontSize:16, lineHeight:1}} aria-hidden>＋</span>
+                    <span style={{flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{((inputText || '') + composePreview()) || '무엇이든 물어보세요'}</span>
+                  </div>
+
+                    {/* small marker positioned over the send/photo icon on the right so TapHint can target it */}
+                    <div
+                      aria-hidden
+                      className="gpt-send-target"
+                      style={{
+                        position: 'absolute',
+                        right: 14,
+                        bottom: '225px',
+                        width: 33,
+                        height: 33,
+                        borderRadius: 999,
+                        transform: 'none',
+                        pointerEvents: 'none',
+                        zIndex: 125,
+                      }}
+                    />
+
+                    {/* TapHint pointing to the send icon; tapping will flush composition and proceed (or show notice) */}
+                    <TapHint selector={'.gpt-send-target'} ariaLabel={'보내기 탭힌트'} width={'44px'} height={'44px'} borderRadius={'999px'} onActivate={() => {
+                      const visible = ((inputText || '') + composePreview()) || '무엇이든 물어보세요';
+                      if((visible || '').trim() === '맛있는 음식을 추천해줘'){
+                        flushComposition();
+                        setStep(Math.min(3, total));
+                      } else {
+                        // make the notice persistent for elderly users (option B)
+                        showNotice('정확히 "맛있는 음식을 추천해줘"를 입력한 뒤 눌러주세요', { autoHide: false });
+                      }
+                    }} />
+
+                    {/* small temporary notice that appears when TapHint condition fails */}
+                    {notice ? (
+                      <div style={{position:'absolute', left:'50%', bottom: '270px', transform:'translateX(-50%)', background:'rgba(0,0,0,0.85)', color:'#fff', padding:'8px 12px', borderRadius:8, zIndex:130, fontSize:12, display:'flex', alignItems:'center', gap:8}} aria-live="polite">
+                        <output style={{flex:1}}>{notice}</output>
+                        {noticePersistent ? (
+                          <button type="button" aria-label="닫기" onClick={()=>{ setNotice(''); setNoticePersistent(false); if(noticeTimerRef.current){ clearTimeout(noticeTimerRef.current); noticeTimerRef.current = null; } }} style={{background:'transparent', border:'none', color:'#fff', fontSize:14, cursor:'pointer'}}>✕</button>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                  <VirtualKeyboard
+                    onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; if(ch === ' '){ flushComposition(); setInputText(t => (t || '') + ' '); } else if(ch === '\n'){ flushComposition(); setInputText(t => (t || '') + '\n'); } else { handleJamoInput(ch); } }}
+                    onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setInputText(t => (t || '').slice(0, -1)); }}
+                    onEnter={()=>{ flushComposition(); next(); }}
+                  />
+                </>
+              )}
+            </PhoneFrame>
           </div>
         </div>
 
