@@ -37,6 +37,15 @@ export default function PhoneFrame({
   return (
     <div className={styles.phone} style={styleVars}>
       <div className={styles.outerBezel}>
+        {/* 좌측 볼륨 버튼 (+/-) */}
+        <div className={styles.volumeButtons} aria-hidden>
+          <span className={styles.sideBtn} />
+          <span className={styles.sideBtn} />
+        </div>
+        {/* 우측 전원 버튼 */}
+        <div className={styles.powerButton} aria-hidden>
+          <span className={styles.sideBtn} />
+        </div>
         <div className={styles.bezel}>
         <div className={styles.screen}>
           {showStatusBar && (

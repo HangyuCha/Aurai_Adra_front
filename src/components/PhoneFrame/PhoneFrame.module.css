@@ -1,9 +1,17 @@
 .phone{--scale:1;display:flex;justify-content:center;align-items:center;transform:scale(var(--scale,1));transform-origin:top center;}
 .bezel{background:linear-gradient(135deg,#fdfdfd,#eaeef3);border:6px solid #0e0e0f;border-radius:42px;box-shadow:none;padding:5px;}
 /* 외곽 추가 빨간 베젤 */
-.outerBezel{background:transparent;border:6px solid #d60000;border-radius:48px;padding:0px;box-sizing:border-box;display:inline-block}
+.outerBezel{background:transparent;border:6px solid #d60000;border-radius:48px;padding:0px;box-sizing:border-box;display:inline-block;position:relative}
 .screen{position:relative;background:#fff;border-radius:30px;overflow:hidden;} 
 /* 전체 프레임 너비 제어 (고정) */
+/* (중복 정의 제거) */
+/* 측면 버튼 (볼륨/전원) */
+.volumeButtons{position:absolute;left:-10px;top:132px;transform:none;display:flex;flex-direction:column;gap:8px}
+.powerButton{position:absolute;right:-10px;top:130px;transform:none;display:flex}
+.sideBtn{width:5px;height:26px;background:#d60000;border-radius:3px;box-shadow:0 0 0 0px rgba(0,0,0,0.15),0 2px 4px rgba(0,0,0,0.25);}
+/* 개별 높이 제어: 기본 높이 유지, 볼륨/전원 각각 다른 높이를 줄 수 있게 분리 */
+.volumeButtons .sideBtn{height:var(--volume-btn-height,50px)}
+.powerButton .sideBtn{height:var(--power-btn-height,70px)}
 .screen::before{content:"";display:block;width:278px;} /* adjusted so overall outer width ≈ 300px (bezel+borders add ~22px) */
 /* 상태바와 하단바 사이 실제 화면(이미지) 박스: 이미지 비율 유지 */
 .contentBox{position:relative;margin-top:var(--bar-h,34px);margin-bottom:calc(var(--bar-h,34px) - 10px);background:#fff;border-radius:0;} 
