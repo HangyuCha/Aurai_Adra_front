@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import GenericLesson from '../common/GenericLesson';
-import steps from './CallFixLessonSteps.js';
+import { buildCallLessonConfig, topicMeta } from './callDynamicSteps.js';
 
 export default function CallFixLesson(){
-  return <GenericLesson steps={steps} backPath="/call/learn" headerTitle="연락처 수정하기" headerTagline="기존 연락처의 정보를 수정하는 방법을 배워요." donePath="/call/learn" chapterId={9} />;
+  const { steps, screens } = useMemo(() => buildCallLessonConfig('fix'), []);
+  const meta = topicMeta.fix;
+  return (
+    <GenericLesson
+      steps={steps}
+      images={{ screens }}
+      backPath="/call/learn"
+      headerTitle={meta.title}
+      headerTagline={meta.tagline}
+      donePath="/call/learn"
+      chapterId={9}
+    />
+  );
 }

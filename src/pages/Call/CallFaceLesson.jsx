@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import GenericLesson from '../common/GenericLesson';
-import steps from './CallFaceLessonSteps.js';
+import { buildCallLessonConfig, topicMeta } from './callDynamicSteps.js';
 
 export default function CallFaceLesson(){
-  return <GenericLesson steps={steps} backPath="/call/learn" headerTitle="영상통화 하기" headerTagline="영상통화 시작과 화면 전환을 연습해요." donePath="/call/learn" chapterId={14} />;
+  const { steps, screens } = useMemo(() => buildCallLessonConfig('face'), []);
+  const meta = topicMeta.face;
+  return (
+    <GenericLesson
+      steps={steps}
+      images={{ screens }}
+      backPath="/call/learn"
+      headerTitle={meta.title}
+      headerTagline={meta.tagline}
+      donePath="/call/learn"
+      chapterId={14}
+    />
+  );
 }
