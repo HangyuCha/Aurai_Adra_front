@@ -40,10 +40,14 @@ import GptSafetyLesson from './pages/Gpt/GptSafetyLesson.jsx';
 import GptLimitsLesson from './pages/Gpt/GptLimitsLesson.jsx';
 import KakaoUiLesson from './pages/Kakao/KakaoUiLesson.jsx';
 import KakaoUiPractice from './pages/Kakao/KakaoUiPractice.jsx';
+import KakaoAddBYldPractice from './pages/Kakao/KakaoAddBYldPractice.jsx';
+import KakaoAddByIdPractice from './pages/Kakao/KakaoAddByIdPractice.jsx';
+import KakaoAddByPhonePractice from './pages/Kakao/KakaoAddByPhonePractice.jsx';
 import KakaoFriendLesson from './pages/Kakao/KakaoFriendLesson.jsx';
 import KakaoFriendNumLesson from './pages/Kakao/KakaoFriendNumLesson.jsx';
 import KakaoRoomLesson from './pages/Kakao/KakaoRoomLesson.jsx';
 import KakaoMediaLesson from './pages/Kakao/KakaoMediaLesson.jsx';
+import KakaoMediaPractice from './pages/Kakao/KakaoMediaPractice.jsx';
 import CallLearn from './pages/Call/CallLearn.jsx';
 import CallPractice from './pages/Call/CallPractice.jsx';
 import GptLearn from './pages/Gpt/GptLearn.jsx';
@@ -136,6 +140,7 @@ export default function App() {
   <Route path="kakao/learn/friend/num" element={<KakaoFriendNumLesson />} />
   <Route path="kakao/learn/room" element={<KakaoRoomLesson />} />
   <Route path="kakao/learn/media" element={<KakaoMediaLesson />} />
+  <Route path="kakao/practice/media" element={<KakaoMediaPractice />} />
   <Route path="sms/practice" element={<SmsPractice />} />
   <Route path="sms/practice/msend" element={<SmsMsendPractice />} />
   <Route path="sms/practice/:topic" element={<PracticeLesson />} />
@@ -148,6 +153,9 @@ export default function App() {
   <Route path="kakao/learn" element={<KakaoLearn />} />
   <Route path="kakao/practice" element={<KakaoPractice />} />
   <Route path="kakao/practice/ui" element={<KakaoUiPractice />} />
+  <Route path="kakao/practice/addBYld" element={<KakaoAddBYldPractice />} />
+  <Route path="kakao/practice/addById" element={<KakaoAddByIdPractice />} />
+  <Route path="kakao/practice/addByPhone" element={<KakaoAddByPhonePractice />} />
   <Route path="kakao/practice/:topic" element={<PracticeLesson />} />
   <Route path="avatar/aging" element={<PrivateRoute><AgePreview /></PrivateRoute>} />
   <Route path="password-change" element={<PasswordChangePage />} />

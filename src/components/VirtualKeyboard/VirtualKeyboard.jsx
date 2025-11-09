@@ -80,7 +80,7 @@ export default function VirtualKeyboard({onKey, onBackspace, onEnter, className=
   }
 
   return (
-    <div className={`${styles.keyboard} ${className}`.trim()} role="application" aria-label="가상 키보드">
+    <div data-virtual-keyboard="1" className={`${styles.keyboard} ${className}`.trim()} role="application" aria-label="가상 키보드">
       {rows.map((row, ri)=> (
         <div key={ri} className={styles.row}>
           {row.map((k, ki)=> (
