@@ -1,11 +1,6 @@
 // 카카오톡 배우기/연습하기 공통 주제 (key를 고유하게 정리)
 export const kakaoTopics = [
   {
-    key: "setting",
-    title: "예약 메시지 보내기",
-    text: "원하는 시간에 자동으로 메시지 보내 보아요",
-  },
-  {
     key: "ui",
     title: "이모티콘 보내기",
     text: "상황에 맞는 이모티콘을 고르고 전송해 보아요",
