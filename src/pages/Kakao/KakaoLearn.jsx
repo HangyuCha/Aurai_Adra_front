@@ -9,7 +9,7 @@ export default function KakaoLearn() {
   const navigate = useNavigate();
   // map new topic keys to the existing lesson route keys
   const keyMap = {
-    reserve: 'setting',
+    // reserve (setting) removed
     emoji: 'ui',
     addById: 'friend',
     addByPhone: 'friend/num',
@@ -30,7 +30,7 @@ export default function KakaoLearn() {
         <h1 className={styles.kakaoTitle}>카카오톡 배우기</h1>
         <p className={styles.kakaoDesc}>카카오톡의 기본 화면과 주요 기능을 차근차근 익혀보세요.</p>
       </header>
-      <TopicCarousel topics={kakaoTopics} onSelect={handleSelect} completions={{ ui:true, friend:false, room:false, media:false, setting:false }} />
+      <TopicCarousel topics={kakaoTopics} onSelect={handleSelect} completions={{ ui:true, friend:false, room:false, media:false }} />
     </div>
   );
 }
