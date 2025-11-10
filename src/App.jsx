@@ -31,6 +31,7 @@ import SmsMdeletePractice from './pages/Sms/SmsMdeletePractice.jsx';
 import SmsMdeliverLesson from './pages/Sms/SmsMdeliverLesson.jsx';
 import SmsMsearchLesson from './pages/Sms/SmsMsearchLesson.jsx';
 import CallCallingLesson from './pages/Call/CallCallingLesson.jsx';
+import CallCallingPractice from './pages/Call/CallCallingPractice.jsx';
 import CallSaveLesson from './pages/Call/CallSaveLesson.jsx';
 import CallFixLesson from './pages/Call/CallFixLesson.jsx';
 import CallFaceLesson from './pages/Call/CallFaceLesson.jsx';
@@ -149,6 +150,7 @@ export default function App() {
   <Route path="sms/practice/msend" element={<SmsMsendPractice />} />
   <Route path="sms/practice/:topic" element={<PracticeLesson />} />
   <Route path="call/learn" element={<CallLearn />} />
+  <Route path="call/practice/calling" element={<CallCallingPractice />} />
   <Route path="call/practice" element={<CallPractice />} />
   <Route path="call/practice/:topic" element={<PracticeLesson />} />
   <Route path="gpt/learn" element={<GptLearn />} />
