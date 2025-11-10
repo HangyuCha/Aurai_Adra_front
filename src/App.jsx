@@ -25,7 +25,9 @@ import PracticeLesson from './pages/Practice/PracticeLesson.jsx';
 import SmsMsendLesson from './pages/Sms/SmsMsendLesson.jsx';
 import SmsMsendPractice from './pages/Sms/SmsMsendPractice.jsx';
 import SmsMphotoLesson from './pages/Sms/SmsMphotoLesson.jsx';
+import SmsMphotoPractice from './pages/Sms/SmsMphotoPractice.jsx';
 import SmsMdeleteLesson from './pages/Sms/SmsMdeleteLesson.jsx';
+import SmsMdeletePractice from './pages/Sms/SmsMdeletePractice.jsx';
 import SmsMdeliverLesson from './pages/Sms/SmsMdeliverLesson.jsx';
 import SmsMsearchLesson from './pages/Sms/SmsMsearchLesson.jsx';
 import CallCallingLesson from './pages/Call/CallCallingLesson.jsx';
@@ -123,6 +125,8 @@ export default function App() {
   <Route path="sms/learn/msend" element={<SmsMsendLesson />} />
   <Route path="sms/learn/mphoto" element={<SmsMphotoLesson />} />
   <Route path="sms/learn/mdelete" element={<SmsMdeleteLesson />} />
+  <Route path="sms/practice/mdelete" element={<SmsMdeletePractice />} />
+  <Route path="sms/practice/mphoto" element={<SmsMphotoPractice />} />
   <Route path="sms/learn/mdeliver" element={<SmsMdeliverLesson />} />
   <Route path="sms/learn/msearch" element={<SmsMsearchLesson />} />
   <Route path="call/learn/calling" element={<CallCallingLesson />} />
