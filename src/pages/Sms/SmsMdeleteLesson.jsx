@@ -7,10 +7,12 @@ import lt from '../../styles/learnTitle.module.css';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
-import screenshot1 from '../../assets/msend3.png';
-import screenshot2 from '../../assets/msend1.png';
-import screenshot3 from '../../assets/msend2.png';
-import screenshot4 from '../../assets/msend4.png';
+import mdel3 from '../../assets/mdel3.png';
+import mdel1 from '../../assets/mdel1.png';
+import mdel2 from '../../assets/mdel2.png';
+import mdel4 from '../../assets/mdel4.png';
+import mdel5 from '../../assets/mdel5.png';
+import mdel6 from '../../assets/mdel6.png';
 import stepsConfig from './SmsMdeleteLessonSteps.js';
 
 export default function SmsMdeleteLesson(){
@@ -70,21 +72,71 @@ export default function SmsMdeleteLesson(){
     const u = new SpeechSynthesisUtterance(base);
     u.lang = 'ko-KR';
     u.rate = 1;
-    try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ }
-    u.onend = () => setSpeaking(false);
-    u.onerror = () => setSpeaking(false);
+    try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* 음성 설정 오류: 기본 목소리로 진행합니다. */ }
+  u.onend = () => setSpeaking(false);
+  u.onerror = () => { setSpeaking(false); };
     setSpeaking(true);
     window.speechSynthesis.speak(u);
   };
 
   const onSubmitAnswer = (e) => { e.preventDefault(); submitAnswer(); };
 
-  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } } }
+  function submitAnswer(){
+    const commit = getCommittedFromComp(compRef.current);
+    const final = (answer + commit).trim();
+    if(!(step === total && final.length > 0)) return;
+    if(commit) setAnswer(a => a + commit);
+    updateComp({lead:'', vowel:'', tail:''});
+    setFeedback('좋아요. 잘 입력되었어요.');
+    setSubmittedText(final);
+    setUseSubmittedScreenshot(true);
+    setAnswer('');
+    if(step === total && 'speechSynthesis' in window){
+      try{
+        const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?';
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(msg);
+        u.lang = 'ko-KR';
+        u.rate = 1;
+        try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* 음성 설정 오류: 기본 목소리로 진행합니다. */ }
+        u.onend = () => setSpeaking(false);
+        u.onerror = () => { setSpeaking(false); };
+        setSpeaking(true);
+        window.speechSynthesis.speak(u);
+      } catch {
+        /* 음성 안내 실행 오류: 안내가 정상적으로 재생되지 않았습니다. */
+        setFeedback('음성 안내 실행 중 오류가 발생했습니다.');
+      }
+    }
+  }
 
-  useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
+  useEffect(()=>{
+    setAnswer('');
+    setFeedback('');
+    if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} 
+    setAutoPlayed(false);
+    const timer = setTimeout(()=>{
+      if('speechSynthesis' in window){
+        const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction;
+        if(base){
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(base);
+          u.lang='ko-KR'; u.rate=1;
+          try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* 음성 설정 오류: 기본 목소리로 진행합니다. */ }
+          u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); };
+          u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); };
+          setSpeaking(true);
+          window.speechSynthesis.speak(u);
+        }
+      }
+    }, 250);
+    return ()=> clearTimeout(timer);
+  }, [step, current, voices]);
 
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
   useEffect(()=>{ if(step === total){ setKeyboardVisible(true); } }, [step, total]);
+  // Ensure any speech-error feedback isn't shown on the final step
+  useEffect(()=>{ if(step === total){ setFeedback(''); } }, [step, total]);
   useEffect(()=>{ if(!('speechSynthesis' in window)) return; function loadVoices(){ const list = window.speechSynthesis.getVoices(); if(list && list.length){ setVoices(list); } } loadVoices(); window.speechSynthesis.addEventListener('voiceschanged', loadVoices); return ()=> window.removeEventListener('voiceschanged', loadVoices); },[]);
 
   function pickPreferredVoice(pref, all){ if(!all || !all.length) return null; const ko = all.filter(v=> (v.lang||'').toLowerCase().startsWith('ko')); if(!ko.length) return null; const maleKeys = ['male','남','man','boy','seong','min']; const femaleKeys = ['female','여','woman','girl','yuna','ara']; const wantMale = pref === 'male'; const keys = wantMale ? maleKeys : femaleKeys; const primary = ko.find(v=> keys.some(k=> (v.name||'').toLowerCase().includes(k)) ); if(primary) return primary; return ko[ wantMale ? (ko.length>1 ? 1 : 0) : 0 ]; }
@@ -95,7 +147,11 @@ export default function SmsMdeleteLesson(){
 
   useLayoutEffect(()=>{ function recalc(){ const vw = window.innerWidth; const vh = window.innerHeight; const headerH = headerRef.current?.offsetHeight || 0; const captionH = captionRef.current?.offsetHeight || 0; const side = window.innerWidth >= 1100; setIsSide(side); const verticalPadding = 84; const horizontalPadding = 40; const availH = Math.max(160, vh - headerH - (side ? 0 : captionH) - verticalPadding); if(shellAreaRef.current){ shellAreaRef.current.style.minHeight = `${availH}px`; } const availW = Math.max(200, vw - horizontalPadding); if(!shellRef.current) return; const el = shellRef.current; const prevTransform = el.style.transform; el.style.transform = 'none'; const rect = el.getBoundingClientRect(); const baseW = rect.width || 1; const baseH = rect.height || 1; const ratioH = availH / baseH; const ratioW = availW / baseW; let next = Math.min(1, ratioH, ratioW); if(side && captionRef.current){ const captionW = captionRef.current.getBoundingClientRect().width; const gap = 32; const required = baseW + gap + captionW; const available = vw - horizontalPadding; if(required > available){ const shrink = available / required; next = Math.min(next, shrink); } } if(!isFinite(next) || next <= 0) next = 1; if(next < 0.5) next = 0.5; const finalScale = Math.abs(next - 1) < 0.002 ? 1 : next; setScale(finalScale); if(side && finalScale < 1){ setDeviceWidth(Math.round(baseW * finalScale)); el.style.transform = 'none'; } else { setDeviceWidth(null); el.style.transform = prevTransform; } if(side && finalScale === 1){ const rect2 = el.getBoundingClientRect(); if(rect2.height > availH){ const fullscreenLike = (window.innerHeight >= 820); const targetRatio = availH / rect2.height; let shrink = targetRatio; if(fullscreenLike){ shrink -= 0.035; } if(shrink < 0.99){ shrink = Math.max(0.55, shrink); setDeviceWidth(Math.round(baseW * shrink)); } } } } recalc(); window.addEventListener('resize', recalc); return ()=> window.removeEventListener('resize', recalc); },[]);
 
-  const next = () => setStep(s => Math.min(total, s+1));
+  const next = () => setStep(s => {
+    const ns = Math.min(total, s+1);
+  console.debug('[SmsMdeleteLesson] next()', s, '->', ns);
+    return ns;
+  });
   const prev = () => setStep(s => Math.max(1, s-1));
 
   return (
@@ -110,21 +166,128 @@ export default function SmsMdeleteLesson(){
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
-              {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0} offsetY={step === 1 ? 212 : step === 2 ? -67.5 : step === 3 ? 0 : 0} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={step === total} ariaLabel={'전송 버튼 힌트'} />
-              {step === total && (
-                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
+            <PhoneFrame image={useSubmittedScreenshot ? mdel4 : (step === 1 ? mdel1 : (step === 2 ? mdel2 : (step === 4 ? mdel4 : (step === 5 ? mdel5 : (step === 6 ? mdel6 : mdel3)))))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+  {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
+  
+            {/* In-phone marker targets so TapHint can reliably position inside PhoneFrame */}
+            {step === 1 && (
+              <>
+                <div
+                  aria-hidden
+                  className="sms-del-target-1"
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '32%',
+                    width: '100%',
+                    height: '15%',
+                    transform: 'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                  }}
+                />
+                <TapHint selector={'.sms-del-target-1'} width={'279px'} height={'59px'} borderRadius={'10px'} onActivate={next} suppressInitial={true} ariaLabel={'탭 힌트'} />
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <div
+                  aria-hidden
+                  className="sms-del-target-2"
+                  style={{
+                    position: 'absolute',
+                    left: '86%',
+                    top: '46.5%',
+                    width: 50,
+                    height: 27,
+                    transform: 'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                  }}
+                />
+                <TapHint selector={'.sms-del-target-2'} width={'50px'} height={'25px'} borderRadius={'8px'} onActivate={next} suppressInitial={true} ariaLabel={'탭 힌트'} />
+              </>
+            )}
+  {step === 3 && (
+    <>
+      <div
+        aria-hidden
+        className="sms-del-target-delete"
+        style={{
+          position: 'absolute',
+          right: 9,
+          top: '49.6%',
+          width: 90,
+          height: 27,
+          borderRadius: 20,
+          transform: 'none',
+          pointerEvents: 'none',
+        }}
+      />
+      <TapHint
+        selector={'.sms-del-target-delete'}
+        width={'90px'}
+        height={'24px'}
+        borderRadius={'12px'}
+        onActivate={next}
+        suppressInitial={true}
+        ariaLabel={'삭제 버튼 힌트'}
+      />
+    </>
               )}
-              {submittedText ? (
-                <div style={{position:'absolute', right:14, left:'auto', bottom:229.5, maxWidth:'45%', padding:'4px 10px', borderRadius:10.5, backgroundColor:'#5AF575', boxShadow:'0 2px 6px rgba(0,0,0,0.12)', color:'#fff', fontSize:'12.75px', fontWeight:400, lineHeight:'1.2', fontFamily:'"Noto Sans KR", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', textAlign:'right', textShadow:'0 1px 2px rgba(0,0,0,0.2)'}}>
-                  {submittedText}
-                </div>
-              ) : null}
-              {keyboardVisible && step === total && (
-                <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
+              
+  {step === 4 && (
+              <>
+                <div
+                  aria-hidden
+                  className="sms-del-target-2"
+                  style={{
+                    position: 'absolute',
+                    left: '92%',
+                    top: '46.6%',
+                    width: 25,
+                    height: 25,
+                    transform: 'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                  }}
+                />
+                <TapHint selector={'.sms-del-target-2'} width={'50px'} height={'25px'} borderRadius={'13px'} onActivate={next} suppressInitial={true} ariaLabel={'탭 힌트'} />
+              </>
               )}
-            </PhoneFrame>
+              
+    {step === 5 && (
+              <>
+                <div
+                  aria-hidden
+                  className="sms-del-target-2"
+                  style={{
+                    position: 'absolute',
+                    left: '9%',
+                    top: '92.5%',
+                    width: 35,
+                    height: 35,
+                    transform: 'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                  }}
+                />
+                <TapHint selector={'.sms-del-target-2'} width={'50px'} height={'25px'} borderRadius={'13px'} onActivate={next} suppressInitial={true} ariaLabel={'탭 힌트'} />
+              </>
+            )}
+  
+  {/* '100' 제거 (2) */}
+  {step === total && step !== 3 && step !== 5 && step !== 6 && (
+    <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
+  )}
+  
+  {submittedText ? (
+    <div style={{position:'absolute', right:14, left:'auto', bottom:229.5, maxWidth:'45%', padding:'4px 10px', borderRadius:10.5, backgroundColor:'#5AF575', boxShadow:'0 2px 6px rgba(0,0,0,0.12)', color:'#fff', fontSize:'12.75px', fontWeight:400, lineHeight:'1.2', fontFamily:'"Noto Sans KR", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', textAlign:'right', textShadow:'0 1px 2px rgba(0,0,0,0.2)'}}>
+      {submittedText}
+    </div>
+  ) : null}
+  
+  {keyboardVisible && step === total && step !== 3 && step !== 5 && step !== 6 && (
+    <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
+  )}
+</PhoneFrame>
           </div>
         </div>
         <div className={frameStyles.sidePanel}>

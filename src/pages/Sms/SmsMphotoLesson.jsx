@@ -8,10 +8,11 @@ import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
 import screenshot4 from '../../assets/msend4.png';
-import mpho4 from '../../assets/mpho4.png';
 import mpho1 from '../../assets/mpho1.png';
 import mpho2 from '../../assets/mpho2.png';
 import mpho3 from '../../assets/mpho3.png';
+import mpho4 from '../../assets/mpho4.png';
+import mpho5 from '../../assets/mpho5.png';
 import stepsConfig from './SmsMphotoLessonSteps.js';
 
 export default function SmsMphotoLesson(){
@@ -112,20 +113,22 @@ export default function SmsMphotoLesson(){
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? mpho1 : step === 2 ? mpho2 : step === 3 ? mpho3 : mpho4)} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? mpho1 : step === 2 ? mpho2 : step === 3 ? mpho3 : step === 4 ? mpho4 : mpho5)} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '30px' : step === 3 ? '90px' : step === 4 ? '23px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '30px' : step === 3 ? '75px' : step === 4 ? '23px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? -113 : step === 3 ? 90 : step === 4 ? 112 : 0} offsetY={step === 1 ? 212 : step === 2 ? -62 : step === 3 ? 47 : step === 4 ? 99 : 0} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={false} hidden={step !== 3 && step !== 4 ? false : false} ariaLabel={'전송 버튼 힌트'} />
-              {step === total && step !== 3 && step !== 4 && (
+              {step !== 5 && (
+                <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '30px' : step === 3 ? '90px' : step === 4 ? '23px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '30px' : step === 3 ? '75px' : step === 4 ? '23px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? -113 : step === 3 ? 90 : step === 4 ? 113 : 0} offsetY={step === 1 ? 212 : step === 2 ? -64 : step === 3 ? 47 : step === 4 ? 96.5 : 0} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={false} hidden={step !== 3 && step !== 4 ? false : false} ariaLabel={'전송 버튼 힌트'} />
+              )}
+              {/* 3, 4, 5번째 페이지에서는 키보드/입력창 숨김 */}
+              {step === total && step !== 3 && step !== 4 && step !== 5 && (
                 <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}
-              {/* 3번째 페이지에서는 키보드/입력창 숨김 */}
-              {step === 3 ? null : null}
+              {step === 3 || step === 4 || step === 5 ? null : null}
               {submittedText ? (
                 <div style={{position:'absolute', right:14, left:'auto', bottom:229.5, maxWidth:'45%', padding:'4px 10px', borderRadius:10.5, backgroundColor:'#5AF575', boxShadow:'0 2px 6px rgba(0,0,0,0.12)', color:'#fff', fontSize:'12.75px', fontWeight:400, lineHeight:'1.2', fontFamily:'"Noto Sans KR", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', textAlign:'right', textShadow:'0 1px 2px rgba(0,0,0,0.2)'}}>
                   {submittedText}
                 </div>
               ) : null}
-              {keyboardVisible && step === total && step !== 3 && step !== 4 && (
+              {keyboardVisible && step === total && step !== 3 && step !== 4 && step !== 5 && (
                 <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
               )}
             </PhoneFrame>

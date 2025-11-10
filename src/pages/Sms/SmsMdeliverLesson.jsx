@@ -7,9 +7,9 @@ import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
-import screenshot1 from '../../assets/msend3.png';
-import screenshot2 from '../../assets/msend1.png';
-import screenshot3 from '../../assets/msend2.png';
+import mdel3 from '../../assets/mdel3.png';
+import mdel1 from '../../assets/mdel1.png';
+import mdel2 from '../../assets/mdel2.png';
 import screenshot4 from '../../assets/msend4.png';
 import stepsConfig from './SmsMdeliverLessonSteps.js';
 
@@ -110,10 +110,40 @@ export default function SmsMdeliverLesson(){
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (step === 1 ? mdel1 : (step === 2 ? mdel2 : mdel3))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} width={step === 1 ? '279px' : step === 2 ? '180px' : step === 3 ? '60px' : '18%'} height={step === 1 ? '59px' : step === 2 ? '25px' : step === 3 ? '30px' : '8%'} offsetX={step === 1 ? 0 : step === 2 ? 38 : step === 3 ? 0 : 0} offsetY={step === 1 ? 212 : step === 2 ? -67.5 : step === 3 ? 0 : 0} borderRadius={'10px'} onActivate={step === total ? submitAnswer : next} suppressInitial={step === total} ariaLabel={'전송 버튼 힌트'} />
-              {step === total && (
+
+              {/* In-phone marker for step 3 so TapHint can reliably position itself */}
+              {step === 3 && (
+                <div
+                  aria-hidden
+                  className="sms-deliver-send-target"
+                  style={{
+                    position: 'absolute',
+                    right: 10,
+                    bottom: 199,
+                    width: 90,
+                    height: 28,
+                    borderRadius: 999,
+                    transform: 'none',
+                    pointerEvents: 'none',
+                    zIndex: 125,
+                  }}
+                />
+              )}
+
+              <TapHint
+                selector={step === 3 ? '.sms-deliver-send-target' : 'button[aria-label="메시지 보내기"]'}
+                width={step === 1 ? '279px' : step === 2 ? '52px' : step === 3 ? '60px' : '18%'}
+                height={step === 1 ? '59px' : step === 2 ? '30px' : step === 3 ? '30px' : '8%'}
+                offsetX={step === 1 ? 0 : step === 2 ? 100 : step === 3 ? 0 : 0}
+                offsetY={step === 1 ? 212 : step === 2 ? 150 : step === 3 ? 0 : 0}
+                borderRadius={step === 3 ? '18px' : '10px'}
+                onActivate={step === total ? submitAnswer : next}
+                suppressInitial={step === total}
+                ariaLabel={'전송 버튼 힌트'}
+              />
+              {step === total && step !== 3 && (
                 <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}
               {submittedText ? (
@@ -121,7 +151,7 @@ export default function SmsMdeliverLesson(){
                   {submittedText}
                 </div>
               ) : null}
-              {keyboardVisible && step === total && (
+              {keyboardVisible && step === total && step !== 3 && (
                 <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
               )}
             </PhoneFrame>
