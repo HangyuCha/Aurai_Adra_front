@@ -5,15 +5,39 @@ import frameStyles from '../Sms/SmsLessonFrame.module.css';
 import lt from '../../styles/learnTitle.module.css';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
-import ChatInputBar from '../../components/ChatInputBar/ChatInputBar';
-import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
+// ChatInputBar와 VirtualKeyboard는 본 레슨 최종 단계에서 사용하지 않으므로 불러오지 않습니다.
 import { buildCallLessonConfig, topicMeta } from './callDynamicSteps.js';
 
 export default function CallCallingLesson(){
   const navigate = useNavigate();
-  const { steps: dynSteps, screens } = useMemo(() => buildCallLessonConfig('calling'), []);
+  // 원본 동적 구성 (이미지 1~4 존재 가정). 우리는 실제 학습 단계를 3단계로 축소하고
+  // step 2 TapHint 클릭 시 1초 동안 이전(구) 3단계 이미지를 잠깐 보여준 뒤 최종(구 4단계) 화면으로 이동한다.
+  const { steps: rawSteps, screens: rawScreens } = useMemo(() => buildCallLessonConfig('calling'), []);
+  // 화면 인덱스 매핑을 유연하게 계산: 최종 이미지는 4가 있으면 4, 없으면 최대 인덱스
+  const screenMap = useMemo(() => {
+    const keys = Object.keys(rawScreens||{}).map(n=>parseInt(n,10)).filter(Number.isFinite);
+    const maxIdx = keys.length ? Math.max(...keys) : 1;
+    const finalIdx = rawScreens[4] ? 4 : maxIdx;
+    const interIdx = rawScreens[3] ? 3 : Math.max(1, finalIdx - 1);
+    return { real: {1:1, 2:2, 3:finalIdx}, intermediate: interIdx };
+  }, [rawScreens]);
+  // 학습 단계 배열을 3개로 재구성 (기존 1,2 유지 / 3은 기존 rawSteps( id 3 ) 그대로 사용해 텍스트 유지)
+  const steps = useMemo(() => {
+    const s1 = rawSteps.find(s=>s.id===1);
+    const s2 = rawSteps.find(s=>s.id===2);
+    // 기존 3단계 객체(통화 종료) 그대로 사용: 제목/문구 유지, 단 이미지는 나중에 매핑으로 이미지4 사용
+    const s3 = rawSteps.find(s=>s.id===3) || { id:3, title:'통화 종료', instruction:'통화를 종료하세요.', speak:'통화를 종료하세요.' };
+    // id 재보장
+    return [
+      s1 ? {...s1, id:1} : {id:1,title:'단계 1',instruction:'전화번호를 입력하세요.', speak:'전화번호를 입력하세요.'},
+      s2 ? {...s2, id:2} : {id:2,title:'단계 2',instruction:'발신 후 연결을 확인하세요.', speak:'발신 후 연결을 확인하세요.'},
+      {...s3, id:3}
+    ];
+  }, [rawSteps]);
+  const screens = rawScreens; // 원본 스크린 테이블 유지 (이미지 인덱스 접근용)
   const [step,setStep] = useState(1);
-  const steps = dynSteps;
+  const [showIntermediate,setShowIntermediate] = useState(false); // 1초 동안 중간 이미지 표시 여부
+  const interTimerRef = useRef(null);
   const total = steps.length || 1;
   const shellRef = useRef(null);
   const shellAreaRef = useRef(null);
@@ -22,46 +46,27 @@ export default function CallCallingLesson(){
   const headerRef = useRef(null);
   const [_scale,setScale] = useState(1);
   const [_deviceWidth,setDeviceWidth] = useState(null);
-  const [answer, setAnswer] = useState('');
-  const [comp, setComp] = useState({lead:'', vowel:'', tail:''});
-  const compRef = useRef({lead:'', vowel:'', tail:''});
-
-  function updateComp(next){ setComp(next); compRef.current = next; }
-  function updateCompFn(fn){ setComp(prev=>{ const next = fn(prev); compRef.current = next; return next; }); }
+  // 텍스트 입력을 사용하지 않으므로 updateCompFn은 제거했습니다.
   const [feedback, setFeedback] = useState('');
   const [speaking,setSpeaking] = useState(false);
   const [autoPlayed,setAutoPlayed] = useState(false);
   const [voices,setVoices] = useState([]);
   const current = useMemo(() => (steps.find(st => st.id === step) || steps[0] || {}), [steps, step]);
-  const [keyboardVisible, setKeyboardVisible] = useState(false);
-  const lastKeyRef = useRef({ch:null, t:0});
-  const [submittedText, setSubmittedText] = useState('');
+  // 가상 키보드/채팅바 미사용
   const [dialed, setDialed] = useState('');
 
-  // minimal composer helpers (copied)
-  const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-  const JUNG = ['\u0000','ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
-  const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-  const VCOMB = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
-  const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
+  // 텍스트 입력 관련 로직 제거 (가상 키보드/채팅바 미사용)
 
-  function combineVowel(a,b){ if(!a||!b) return null; const key = `${a}${b}`; return VCOMB[key]||null; }
-  function combineJong(a,b){ if(!a||!b) return null; const key = `${a}${b}`; return JCOMB[key]||null; }
+  // 텍스트 입력을 사용하지 않으므로 handleJamoInput은 제거했습니다.
 
-  function flushComposition(snapshot){ const {lead, vowel, tail} = snapshot || compRef.current; updateComp({lead:'', vowel:'', tail:''}); if(!lead && !vowel && !tail) return; if(!lead && vowel){ setAnswer(a=> a + vowel); return; } const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ const syll = String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); setAnswer(a=> a + syll); } else { const raw = (lead||'') + (vowel||'') + (tail||''); setAnswer(a=> a + raw); } }
+  // composePreview 제거 (채팅 입력 미사용)
 
-  function getCommittedFromComp(snapshot){ const {lead, vowel, tail} = snapshot || compRef.current; if(!lead && !vowel && !tail) return ''; if(!lead && vowel) return vowel; const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ return String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); } return (lead||'') + (vowel||'') + (tail||''); }
-
-  function handleJamoInput(ch){ setFeedback(''); const prev = compRef.current; if(JUNG.includes(ch)){ if(prev.tail){ const isCompositeTail = Object.values(JCOMB).includes(prev.tail); if(isCompositeTail){ let left=null,right=null; for(const k in JCOMB){ if(JCOMB[k]===prev.tail){ left=k.charAt(0); right=k.charAt(1); break; } } if(left && right){ const snapLeft = {lead: prev.lead, vowel: prev.vowel, tail: left}; flushComposition(snapLeft); updateComp({lead: right, vowel: ch, tail: ''}); return; } flushComposition(prev); updateComp({lead:'', vowel: ch, tail: ''}); return; } const tailChar = prev.tail; const snap2 = {lead: prev.lead, vowel: prev.vowel, tail: ''}; flushComposition(snap2); updateComp({lead: tailChar, vowel: ch, tail: ''}); return; } if(prev.lead && prev.vowel){ const comb = combineVowel(prev.vowel, ch); if(comb){ updateComp({...prev, vowel: comb}); return; } flushComposition(prev); updateComp({lead:'', vowel: ch, tail:''}); return; } if(prev.lead && !prev.vowel){ updateComp({...prev, vowel: ch}); return; } if(!prev.lead){ setAnswer(a=> a + ch); return; } flushComposition(prev); setAnswer(a=> a + ch); return; } if(CHO.includes(ch)){ if(!prev.lead){ updateComp({...prev, lead: ch}); return; } if(prev.lead && !prev.vowel){ flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } if(prev.lead && prev.vowel && !prev.tail){ if(JONG.includes(ch)){ updateComp({...prev, tail: ch}); return; } flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } if(prev.lead && prev.vowel && prev.tail){ const combined = combineJong(prev.tail, ch); if(combined){ updateComp({...prev, tail: combined}); return; } flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } } flushComposition(prev); setAnswer(a=> a + ch); return; }
-
-  function composePreview(){ const {lead, vowel, tail} = comp; if(!lead && !vowel && !tail) return ''; if(!lead && vowel) return vowel; const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ return String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); } return (lead||'') + (vowel||'') + (tail||''); }
-
-  const canSubmit = (answer + composePreview()).trim().length > 0;
+  // canSubmit 제거 (채팅 입력 미사용)
 
   const speakCurrent = () => {
     if(!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction;
+    const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak);
     if(!base) return;
     const u = new SpeechSynthesisUtterance(base);
     u.lang = 'ko-KR';
@@ -73,14 +78,15 @@ export default function CallCallingLesson(){
     window.speechSynthesis.speak(u);
   };
 
-  const onSubmitAnswer = (e) => { e.preventDefault(); submitAnswer(); };
+  // onSubmitAnswer 제거 (채팅 입력 미사용)
 
-  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } } }
+  // 텍스트 제출 로직 제거
 
-  useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
+  useEffect(()=>{ setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak); if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
 
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
-  useEffect(()=>{ if(step === total){ setKeyboardVisible(true); } }, [step, total]);
+  // 호출 레슨에서는 최종 단계에서 가상 키보드/채팅바를 표시하지 않으므로 자동 표시를 하지 않습니다.
+  // useEffect(()=>{ if(step === total){ setKeyboardVisible(true); } }, [step, total]);
   useEffect(()=>{ if(!('speechSynthesis' in window)) return; function loadVoices(){ const list = window.speechSynthesis.getVoices(); if(list && list.length){ setVoices(list); } } loadVoices(); window.speechSynthesis.addEventListener('voiceschanged', loadVoices); return ()=> window.removeEventListener('voiceschanged', loadVoices); },[]);
 
   function pickPreferredVoice(pref, all){ if(!all || !all.length) return null; const ko = all.filter(v=> (v.lang||'').toLowerCase().startsWith('ko')); if(!ko.length) return null; const maleKeys = ['male','남','man','boy','seong','min']; const femaleKeys = ['female','여','woman','girl','yuna','ara']; const wantMale = pref === 'male'; const keys = wantMale ? maleKeys : femaleKeys; const primary = ko.find(v=> keys.some(k=> (v.name||'').toLowerCase().includes(k)) ); if(primary) return primary; return ko[ wantMale ? (ko.length>1 ? 1 : 0) : 0 ]; }
@@ -94,6 +100,29 @@ export default function CallCallingLesson(){
   const next = () => setStep(s => Math.min(total, s+1));
   const prev = () => setStep(s => Math.max(1, s-1));
 
+  // TapHint 클릭 시 커스텀 진행 (step 2에서만 중간 프리뷰)
+  const handleHintActivate = () => {
+    if(showIntermediate) return; // 중간 표시 중에는 무시
+    if(step === 2){
+      // 1초간 중간 프리뷰 이미지3 표시
+      setShowIntermediate(true);
+      if(interTimerRef.current) clearTimeout(interTimerRef.current);
+      interTimerRef.current = setTimeout(()=>{
+        setShowIntermediate(false);
+        setStep(3); // 최종 단계로 이동 (이미지4 매핑)
+        interTimerRef.current = null;
+      }, 1000);
+      return;
+    }
+    if(step === total){
+      // 최종 단계에서 추가 입력/제출 로직 없음
+    } else {
+      next();
+    }
+  };
+
+  useEffect(()=>()=>{ if(interTimerRef.current){ clearTimeout(interTimerRef.current); interTimerRef.current = null; } },[]);
+
   return (
     <div className={frameStyles.framePage}>
       <BackButton to="/call/learn" variant="fixed" />
@@ -106,17 +135,18 @@ export default function CallCallingLesson(){
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            <PhoneFrame image={screens[step]} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            {/* 활성 이미지 선택: 중간 프리뷰 중이면 이미지3, 아니면 매핑된 실제 이미지 */}
+            <PhoneFrame image={screens[ showIntermediate ? screenMap.intermediate : (screenMap.real[step] || step) ]} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
-              {/* Step 1, 2, 3: Dialed number display logic */}
-              {(step === 1 || step === 2 || step === 3) && (
+              {/* Step 1, 2: Dialed number & status overlays (최종 3단계는 원본 이미지만) */}
+              {(step === 1 || step === 2) && (
                 <>
-                  {/* Step 2/3: Status text above the phone number */}
-                  {(step === 2 || step === 3) && (
+                  {/* Step 2: Status text above the phone number */}
+                  {(step === 2) && (
                     <div aria-hidden="true" style={{
                       position:'absolute', left:'50%', top:'3.5%', transform:'translateX(-50%)',
                       width:'84%', minHeight:'22px', textAlign:'center',
-                      fontSize:'13px', fontWeight:400, color: (step === 3 ? '#666' : '#333'),
+                      fontSize:'13px', fontWeight:400, color:'#333',
                       letterSpacing:'1px', zIndex:3, pointerEvents:'none',
                       textShadow:'0 1px 2px rgba(255,255,255,0.6)'
                     }}>
@@ -127,7 +157,7 @@ export default function CallCallingLesson(){
                   <div aria-live="polite" style={{
                     position:'absolute', left:'50%', top:'8%', transform:'translateX(-50%)',
                     width:'80%', minHeight:'24px', textAlign:'center',
-                      fontSize: step === 1 ? '22px' : '20px', fontWeight:400, color: (step === 3 ? '#707070ff' : '#111'),
+                      fontSize: step === 1 ? '22px' : '20px', fontWeight:400, color:'#111',
                     letterSpacing:'2px', zIndex:3, pointerEvents:'none',
                     textShadow:'0 1px 2px rgba(255,255,255,0.6)'
                   }}>
@@ -228,30 +258,23 @@ export default function CallCallingLesson(){
                   />
                 </>
               )}
-              {step !== 1 && (
+              {step === 2 && !showIntermediate && (
                 <TapHint
                   selector={'button[aria-label="메시지 보내기"]'}
-                  width={step === 2 ? '180px' : step === 3 ? '60px' : '18%'}
-                  height={step === 2 ? '25px' : step === 3 ? '30px' : '8%'}
-                  offsetX={step === 2 ? 38 : step === 3 ? 0 : 0}
-                  offsetY={step === 2 ? -67.5 : step === 3 ? 0 : 0}
-                  borderRadius={'10px'}
-                  onActivate={step === total ? submitAnswer : next}
+                  width={'65px'}
+                  height={'65px'}
+                  offsetX={(38 - 37)}
+                  offsetY={(-67.5 + 50)}
+                  borderRadius={'50%'}
+                  fixedSize={true}
+                  onActivate={handleHintActivate}
                   suppressInitial={step === total}
                   ariaLabel={'전송 버튼 힌트'}
                 />
               )}
-              {step === total && (
-                <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={'메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
-              )}
-              {submittedText ? (
-                <div style={{position:'absolute', right:14, left:'auto', bottom:229.5, maxWidth:'45%', padding:'4px 10px', borderRadius:10.5, backgroundColor:'#5AF575', boxShadow:'0 2px 6px rgba(0,0,0,0.12)', color:'#fff', fontSize:'12.75px', fontWeight:400, lineHeight:'1.2', fontFamily:'"Noto Sans KR", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', textAlign:'right', textShadow:'0 1px 2px rgba(0,0,0,0.2)'}}>
-                  {submittedText}
-                </div>
-              ) : null}
-              {keyboardVisible && step === total && (
-                <VirtualKeyboard onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
-              )}
+              {/* 호출 레슨의 최종 단계(3/3)에서는 채팅바를 표시하지 않습니다. */}
+              {/* 제출된 텍스트 버블은 호출 레슨에서 사용하지 않습니다. */}
+              {/* 호출 레슨의 최종 단계(3/3)에서는 가상 키보드를 표시하지 않습니다. */}
             </PhoneFrame>
           </div>
         </div>
