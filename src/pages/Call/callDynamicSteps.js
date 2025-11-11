@@ -7,7 +7,6 @@ import callingBase from './CallCallingLessonSteps.js';
 import saveBase from './CallSaveLessonSteps.js';
 import fixBase from './CallFixLessonSteps.js';
 import faceBase from './CallFaceLessonSteps.js';
-import favoriteBase from './CallFavoriteLessonSteps.js';
 
 // Vite의 import.meta.glob 은 문자열 리터럴이어야 하므로 토픽별로 미리 선언
 const imageGlobs = {
@@ -15,7 +14,7 @@ const imageGlobs = {
   save: import.meta.glob('../../assets/csave*.png', { eager: true, import: 'default' }),
   fix: import.meta.glob('../../assets/cfix*.png', { eager: true, import: 'default' }),
   face: import.meta.glob('../../assets/cface*.png', { eager: true, import: 'default' }),
-  favorite: import.meta.glob('../../assets/cfavorite*.png', { eager: true, import: 'default' })
+  // favorite 제거됨
 };
 
 const baseStepsMap = {
@@ -23,7 +22,6 @@ const baseStepsMap = {
   save: saveBase,
   fix: fixBase,
   face: faceBase,
-  favorite: favoriteBase
 };
 
 export const topicMeta = {
@@ -31,7 +29,6 @@ export const topicMeta = {
   save: { title: '연락처 저장하기', tagline: '새 연락처를 추가하고 저장하는 방법을 배워요.' },
   fix: { title: '연락처 수정하기', tagline: '기존 연락처 정보를 수정하는 방법을 배워요.' },
   face: { title: '영상통화 하기', tagline: '영상통화 시작과 화면 전환을 연습해요.' },
-  favorite: { title: '즐겨찾기 등록하기', tagline: '중요한 연락처를 즐겨찾기에 추가해 보세요.' }
 };
 
 const COMPLETION_SPEAK_DEFAULT = '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?';

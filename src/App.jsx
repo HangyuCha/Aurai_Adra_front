@@ -34,7 +34,6 @@ import CallCallingLesson from './pages/Call/CallCallingLesson.jsx';
 import CallSaveLesson from './pages/Call/CallSaveLesson.jsx';
 import CallFixLesson from './pages/Call/CallFixLesson.jsx';
 import CallFaceLesson from './pages/Call/CallFaceLesson.jsx';
-import CallFavoriteLesson from './pages/Call/CallFavoriteLesson.jsx';
 import GptWhatLesson from './pages/Gpt/GptWhatLesson.jsx';
 import GptAskLesson from './pages/Gpt/GptAskLesson.jsx';
 import GptFollowLesson from './pages/Gpt/GptFollowLesson.jsx';
@@ -133,7 +132,7 @@ export default function App() {
   <Route path="call/learn/save" element={<CallSaveLesson />} />
   <Route path="call/learn/fix" element={<CallFixLesson />} />
   <Route path="call/learn/face" element={<CallFaceLesson />} />
-  <Route path="call/learn/favorite" element={<CallFavoriteLesson />} />
+  {/* favorite 레슨 제거 */}
   <Route path="gpt/learn/what" element={<GptWhatLesson />} />
   <Route path="gpt/learn/ask" element={<GptAskLesson />} />
   <Route path="gpt/learn/follow" element={<GptFollowLesson />} />
