@@ -11,6 +11,7 @@ export default function CallPractice() {
   const handleSelect = (opt) => {
     navigate(`/call/practice/${opt.key}`);
   };
+  // Direct navigation routes exist for calling, save, fix so map keys accordingly
   // Build scores from localStorage like SmsPractice: null for unattempted
   const scores = callTopics.map(t => {
     try {

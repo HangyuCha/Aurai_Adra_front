@@ -32,8 +32,10 @@ import SmsMdeliverLesson from './pages/Sms/SmsMdeliverLesson.jsx';
 import SmsMsearchLesson from './pages/Sms/SmsMsearchLesson.jsx';
 import CallCallingLesson from './pages/Call/CallCallingLesson.jsx';
 import CallCallingPractice from './pages/Call/CallCallingPractice.jsx';
+import CallSavePractice from './pages/Call/CallSavePractice.jsx';
 import CallSaveLesson from './pages/Call/CallSaveLesson.jsx';
 import CallFixLesson from './pages/Call/CallFixLesson.jsx';
+import CallFixPractice from './pages/Call/CallFixPractice.jsx';
 import CallFaceLesson from './pages/Call/CallFaceLesson.jsx';
 import GptWhatLesson from './pages/Gpt/GptWhatLesson.jsx';
 import GptAskLesson from './pages/Gpt/GptAskLesson.jsx';
@@ -132,6 +134,7 @@ export default function App() {
   <Route path="call/learn/calling" element={<CallCallingLesson />} />
   <Route path="call/learn/save" element={<CallSaveLesson />} />
   <Route path="call/learn/fix" element={<CallFixLesson />} />
+  <Route path="call/practice/fix" element={<CallFixPractice />} />
   <Route path="call/learn/face" element={<CallFaceLesson />} />
   {/* favorite 레슨 제거 */}
   <Route path="gpt/learn/what" element={<GptWhatLesson />} />
@@ -150,6 +153,7 @@ export default function App() {
   <Route path="sms/practice/:topic" element={<PracticeLesson />} />
   <Route path="call/learn" element={<CallLearn />} />
   <Route path="call/practice/calling" element={<CallCallingPractice />} />
+  <Route path="call/practice/save" element={<CallSavePractice />} />
   <Route path="call/practice" element={<CallPractice />} />
   <Route path="call/practice/:topic" element={<PracticeLesson />} />
   <Route path="gpt/learn" element={<GptLearn />} />
