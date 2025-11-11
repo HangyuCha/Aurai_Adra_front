@@ -186,7 +186,7 @@ export default function SmsMphotoPractice({ practiceTracker = null, finalizeAndS
         <div style={{ position:'fixed', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(0,0,0,0.35)', zIndex:160 }}>
           <div style={{ background:'#fff', padding:18, borderRadius:10, minWidth:240 }}>
             <div style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>틀렸습니다</div>
-            <div style={{ marginBottom:14 }}>탭힌트를 사용해 진행해 주세요.</div>
+            <div style={{ marginBottom:14 }}>다시 시도해 보세요.</div>
             <div style={{ textAlign:'right' }}>
               <button className={frameStyles.primaryBtn} onClick={()=> setShowWrongPopup(false)}>확인</button>
             </div>

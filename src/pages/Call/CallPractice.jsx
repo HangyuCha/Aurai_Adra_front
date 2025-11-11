@@ -11,6 +11,20 @@ export default function CallPractice() {
   const handleSelect = (opt) => {
     navigate(`/call/practice/${opt.key}`);
   };
+  // Build scores from localStorage like SmsPractice: null for unattempted
+  const scores = callTopics.map(t => {
+    try {
+      const raw = localStorage.getItem(`practiceScore:call:${t.key}`);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed == null) return null;
+      if (typeof parsed === 'number') return Math.max(0, Math.min(100, parsed));
+      if (typeof parsed === 'object' && parsed.total != null) return Math.max(0, Math.min(100, Number(parsed.total) || 0));
+      return null;
+    } catch {
+      return null;
+    }
+  });
   return (
     <div className={styles.callPage}>
       <BackButton variant="fixed" to="/home" />
@@ -19,7 +33,7 @@ export default function CallPractice() {
         <p className={styles.callDesc}>자주 겪는 통화 상황을 연습하며 자연스러운 표현을 익혀요.</p>
       </header>
   <div className={styles.contentArea}>
-    <TopicCarousel topics={callTopics} onSelect={handleSelect} variant="practice" scores={[60, 85, 0, 40, 0]} />
+    <TopicCarousel topics={callTopics} onSelect={handleSelect} variant="practice" scores={scores} />
   </div>
     </div>
   );
