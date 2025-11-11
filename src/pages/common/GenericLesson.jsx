@@ -92,6 +92,8 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } if(donePath){ navigate(donePath); } } }
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
+  // clear any leftover composition state when step changes to avoid cross-step composition artifacts
+  useEffect(()=>{ updateComp({lead:'', vowel:'', tail:''}); }, [step]);
 
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
   // enable keyboardVisible when the current step expects text input (has inputPlaceholder)
@@ -267,7 +269,50 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
                 </div>
               ) : null}
               {keyboardVisible && (current && current.inputPlaceholder) && (
-                <VirtualKeyboard allowEnglish={Boolean(current && current.allowEnglish)} onKey={(ch)=>{ const now = Date.now(); if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; } lastKeyRef.current = {ch, t: now}; setFeedback(''); if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); } else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); } else { handleJamoInput(ch); } }} onBackspace={()=>{ const ccur = compRef.current; if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; } if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; } if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; } setAnswer(a => a.slice(0,-1)); }} onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }} />
+                <VirtualKeyboard
+                  allowEnglish={Boolean(current && current.allowEnglish)}
+                  onKey={(ch)=>{
+                    const now = Date.now();
+                    if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; }
+                    lastKeyRef.current = {ch, t: now};
+                    setFeedback('');
+                    if(ch===' ') { flushComposition(); setAnswer(a=> a + ' '); }
+                    else if(ch === '\n'){ flushComposition(); setAnswer(a=> a + '\n'); }
+                    else { handleJamoInput(ch); }
+                  }}
+                  onBackspace={()=>{
+                    const ccur = compRef.current;
+                    // If composing, delete composition parts first (tail -> vowel -> lead)
+                    if(ccur.tail){ updateCompFn(c=> ({...c, tail:''})); return; }
+                    if(ccur.vowel){ updateCompFn(c=> ({...c, vowel:''})); return; }
+                    if(ccur.lead){ updateCompFn(c=> ({...c, lead:''})); return; }
+                    // No active composition: perform Hangul-aware backspace on committed text
+                    setAnswer(a => {
+                      if(!a || a.length === 0) return a;
+                      const last = a.charAt(a.length - 1);
+                      const code = last.charCodeAt(0);
+                      // Hangul syllable block range
+                      if(code >= 0xAC00 && code <= 0xD7A3){
+                        const SIndex = code - 0xAC00;
+                        const LIndex = Math.floor(SIndex / (21*28));
+                        const VIndex = Math.floor((SIndex % (21*28)) / 28);
+                        const TIndex = SIndex % 28; // 0 means no jong
+                        if(TIndex > 0){
+                          // Remove final consonant (jongseong)
+                          const newCode = 0xAC00 + (LIndex*21 + VIndex) * 28; // TIndex -> 0
+                          const withoutJong = String.fromCharCode(newCode);
+                          return a.slice(0, -1) + withoutJong;
+                        }
+                        // No jong: replace syllable with its initial consonant jamo (CHO)
+                        const lead = CHO[LIndex + 1] || last;
+                        return a.slice(0, -1) + lead;
+                      }
+                      // If last is jamo already, just delete one char
+                      return a.slice(0, -1);
+                    });
+                  }}
+                  onEnter={()=>{ flushComposition(); setAnswer(a=> a + '\n'); }}
+                />
               )}
             </PhoneFrame>
           </div>
