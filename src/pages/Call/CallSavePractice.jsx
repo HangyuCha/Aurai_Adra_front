@@ -234,14 +234,7 @@ export default function CallSavePractice({ practiceTracker = null, finalizeAndSa
               <button className={frameStyles.ghostBtn} onClick={useHint} aria-label="힌트 보기">힌트 보기</button>
               <div style={{ color:'#666' }}>힌트 사용: {hintCount}</div>
             </div>
-            <div style={{ marginTop:18, display:'flex', gap:8 }}>
-              <button className={frameStyles.ghostBtn} disabled={step===1} onClick={()=> setStep(s=> Math.max(1,s-1))}>이전</button>
-              {step < total ? (
-                <button className={frameStyles.primaryBtn} onClick={nextWithSaves}>다음</button>
-              ) : (
-                <button className={frameStyles.primaryBtn} onClick={finalizePractice}>완료</button>
-              )}
-            </div>
+            <div style={{ marginTop:18, display:'flex', gap:8 }}></div>
           </div>
         </div>
       </div>

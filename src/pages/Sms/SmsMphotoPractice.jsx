@@ -172,10 +172,7 @@ export default function SmsMphotoPractice({ practiceTracker = null, finalizeAndS
               <div style={{ color:'#666' }}>힌트 사용: {hintCount}</div>
             </div>
             <div style={{ marginTop:18, display:'flex', gap:8 }}>
-              <button className={frameStyles.ghostBtn} disabled={step===1} onClick={()=> setStep(s=> Math.max(1,s-1))}>이전</button>
-              {step < total ? (
-                <button className={frameStyles.primaryBtn} onClick={advance}>다음</button>
-              ) : (
+              {step === total && (
                 <button className={frameStyles.primaryBtn} onClick={()=> navigate('/sms/practice')}>완료</button>
               )}
             </div>

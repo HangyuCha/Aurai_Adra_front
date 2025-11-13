@@ -237,10 +237,7 @@ export default function CallCallingPractice({ practiceTracker = null, finalizeAn
               <div style={{ color:'#666' }}>힌트 사용: {hintCount}</div>
             </div>
             <div style={{ marginTop:18, display:'flex', gap:8 }}>
-              <button className={frameStyles.ghostBtn} disabled={step===1} onClick={()=> setStep(s=> Math.max(1,s-1))}>이전</button>
-              {!isLast ? (
-                <button className={frameStyles.primaryBtn} onClick={next}>다음</button>
-              ) : (
+              {isLast && (
                 <button className={frameStyles.primaryBtn} onClick={finalizePractice}>완료</button>
               )}
             </div>
