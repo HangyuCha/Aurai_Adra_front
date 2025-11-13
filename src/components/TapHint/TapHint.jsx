@@ -5,7 +5,7 @@ import styles from './TapHint.module.css';
  * TapHint
  * props: x, y, width, height, borderRadius, onActivate, ariaLabel
  */
-function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRadius = '10px', onActivate, ariaLabel = 'tap hint', selector, offsetY = 0, offsetX = 0, suppressInitial = false, invisible = false }){
+export default function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRadius = '10px', onActivate, ariaLabel = 'tap hint', selector, offsetY = 0, offsetX = 0, suppressInitial = false, invisible = false }){
   const ref = useRef(null);
   const [computed, setComputed] = useState(null);
 
@@ -150,4 +150,5 @@ function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRad
   );
 }
 
-export default TapHint;
+// Also provide a named export for compatibility where some files might import { TapHint }
+export { TapHint };
