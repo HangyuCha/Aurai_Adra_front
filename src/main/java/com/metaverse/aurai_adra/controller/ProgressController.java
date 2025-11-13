@@ -4,6 +4,7 @@ import com.metaverse.aurai_adra.dto.MarkChapterRequest;
 import com.metaverse.aurai_adra.dto.ProgressSnapshotDto;
 import com.metaverse.aurai_adra.dto.RemoveChapterRequest;
 import com.metaverse.aurai_adra.dto.LearningAgeResponse;
+import com.metaverse.aurai_adra.dto.PracticeScoresResponse;
 import com.metaverse.aurai_adra.service.ProgressService;
 import com.metaverse.aurai_adra.util.LearningAgeUtil;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +57,15 @@ public class ProgressController {
         if (tokenUserId == null) return ResponseEntity.status(401).build();
         var snap = progressService.removeSuccess(tokenUserId, req.getChapterId());
         return ResponseEntity.ok(snap);
+    }
+
+    // GET /api/progress/practice-scores/me?appId=sms|call|gpt|kakao
+    @GetMapping("/practice-scores/me")
+    public ResponseEntity<PracticeScoresResponse> getMyPracticeScores(@RequestParam(name = "appId", required = false) String appId, Principal principal) {
+        final String tokenUserId = principal != null ? principal.getName() : null;
+        if (tokenUserId == null) return ResponseEntity.status(401).build();
+        var resp = progressService.getLatestPracticeScores(tokenUserId, appId);
+        return ResponseEntity.ok(resp);
     }
 
     // (선택) GET /api/progress/learning-age/{userId}?actualAge=67

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BackButton from '../../components/BackButton/BackButton';
 import frameStyles from '../Sms/SmsLessonFrame.module.css';
 import lt from '../../styles/learnTitle.module.css';
@@ -11,6 +11,7 @@ import screenshot1_default from '../../assets/msend3.png';
 import screenshot2_default from '../../assets/msend1.png';
 import screenshot3_default from '../../assets/msend2.png';
 import screenshot4_default from '../../assets/msend4.png';
+import { markAppProgress } from '../../lib/appProgressApi';
 
 // Hangul composition tables - module scope so they're stable across renders
 const CHO = ['\u0000','ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -21,6 +22,7 @@ const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': '�
 
 export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null }){
   const navigate = useNavigate();
+  const location = useLocation();
   // debug mount
   console.log('[GenericLesson] mount', { headerTitle, stepCount: (steps || []).length });
 
@@ -57,6 +59,43 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
   const [useSubmittedScreenshot, setUseSubmittedScreenshot] = useState(false);
   const lastStepRef = useRef(step);
 
+  // completion marker: infer appId/sessionKeys from URL and persist to localStorage + server
+  const markCompletion = useMemo(() => {
+    function inferFromPathname(pathname){
+      try{
+        // Expect patterns like: /sms/learn/:key, /gpt/learn/:key, /call/learn/:key, /kakao/learn/(friend|friend/num|room|media|ui)
+        const parts = (pathname || '/').split('/').filter(Boolean);
+        const appId = parts[0] || null;
+        const section = parts[1] || null; // 'learn' | 'practice'
+        if(section !== 'learn') return null;
+        // everything after '/learn' is the lesson key path
+        const rest = parts.slice(2).join('/');
+        if(!appId || !rest) return null;
+        // kakao special mapping
+        if(appId === 'kakao'){
+          if(rest === 'friend') return { appId, sessionKeys: ['addById'] };
+          if(rest === 'friend/num') return { appId, sessionKeys: ['addByPhone'] };
+          if(rest === 'room') return { appId, sessionKeys: ['inviteRoom', 'leaveGroup'] };
+          // ui, media already match topic keys
+          return { appId, sessionKeys: [rest] };
+        }
+        // others: use the rest as key directly (call/save/fix/face, sms keys, gpt keys)
+        return { appId, sessionKeys: [rest] };
+      } catch { return null; }
+    }
+    return async function doMark(){
+      try{
+        const info = inferFromPathname(location?.pathname || '/');
+        if(!info) return;
+        const { appId, sessionKeys } = info;
+        if(!appId || !Array.isArray(sessionKeys) || sessionKeys.length === 0) return;
+        for(const key of sessionKeys){
+          try { await markAppProgress(appId, 'learn', key, null); } catch { /* ignore per-key */ }
+        }
+      } catch { /* ignore */ }
+    };
+  }, [location?.pathname]);
+
   
 
   function combineVowel(a,b){ if(!a||!b) return null; const key = `${a}${b}`; return VCOMB[key]||null; }
@@ -89,7 +128,34 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
 
   const onSubmitAnswer = (e) => { e.preventDefault(); submitAnswer(); };
 
-  function submitAnswer(){ const commit = getCommittedFromComp(compRef.current); const final = (answer + commit).trim(); if(!(step === total && final.length > 0)) return; if(commit) setAnswer(a => a + commit); updateComp({lead:'', vowel:'', tail:''}); setFeedback('좋아요. 잘 입력되었어요.'); setSubmittedText(final); setUseSubmittedScreenshot(true); setAnswer(''); if(step === total && 'speechSynthesis' in window){ try{ const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?'; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(msg); u.lang = 'ko-KR'; u.rate = 1; try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend = () => setSpeaking(false); u.onerror = () => setSpeaking(false); setSpeaking(true); window.speechSynthesis.speak(u); } catch { /* ignore */ } if(donePath){ navigate(donePath); } } }
+  async function submitAnswer(){
+    const commit = getCommittedFromComp(compRef.current);
+    const final = (answer + commit).trim();
+    if(!(step === total && final.length > 0)) return;
+    if(commit) setAnswer(a => a + commit);
+    updateComp({lead:'', vowel:'', tail:''});
+    setFeedback('좋아요. 잘 입력되었어요.');
+    setSubmittedText(final);
+    setUseSubmittedScreenshot(true);
+    setAnswer('');
+    // mark completion (best-effort)
+    try { await markCompletion(); } catch { /* ignore */ }
+    if(step === total && 'speechSynthesis' in window){
+      try{
+        const msg = current.completionSpeak || '잘하셨어요 아래 완료 버튼을 눌러 더 많은걸 배우러 가볼까요?';
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(msg);
+        u.lang = 'ko-KR';
+        u.rate = 1;
+        try{ const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ }
+        u.onend = () => setSpeaking(false);
+        u.onerror = () => setSpeaking(false);
+        setSpeaking(true);
+        window.speechSynthesis.speak(u);
+      } catch { /* ignore */ }
+      if(donePath){ navigate(donePath); }
+    }
+  }
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
   // clear any leftover composition state when step changes to avoid cross-step composition artifacts
@@ -334,7 +400,11 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
               {step < total ? (
                 <button type="button" onClick={next} className={frameStyles.primaryBtn}>다음</button>
               ) : (
-                <button type="button" onClick={()=>navigate(backPath)} className={frameStyles.primaryBtn}>완료</button>
+                <button
+                  type="button"
+                  onClick={async ()=>{ try { await markCompletion(); } catch { /* ignore */ } navigate(backPath); }}
+                  className={frameStyles.primaryBtn}
+                >완료</button>
               )}
             </div>
           </div>
