@@ -6,6 +6,8 @@ import com.metaverse.aurai_adra.domain.PracticeAttempt;
 import com.metaverse.aurai_adra.domain.UserChapterSuccess;
 import com.metaverse.aurai_adra.domain.UserChapterSuccessId;
 import com.metaverse.aurai_adra.dto.ProgressSnapshotDto;
+import com.metaverse.aurai_adra.dto.PracticeScoreItem;
+import com.metaverse.aurai_adra.dto.PracticeScoresResponse;
 import com.metaverse.aurai_adra.repository.PracticeAttemptRepository;
 import com.metaverse.aurai_adra.repository.UserChapterSuccessRepository;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class ProgressService {
@@ -78,6 +82,50 @@ public class ProgressService {
         var id = new UserChapterSuccessId(userId, chapterId);
         repo.findById(id).ifPresent(repo::delete);
         return getSnapshot(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public PracticeScoresResponse getLatestPracticeScores(String userId, String appId) {
+        // Map appId to chapter range: sms=1..5, call=6..10, gpt=11..15, kakao=16..20
+        final String app = appId == null ? "" : appId.trim().toLowerCase();
+        int start = 1, end = 20;
+        if ("sms".equals(app)) { start = 1; end = 5; }
+        else if ("call".equals(app)) { start = 6; end = 10; }
+        else if ("gpt".equals(app)) { start = 11; end = 15; }
+        else if ("kakao".equals(app)) { start = 16; end = 20; }
+
+        final int s = start, e = end;
+        var attempts = attemptRepo.findByUserId(userId).stream()
+                .filter(a -> a.getChapterId() != null && a.getChapterId() >= s && a.getChapterId() <= e)
+                .collect(Collectors.groupingBy(PracticeAttempt::getChapterId));
+
+        var items = attempts.entrySet().stream()
+                .map(entry -> {
+                    // pick latest by timestamp
+                    var list = entry.getValue();
+                    PracticeAttempt latest = list.stream()
+                            .filter(a -> a.getAt() != null)
+                            .max(Comparator.comparing(PracticeAttempt::getAt))
+                            .orElseGet(() -> list.stream().findFirst().orElse(null));
+                    if (latest == null) return null;
+                    Integer total = null;
+                    try {
+                        if (latest.getScoreJson() != null) {
+                            @SuppressWarnings("unchecked")
+                            Map<String, Object> score = objectMapper.readValue(latest.getScoreJson(), Map.class);
+                            Object t = score != null ? score.get("total") : null;
+                            if (t instanceof Number) total = ((Number) t).intValue();
+                            else if (t != null) total = Integer.parseInt(String.valueOf(t));
+                        }
+                    } catch (Exception ignore) { /* ignore malformed JSON */ }
+                    String atIso = latest.getAt() != null ? latest.getAt().toString() : null;
+                    return new PracticeScoreItem(entry.getKey(), total, atIso);
+                })
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(PracticeScoreItem::getChapterId))
+                .toList();
+
+        return new PracticeScoresResponse(userId, app, items);
     }
 
     private void validateChapterId(Integer chapterId) {

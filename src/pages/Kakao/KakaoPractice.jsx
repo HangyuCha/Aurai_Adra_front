@@ -5,6 +5,7 @@ import BackButton from '../../components/BackButton/BackButton';
 import TopicCarousel from '../../components/TopicCarousel/TopicCarousel';
 import kakaoTopics from './KakaoTopics.js';
 import { useNavigate } from 'react-router-dom';
+import { getPracticeScores, mapScoresToTopics } from '../../lib/practiceScoresApi';
 
 export default function KakaoPractice() {
   const navigate = useNavigate();
@@ -34,8 +35,8 @@ export default function KakaoPractice() {
   });
 
   useEffect(() => {
-    // when component mounts, refresh scores (also helpful when returning from practice)
-    function refresh() {
+    // when component mounts, refresh from local and then try server for cross-device
+    function refreshLocal() {
       setScores(kakaoTopics.map(t => {
         try {
           const raw = localStorage.getItem(`practiceScore:kakao:${t.key}`);
@@ -45,12 +46,22 @@ export default function KakaoPractice() {
         return null;
       }));
     }
-    refresh();
+    refreshLocal();
+    let mounted = true;
+    (async () => {
+      try {
+        const server = await getPracticeScores('kakao');
+        if (!mounted || !server) return;
+        const serverArr = mapScoresToTopics('kakao', kakaoTopics, server);
+        setScores(prev => serverArr.map((sv, i) => (sv != null ? sv : (prev?.[i] ?? null))));
+      } catch { /* ignore */ }
+    })();
     // also refresh when window gains focus (user may complete practice in another tab/window)
-    window.addEventListener('focus', refresh);
+    const onFocus = () => refreshLocal();
+    window.addEventListener('focus', onFocus);
     // and listen for storage events from other windows
-    window.addEventListener('storage', refresh);
-    return () => { window.removeEventListener('focus', refresh); window.removeEventListener('storage', refresh); };
+    window.addEventListener('storage', onFocus);
+    return () => { mounted = false; window.removeEventListener('focus', onFocus); window.removeEventListener('storage', onFocus); };
   }, []);
 
   return (

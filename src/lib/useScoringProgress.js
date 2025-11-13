@@ -32,14 +32,15 @@ export function useScoringProgress({ user, chapterId, expertTimeSec, stepsRequir
 
     // 저장 조건: 기본적으로 총점 100점일 때만 저장
     const canSave = typeof shouldSave === 'function' ? !!shouldSave(score) : (score?.total === 100);
-    if (canSave && user?.id != null && chapterId != null) {
+    if (canSave && chapterId != null) {
       // include the computed score in the payload so backend can record both summary and attempt details
       // also include an explicit `meta` object (hintCount, errorCount) for easy server-side indexing
       const meta = {
         hintCount: score?.inputsEcho?.hintCount ?? 0,
         errorCount: score?.inputsEcho?.errorCount ?? 0,
       };
-      await markChapterSuccess(String(user.id), Number(chapterId), { at: new Date().toISOString(), score, meta });
+      // Pass no userId so backend uses the authenticated principal from Authorization
+      await markChapterSuccess(undefined, Number(chapterId), { at: new Date().toISOString(), score, meta });
     }
 
     if (user?.id != null) {

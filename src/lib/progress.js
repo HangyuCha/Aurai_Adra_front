@@ -18,7 +18,9 @@ export async function getUserProgress(userId) {
 }
 
 export async function markChapterSuccess(userId, chapterId, payload = {}) {
-  const body = { userId, chapterId, success: true, ...payload };
+  // If userId is not provided, omit it so backend uses Principal from the Authorization token
+  const body = { chapterId, success: true, ...payload };
+  if (userId != null && userId !== '') body.userId = userId;
   const { data } = await api.post('/progress/chapters', body);
   return data; // 최신 progress 스냅샷 반환하도록 서버에서 처리 권장
 }

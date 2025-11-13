@@ -60,6 +60,7 @@ import GptPractice from './pages/Gpt/GptPractice.jsx';
 import KakaoLearn from './pages/Kakao/KakaoLearn.jsx';
 import KakaoPractice from './pages/Kakao/KakaoPractice.jsx';
 import AgePreview from './pages/Age/AgePreview.jsx';
+import { markAppProgress } from './lib/appProgressApi.js';
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -83,6 +84,44 @@ function EntryRoute() {
 }
 
 export default function App() {
+  // Global completion capture: when any Learn page's "완료" button is pressed, mark per-session done
+  useEffect(() => {
+    function inferFromPath(pathname){
+      try{
+        const parts = (pathname || '/').split('/').filter(Boolean);
+        const appId = parts[0] || null;
+        const section = parts[1] || null;
+        if(section !== 'learn') return null;
+        const rest = parts.slice(2).join('/');
+        if(!appId || !rest) return null;
+        if(appId === 'kakao'){
+          if(rest === 'friend') return { appId, sessionKeys: ['addById'] };
+          if(rest === 'friend/num') return { appId, sessionKeys: ['addByPhone'] };
+          if(rest === 'room') return { appId, sessionKeys: ['inviteRoom', 'leaveGroup'] };
+          return { appId, sessionKeys: [rest] };
+        }
+        return { appId, sessionKeys: [rest] };
+      } catch { return null; }
+    }
+    async function onPointerDown(e){
+      try{
+        const btn = e.target.closest('button');
+        if(!btn) return;
+        const txt = (btn.textContent || '').trim();
+        if(txt !== '완료') return;
+        const { pathname } = window.location;
+        const info = inferFromPath(pathname);
+        if(!info) return;
+        const { appId, sessionKeys } = info;
+        if(!appId || !Array.isArray(sessionKeys)) return;
+        for(const key of sessionKeys){
+          try { await markAppProgress(appId, 'learn', key, null); } catch { /* ignore */ }
+        }
+      } catch { /* ignore */ }
+    }
+    window.addEventListener('pointerdown', onPointerDown, true);
+    return () => window.removeEventListener('pointerdown', onPointerDown, true);
+  }, []);
   return (
     <Routes>
       <Route path="/" element={<EntryRoute />} />
