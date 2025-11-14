@@ -19,6 +19,7 @@ export default function PhoneFrame({
   aspect = '9 / 19.5',
   image,
   showStatusBar = true,
+  showHomeIndicator = true,
   children,
   // 전체 프레임과 내부 화면을 동일 비율로 축소/확대 (1이 기본)
   scale = 1,
@@ -67,6 +68,9 @@ export default function PhoneFrame({
           </div>
           {/* 하단에도 상태바 높이만큼 간격(스페이서) - 이미지 영역 밖 */}
           {showStatusBar && <div className={styles.bottomBar} aria-hidden />}
+          {showHomeIndicator && (
+            <div className={styles.homeIndicator} aria-hidden />
+          )}
         </div>
         </div>
       </div>
