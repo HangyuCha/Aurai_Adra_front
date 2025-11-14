@@ -17,7 +17,7 @@ export default function GptPractice() {
         <p className={styles.gptDesc}>실제 활용 시나리오를 가정하고 다양한 프롬프트를 시도해 보세요.</p>
       </header>
   <div className={styles.contentArea}>
-    <TopicCarousel topics={gptTopics} onSelect={handleSelect} variant="practice" scores={[30, 55, 70, 0, 0]} />
+    <TopicCarousel topics={gptTopics} onSelect={handleSelect} variant="practice" scores={[30, 55, 70, 0]} />
   </div>
     </div>
   );

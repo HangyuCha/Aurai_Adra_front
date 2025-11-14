@@ -12,7 +12,7 @@ export default function GptLearn() {
   useEffect(() => {
     async function load(){
       try{
-        const keys = ['what','ask','follow','safety','limits'];
+        const keys = ['what','ask','photo','apply'];
         const m = {};
         for(const k of keys){ m[k] = localStorage.getItem(`gpt_${k}_learnDone`) === 'true'; }
         try{

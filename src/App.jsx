@@ -41,9 +41,8 @@ import CallFaceLesson from './pages/Call/CallFaceLesson.jsx';
 import CallFacePractice from './pages/Call/CallFacePractice.jsx';
 import GptWhatLesson from './pages/Gpt/GptWhatLesson.jsx';
 import GptAskLesson from './pages/Gpt/GptAskLesson.jsx';
-import GptFollowLesson from './pages/Gpt/GptFollowLesson.jsx';
-import GptSafetyLesson from './pages/Gpt/GptSafetyLesson.jsx';
-import GptLimitsLesson from './pages/Gpt/GptLimitsLesson.jsx';
+import GptPhotoLesson from './pages/Gpt/GptPhotoLesson.jsx';
+import GptApplyLesson from './pages/Gpt/GptApplyLesson.jsx';
 import KakaoUiLesson from './pages/Kakao/KakaoUiLesson.jsx';
 import KakaoUiPractice from './pages/Kakao/KakaoUiPractice.jsx';
 import KakaoAddBYldPractice from './pages/Kakao/KakaoAddBYldPractice.jsx';
@@ -182,9 +181,8 @@ export default function App() {
   {/* favorite 레슨 제거 */}
   <Route path="gpt/learn/what" element={<GptWhatLesson />} />
   <Route path="gpt/learn/ask" element={<GptAskLesson />} />
-  <Route path="gpt/learn/follow" element={<GptFollowLesson />} />
-  <Route path="gpt/learn/safety" element={<GptSafetyLesson />} />
-  <Route path="gpt/learn/limits" element={<GptLimitsLesson />} />
+  <Route path="gpt/learn/photo" element={<GptPhotoLesson />} />
+  <Route path="gpt/learn/apply" element={<GptApplyLesson />} />
   <Route path="kakao/learn/ui" element={<KakaoUiLesson />} />
   <Route path="kakao/learn/friend" element={<KakaoFriendLesson />} />
   <Route path="kakao/learn/friend/num" element={<KakaoFriendNumLesson />} />
