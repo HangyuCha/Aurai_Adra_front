@@ -159,11 +159,9 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
 
   useEffect(()=>{ setAnswer(''); setFeedback(''); if('speechSynthesis' in window){ window.speechSynthesis.cancel(); setSpeaking(false);} setAutoPlayed(false); const timer = setTimeout(()=>{ if('speechSynthesis' in window){ const base = (Array.isArray(current.speak) ? current.speak.join(' ') : current.speak) || current.instruction; if(base){ window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(base); u.lang='ko-KR'; u.rate=1; try { const pref = (localStorage.getItem('voice') || 'female'); const v = pickPreferredVoice(pref, voices); if(v) u.voice = v; } catch { /* ignore */ } u.onend=()=>{ setSpeaking(false); setAutoPlayed(true); }; u.onerror=()=>{ setSpeaking(false); setAutoPlayed(true); }; setSpeaking(true); window.speechSynthesis.speak(u); } } }, 250); return ()=> clearTimeout(timer); }, [step, current, voices]);
   // clear any leftover composition state when step changes to avoid cross-step composition artifacts
-  useEffect(()=>{ updateComp({lead:'', vowel:'', tail:''}); }, [step]);
-
   useEffect(()=>()=>{ if('speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
-  // enable keyboardVisible when the current step expects text input (has inputPlaceholder)
-  useEffect(()=>{ setKeyboardVisible(Boolean(current && current.inputPlaceholder)); }, [step, total, current]);
+  // enable keyboard when the current step expects input (has inputPlaceholder) or explicitly requests keyboard
+  useEffect(()=>{ setKeyboardVisible(Boolean(current && (current.inputPlaceholder || current.forceKeyboard))); }, [step, total, current]);
   useEffect(()=>{ if(!('speechSynthesis' in window)) return; function loadVoices(){ const list = window.speechSynthesis.getVoices(); if(list && list.length){ setVoices(list); } } loadVoices(); window.speechSynthesis.addEventListener('voiceschanged', loadVoices); return ()=> window.removeEventListener('voiceschanged', loadVoices); },[]);
 
   function pickPreferredVoice(pref, all){ if(!all || !all.length) return null; const ko = all.filter(v=> (v.lang||'').toLowerCase().startsWith('ko')); if(!ko.length) return null; const maleKeys = ['male','남','man','boy','seong','min']; const femaleKeys = ['female','여','woman','girl','yuna','ara']; const wantMale = pref === 'male'; const keys = wantMale ? maleKeys : femaleKeys; const primary = ko.find(v=> keys.some(k=> (v.name||'').toLowerCase().includes(k)) ); if(primary) return primary; return ko[ wantMale ? (ko.length>1 ? 1 : 0) : 0 ]; }
@@ -182,21 +180,21 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
     try{
       const commit = getCommittedFromComp(compRef.current);
       const final = (answer + commit).trim();
-      if(current && current.inputPlaceholder && final.length){
+      if(current && (current.inputPlaceholder || current.forceKeyboard) && final.length){
         setSubmittedText(final);
       }
   } catch { /* ignore */ }
     if(step === total){ submitAnswer(); } else { next(); }
   }
 
-  // when navigating forward from a step that had inputPlaceholder, preserve the typed message
-  // commit typed input when advancing from an input step
+  // when navigating forward from a step that had inputPlaceholder OR forceKeyboard, preserve the typed message
+  // commit typed input when advancing from an input step (either placeholder or forceKeyboard-only)
   useEffect(()=>{
     const prev = lastStepRef.current;
     if(step === prev + 1){
       try{
         const prevStep = steps.find(s => s.id === prev) || {};
-        if(prevStep.inputPlaceholder){
+        if(prevStep.inputPlaceholder || prevStep.forceKeyboard){
           // compute committed composition without depending on the helper function to avoid hook deps
           const snap = compRef.current;
           const lead = snap.lead, vowel = snap.vowel, tail = snap.tail;
@@ -219,6 +217,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
         }
       } catch { /* ignore */ }
     }
+    updateComp({lead:'', vowel:'', tail:''});
     lastStepRef.current = step;
   }, [step, answer, steps]);
 
@@ -331,8 +330,12 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
                 })()
               }
               {/* allow a lesson to render custom overlay content (calendar, pickers, etc.) inside the PhoneFrame overlay */}
-              {extraOverlay}
-              {/* Render input bar when the current step expects input (has inputPlaceholder) */}
+              {typeof extraOverlay === 'function' ? (
+                extraOverlay({ step, current, answer, composePreview, submittedText })
+              ) : (
+                extraOverlay
+              )}
+              {/* Render input bar only when the current step expects input (has inputPlaceholder) */}
               {current && current.inputPlaceholder && (
                 <ChatInputBar value={answer + composePreview()} disabled={!canSubmit} onChange={(val)=>{setAnswer(val); setFeedback('');}} onSubmit={onSubmitAnswer} offsetBottom={50} offsetX={0} className={frameStyles.inputRightCenter} placeholder={current.inputPlaceholder || '메시지를 입력하세요'} readOnly={keyboardVisible} onFocus={()=>setKeyboardVisible(true)} onBlur={()=>{}} />
               )}
@@ -341,9 +344,10 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
                   {submittedText}
                 </div>
               ) : null}
-              {keyboardVisible && (current && current.inputPlaceholder) && (
+              {keyboardVisible && (current && (current.inputPlaceholder || current.forceKeyboard)) && (
                 <VirtualKeyboard
                   allowEnglish={Boolean(current && current.allowEnglish)}
+                  returnLabel={(current && current.returnLabel) || undefined}
                   onKey={(ch)=>{
                     const now = Date.now();
                     if(lastKeyRef.current.ch === ch && (now - lastKeyRef.current.t) < 120) { return; }
