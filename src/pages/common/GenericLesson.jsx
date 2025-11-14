@@ -20,7 +20,7 @@ const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','�
 const VCOMB = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
 const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
 
-export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null }){
+export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null, videos = {}, posters = {} }){
   const navigate = useNavigate();
   const location = useLocation();
   // debug mount
@@ -234,8 +234,15 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
       <div className={frameStyles.lessonRow}>
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} onMouseMove={(e)=>{ if(!showDev || !shellRef.current) return; const r = shellRef.current.getBoundingClientRect(); const px = ((e.clientX - r.left)/r.width)*100; const py = ((e.clientY - r.top)/r.height)*100; setDevPos({x: Number.isFinite(px)? px.toFixed(2):0, y: Number.isFinite(py)? py.toFixed(2):0}); }}>
-            {/* choose the screen image per-step: images.screens[step] > submitted screenshot > defaults */}
-            <PhoneFrame image={useSubmittedScreenshot ? screenshot4 : (screenMap[step] || (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1)))} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            {/* choose the screen media per-step: optional video, otherwise image (images.screens[step] > submitted screenshot > defaults) */}
+            <PhoneFrame
+              image={useSubmittedScreenshot ? screenshot4 : (screenMap[step] || (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1)))}
+              videoSrc={videos && videos[step]}
+              videoPoster={(posters && posters[step]) || (screenMap[step] || (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1)))}
+              screenWidth={'278px'}
+              aspect={'278 / 450'}
+              scale={1}
+            >
               {showDev && <div className={frameStyles.devCoord}>{devPos.x}% , {devPos.y}% (d toggle)</div>}
               {
                 (() => {
