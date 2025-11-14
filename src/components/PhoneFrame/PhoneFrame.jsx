@@ -18,6 +18,9 @@ export default function PhoneFrame({
   // 화면 비율. 예: '391 / 629'
   aspect = '9 / 19.5',
   image,
+  // 선택적으로 동영상 소스를 넘기면 이미지 대신 동영상을 렌더링합니다.
+  videoSrc,
+  videoPoster,
   showStatusBar = true,
   showHomeIndicator = true,
   children,
@@ -62,7 +65,19 @@ export default function PhoneFrame({
             </div>
           )}
           <div className={styles.contentBox}>
-            <img src={image} alt="휴대폰 화면" className={styles.screenshot} />
+            {videoSrc ? (
+              <video
+                src={videoSrc}
+                poster={videoPoster || image}
+                className={styles.screenshot}
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            ) : (
+              <img src={image} alt="휴대폰 화면" className={styles.screenshot} />
+            )}
             {/* 오버레이 영역 (이미지 위) */}
             {children && <div className={styles.overlay}>{children}</div>}
           </div>

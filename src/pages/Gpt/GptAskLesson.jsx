@@ -6,6 +6,7 @@ import steps from './GptAskLessonSteps.js';
 import gptAsk from '../../assets/gptAsk.png';
 import gptAsk2 from '../../assets/gptAsk2.png';
 import gptAsk3 from '../../assets/gptAsk3.png';
+import gptAsk3mp4 from '../../assets/gptAsk3.mp4';
 import PhoneFrame from '../../components/PhoneFrame/PhoneFrame';
 import TapHint from '../../components/TapHint/TapHint';
 import VirtualKeyboard from '../../components/VirtualKeyboard/VirtualKeyboard';
@@ -42,7 +43,7 @@ export default function GptAskLesson(){
 
   function flushComposition(snapshot){ const {lead, vowel, tail} = snapshot || compRef.current; updateComp({lead:'', vowel:'', tail:''}); if(!lead && !vowel && !tail) return; if(!lead && vowel){ setInputText(a=> a + vowel); return; } const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ const syll = String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); setInputText(a=> a + syll); } else { const raw = (lead||'') + (vowel||'') + (tail||''); setInputText(a=> a + raw); } }
 
-  function getCommittedFromComp(snapshot){ const {lead, vowel, tail} = snapshot || compRef.current; if(!lead && !vowel && !tail) return ''; if(!lead && vowel) return vowel; const L = CHO.indexOf(lead) >= 0 ? CHO.indexOf(lead) : -1; const V = JUNG.indexOf(vowel) >= 0 ? JUNG.indexOf(vowel) : -1; const T = JONG.indexOf(tail) >= 0 ? JONG.indexOf(tail) : 0; if(L>0 && V>0){ return String.fromCharCode(0xAC00 + (L-1)*21*28 + (V-1)*28 + (T)); } return (lead||'') + (vowel||'') + (tail||''); }
+  // (unused helper removed)
 
   function handleJamoInput(ch){ const prev = compRef.current; if(JUNG.includes(ch)){ if(prev.tail){ const isCompositeTail = Object.values(JCOMB).includes(prev.tail); if(isCompositeTail){ let left=null,right=null; for(const k in JCOMB){ if(JCOMB[k]===prev.tail){ left=k.charAt(0); right=k.charAt(1); break; } } if(left && right){ const snapLeft = {lead: prev.lead, vowel: prev.vowel, tail: left}; flushComposition(snapLeft); updateComp({lead: right, vowel: ch, tail: ''}); return; } flushComposition(prev); updateComp({lead:'', vowel: ch, tail: ''}); return; } const tailChar = prev.tail; const snap2 = {lead: prev.lead, vowel: prev.vowel, tail: ''}; flushComposition(snap2); updateComp({lead: tailChar, vowel: ch, tail: ''}); return; } if(prev.lead && prev.vowel){ const comb = combineVowel(prev.vowel, ch); if(comb){ updateComp({...prev, vowel: comb}); return; } flushComposition(prev); updateComp({lead:'', vowel: ch, tail:''}); return; } if(prev.lead && !prev.vowel){ updateComp({...prev, vowel: ch}); return; } if(!prev.lead){ setInputText(a=> a + ch); return; } flushComposition(prev); setInputText(a=> a + ch); return; } if(CHO.includes(ch)){ if(!prev.lead){ updateComp({...prev, lead: ch}); return; } if(prev.lead && !prev.vowel){ flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } if(prev.lead && prev.vowel && !prev.tail){ if(JONG.includes(ch)){ updateComp({...prev, tail: ch}); return; } flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } if(prev.lead && prev.vowel && prev.tail){ const combined = combineJong(prev.tail, ch); if(combined){ updateComp({...prev, tail: combined}); return; } flushComposition(prev); updateComp({lead: ch, vowel:'', tail:''}); return; } } flushComposition(prev); setInputText(a=> a + ch); return; }
 
@@ -234,7 +235,14 @@ export default function GptAskLesson(){
         <div className={frameStyles.deviceCol} ref={shellAreaRef}>
           <div ref={shellRef} className={frameStyles.deviceShell} style={{...shellStyle, overflow: 'hidden'}}>
             {/* Use shared PhoneFrame so GPT screen matches other apps */}
-            <PhoneFrame image={step === 2 ? gptAsk2 : (step === 3 ? gptAsk3 : gptAsk)} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
+            <PhoneFrame
+              image={step === 2 ? gptAsk2 : gptAsk}
+              videoSrc={step === 3 ? gptAsk3mp4 : undefined}
+              videoPoster={step === 3 ? gptAsk3 : undefined}
+              screenWidth={'278px'}
+              aspect={'278 / 450'}
+              scale={1}
+            >
               {/* a small target marker positioned over the screenshot area we want to highlight
                   This marker lives inside the PhoneFrame.overlay so TapHint can query it by selector.
                   Adjust left/top/width/height as needed to fine-tune the highlighted area. */}
