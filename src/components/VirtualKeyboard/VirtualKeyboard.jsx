@@ -7,7 +7,7 @@ import styles from './VirtualKeyboard.module.css';
 // - onBackspace() : called when backspace pressed
 // - onEnter() : called when return pressed
 // - className : optional
-export default function VirtualKeyboard({onKey, onBackspace, onEnter, className='', allowEnglish=false}){
+export default function VirtualKeyboard({onKey, onBackspace, onEnter, className='', allowEnglish=false, returnLabel='return'}){
   const [mode, setMode] = useState('k'); // 'k' = korean, 'n' = number, 's' = symbol, 'e' = english
   const [shift, setShift] = useState(false);
   const lastLocalRef = React.useRef({ch:null, t:0});
@@ -89,9 +89,9 @@ export default function VirtualKeyboard({onKey, onBackspace, onEnter, className=
               className={`${styles.key} ${k==='space'?styles.space:''} ${k==='return'?styles.returnKey:''} ${k==='⌫'?styles.deleteKey:''} ${k==='⇧' && shift? styles.shiftActive : ''}`}
               onPointerDown={(e)=>{ e.preventDefault(); handleKey(k); }}
               onContextMenu={(e)=>e.preventDefault()}
-              aria-label={k === 'space' ? 'space' : k}
+              aria-label={k === 'space' ? 'space' : (k === 'return' ? returnLabel : k)}
             >
-              {k === 'space' ? ' ' : k}
+              {k === 'space' ? ' ' : (k === 'return' ? returnLabel : k)}
             </button>
           ))}
         </div>

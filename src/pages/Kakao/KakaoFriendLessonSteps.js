@@ -25,8 +25,9 @@ const steps = [
     title: "ID 입력하기",
     instruction: "친구의 카카오톡 ID를 입력해보세요.",
     focusAreas: [{ x: 6, y: 46, w: 88, h: 10, pill: true }],
-    inputPlaceholder: "메시지를 입력하세요",
     allowEnglish: true,
+    forceKeyboard: true,
+    returnLabel: "검색",
     speak: "친구의 카카오톡 ID를 입력해보세요.",
   },
   {
