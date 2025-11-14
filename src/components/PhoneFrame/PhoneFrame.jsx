@@ -18,7 +18,11 @@ export default function PhoneFrame({
   // 화면 비율. 예: '391 / 629'
   aspect = '9 / 19.5',
   image,
+  // 선택적으로 동영상 소스를 넘기면 이미지 대신 동영상을 렌더링합니다.
+  videoSrc,
+  videoPoster,
   showStatusBar = true,
+  showHomeIndicator = true,
   children,
   // 전체 프레임과 내부 화면을 동일 비율로 축소/확대 (1이 기본)
   scale = 1,
@@ -61,12 +65,27 @@ export default function PhoneFrame({
             </div>
           )}
           <div className={styles.contentBox}>
-            <img src={image} alt="휴대폰 화면" className={styles.screenshot} />
+            {videoSrc ? (
+              <video
+                src={videoSrc}
+                poster={videoPoster || image}
+                className={styles.screenshot}
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            ) : (
+              <img src={image} alt="휴대폰 화면" className={styles.screenshot} />
+            )}
             {/* 오버레이 영역 (이미지 위) */}
             {children && <div className={styles.overlay}>{children}</div>}
           </div>
           {/* 하단에도 상태바 높이만큼 간격(스페이서) - 이미지 영역 밖 */}
           {showStatusBar && <div className={styles.bottomBar} aria-hidden />}
+          {showHomeIndicator && (
+            <div className={styles.homeIndicator} aria-hidden />
+          )}
         </div>
         </div>
       </div>
