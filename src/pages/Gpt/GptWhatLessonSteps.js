@@ -9,10 +9,10 @@ ChatGPT는 글로 대화하는 인공지능이에요. 우리가 문자를 써서
   {
     id: 2,
     title: 'GPT 접속하기',
-    instruction: `웹 브라우저에서 ChatGPT에 접속하는 방법입니다. 주소창에 'chat.openai.com'을 직접 입력해 접속하거나, 검색창에 'ChatGPT 접속'이라고 치고 나오는 'ChatGPT' 또는 'OpenAI' 공식 사이트를 눌러 들어가세요.
+    instruction: `웹 브라우저에서 ChatGPT에 접속하는 방법입니다. 주소창에 'chatgpt.com'을 직접 입력해 접속하거나, 검색창에 'ChatGPT 접속'이라고 치고 나오는 'ChatGPT'를 눌러 들어가세요.
 
-인터넷이 익숙하지 않은 분은, 가족이나 도우미에게 한 번 열어 보여 달라고 부탁하면 안전합니다. 공지나 광고로 보이는 링크는 피하고 주소가 'openai.com'인지 확인하세요.`,
-    url: 'https://chat.openai.com',
+인터넷이 익숙하지 않은 분은, 가족이나 도우미에게 한 번 열어 보여 달라고 부탁하면 안전합니다. 공지나 광고로 보이는 링크는 피하고 주소가 'chatgpt.com'인지 확인하세요.`,
+    url: 'https://chatgpt.com',
   },
   {
     id: 3,
