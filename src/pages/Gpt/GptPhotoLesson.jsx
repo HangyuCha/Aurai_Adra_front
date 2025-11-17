@@ -3,6 +3,7 @@ import GenericLesson from '../common/GenericLesson';
 import steps from './GptPhotoLessonSteps.js';
 import gptAsk from '../../assets/gptAsk.png';
 import GptPhoto2 from '../../assets/GptPhoto2.png';
+import GptPhoto3 from '../../assets/GptPhoto3.mp4';
 import chatInputStyles from '../../components/ChatInputBar/ChatInputBar.module.css';
 import gptAsk3 from '../../assets/gptAsk3.png';
 import gptAttach1 from '../../assets/gpt_attach1.png';
@@ -13,7 +14,10 @@ export default function GptPhotoLesson(){
   const [screen1, setScreen1] = useState(gptAsk);
   // hintStage: 1 = initial hint visible, 2 = show secondary hint after first tap
   const [hintStage, setHintStage] = useState(1);
-  const images = useMemo(() => ({ screens: { 1: screen1, 2: GptPhoto2, 3: gptAsk3 } }), [screen1]);
+  const images = useMemo(() => ({ screens: { 1: screen1, 2: GptPhoto2 } }), [screen1]);
+  const videos = useMemo(() => ({ 3: GptPhoto3 }), []);
+  const transparentPoster = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  const posters = useMemo(() => ({ 3: transparentPoster }), [transparentPoster]);
 
   // 첫번째 탭힌트: 이미지 교체 후 두번째 힌트를 보여준다
   function handleAttachTap(){
@@ -81,6 +85,9 @@ export default function GptPhotoLesson(){
     <GenericLesson
       steps={steps}
       images={images}
+      videos={videos}
+      posters={posters}
+      videoLoop={false}
       tapHintConfig={tapHintConfig}
       textOverlayConfig={textOverlayConfig}
       extraOverlay={extraOverlay}

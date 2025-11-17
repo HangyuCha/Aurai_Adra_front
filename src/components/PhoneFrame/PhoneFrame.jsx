@@ -21,6 +21,7 @@ export default function PhoneFrame({
   // 선택적으로 동영상 소스를 넘기면 이미지 대신 동영상을 렌더링합니다.
   videoSrc,
   videoPoster,
+  videoLoop = true,
   showStatusBar = true,
   showHomeIndicator = true,
   children,
@@ -72,7 +73,7 @@ export default function PhoneFrame({
                 className={styles.screenshot}
                 autoPlay
                 muted
-                loop
+                loop={videoLoop}
                 playsInline
               />
             ) : (
