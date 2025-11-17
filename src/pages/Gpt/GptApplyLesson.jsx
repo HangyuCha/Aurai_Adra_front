@@ -47,10 +47,10 @@ export default function GptApplyLesson(){
             .gpt-apply-cursor { width:2px; height:1.05em; background:#2980ff; border-radius:1px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
             /* Step2 bottom bar placed above virtual keyboard - make darker and wider */
             /* lowered z-index so TapHint (z-index 50) can appear above this bar without editing TapHint styles */
-            .gpt-step2-bottom { position: absolute; left: 4%; right: 4%; bottom: 200px; height: 35px; display:flex; align-items:center; padding: 10px 18px; border-radius: 999px; background: rgba(0,0,0,0.96); color:#fff; font-size:15px; z-index:40; box-shadow: 0 14px 40px rgba(0,0,0,0.6); }
+            .gpt-step2-bottom { position: absolute; left: 4%; right: 4%; bottom: 200px; height: 35px; display:flex; align-items:center; padding: 10px 18px; border-radius: 999px; background: rgba(0,0,0,0.96); color:#fff; font-size:15px; z-index:40; box-shadow: 0 14px 40px rgba(0,0,0,0.6); pointer-events: none; }
             .gpt-step2-bottom .text { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
             .gpt-step2-bottom .cursor { width:2px; height:1.05em; background:#2980ff; border-radius:1px; margin-left:8px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
-            .gpt-step2-send { width:36px; height:36px; border-radius:999px; background:#eef0f3; display:inline-flex; align-items:center; justify-content:center; margin-left:8px; box-shadow: 0 3px 8px rgba(0,0,0,0.25); border: none; cursor: pointer; }
+            .gpt-step2-send { width:36px; height:36px; border-radius:999px; background:#eef0f3; display:inline-flex; align-items:center; justify-content:center; margin-left:8px; box-shadow: 0 3px 8px rgba(0,0,0,0.25); border: none; cursor: pointer; pointer-events: auto; }
             .gpt-step2-send:active { transform: translateY(1px); }
             .gpt-step2-send .arrow { width:14px; height:14px; color:#222; transform: translateY(-1px); }
             @media (max-width:800px) { .gpt-step2-bottom { bottom: 180px; left:3%; right:3%; } .gpt-apply-bar { left:8%; width:84%; } }
@@ -66,7 +66,7 @@ export default function GptApplyLesson(){
 
         {showStep2 && (
           <div className="gpt-step2-bottom" aria-hidden>
-            <div className="text">무엇이든 물어보세요</div>
+            <div className="text">{value || current?.inputPlaceholder || '무엇이든 물어보세요'}</div>
             <div className="cursor" />
             <button
               type="button"
