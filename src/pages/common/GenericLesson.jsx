@@ -20,7 +20,7 @@ const JONG = ['\u0000','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','�
 const VCOMB = { 'ㅗㅏ': 'ㅘ', 'ㅗㅐ': 'ㅙ', 'ㅗㅣ': 'ㅚ', 'ㅜㅓ': 'ㅝ', 'ㅜㅔ': 'ㅞ', 'ㅜㅣ': 'ㅟ', 'ㅡㅣ': 'ㅢ' };
 const JCOMB = { 'ㄱㅅ': 'ㄳ', 'ㄴㅈ': 'ㄵ', 'ㄴㅎ': 'ㄶ', 'ㄹㄱ': 'ㄺ', 'ㄹㅁ': 'ㄻ', 'ㄹㅂ': 'ㄼ', 'ㄹㅅ': 'ㄽ', 'ㄹㅌ': 'ㄾ', 'ㄹㅍ': 'ㄿ', 'ㄹㅎ': 'ㅀ', 'ㅂㅅ': 'ㅄ' };
 
-export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null, videos = {}, posters = {} }){
+export default function GenericLesson({ steps = [], backPath = '/', headerTitle = '학습', headerTagline = '', donePath = null, images = {}, tapHintConfig = {}, textOverlayConfig = {}, imageOverlayConfig = {}, showSubmittedBubble = true, extraOverlay = null, videos = {}, posters = {}, videoLoop = true }){
   const navigate = useNavigate();
   const location = useLocation();
   // debug mount
@@ -238,6 +238,7 @@ export default function GenericLesson({ steps = [], backPath = '/', headerTitle 
               image={useSubmittedScreenshot ? screenshot4 : (screenMap[step] || (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1)))}
               videoSrc={videos && videos[step]}
               videoPoster={(posters && posters[step]) || (screenMap[step] || (step === 1 ? screenshot2 : (step === 2 ? screenshot3 : screenshot1)))}
+              videoLoop={videoLoop}
               screenWidth={'278px'}
               aspect={'278 / 450'}
               scale={1}
