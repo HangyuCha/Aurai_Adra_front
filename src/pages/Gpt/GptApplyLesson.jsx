@@ -16,6 +16,18 @@ export default function GptApplyLesson(){
   // disable GenericLesson's default text overlay to avoid duplication
   const textOverlayConfig = useMemo(() => ({}), []);
 
+  // simple tap hint for step 1: small circular hint over the phone screen
+  // Use explicit x/y and fixed px size so the hint does NOT scale with the phone
+  const tapHintConfig = useMemo(()=> ({
+    // explicit selector:null ensures TapHint will NOT compute size from a target element
+    // and will instead use the provided width/height values
+    // small circular hint centered horizontally and moved up so it sits above the keyboard
+    1: { selector: null, x: '89%', y: '64%', width: '30px', height: '30px', borderRadius: '999px', offsetX: 0, offsetY: 80 },
+    // Step2: custom circular tap target centered around the floating text
+    2: { selector: null, x: '83.25%', y: '51.25%', width: '40px', height: '40px', borderRadius: '999px', offsetX: 0, offsetY: 0 },
+    3: { hidden: true }
+  }), []);
+
   // Render overlays: step1 floating bar + step2 bottom bar above virtual keyboard
   const extraOverlay = ({ step, current, answer, composePreview, submittedText }) => {
     const showStep1 = step === 1 && current && (current.inputPlaceholder || current.forceKeyboard);
@@ -29,11 +41,13 @@ export default function GptApplyLesson(){
             @keyframes gptAskCursorBlink { 0%{opacity:1;}49.9%{opacity:1;}50%{opacity:0;}100%{opacity:0;} }
             div[style*='z-index: 223']::after { content:''; display:inline-block; width:2px; height:1.05em; margin-left:2px; vertical-align:text-bottom; background:#2980ff; border-radius:1.5px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
             /* Step1 floating bar (center) */
-            .gpt-apply-bar { position: absolute; left: 16%; top: 42%; width: 58%; transform: none; font-size: 13px; font-weight: 300; color: #fff; background: rgba(18,20,23,0.6); padding: 10px 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.45); z-index: 230; display:flex; align-items:center; gap:8px; backdrop-filter: blur(4px); }
+            /* lowered so TapHint (z-index:50) can appear above this bar */
+            .gpt-apply-bar { position: absolute; left: 16%; top: 42%; width: 58%; transform: none; font-size: 13px; font-weight: 300; color: #fff; background: rgba(18,20,23,0.6); padding: 10px 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.45); z-index: 30; display:flex; align-items:center; gap:8px; backdrop-filter: blur(4px); }
             .gpt-apply-text { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity: .98; }
             .gpt-apply-cursor { width:2px; height:1.05em; background:#2980ff; border-radius:1px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
             /* Step2 bottom bar placed above virtual keyboard - make darker and wider */
-            .gpt-step2-bottom { position: absolute; left: 4%; right: 4%; bottom: 200px; height: 35px; display:flex; align-items:center; padding: 10px 18px; border-radius: 999px; background: rgba(0,0,0,0.96); color:#fff; font-size:15px; z-index:240; box-shadow: 0 14px 40px rgba(0,0,0,0.6); }
+            /* lowered z-index so TapHint (z-index 50) can appear above this bar without editing TapHint styles */
+            .gpt-step2-bottom { position: absolute; left: 4%; right: 4%; bottom: 200px; height: 35px; display:flex; align-items:center; padding: 10px 18px; border-radius: 999px; background: rgba(0,0,0,0.96); color:#fff; font-size:15px; z-index:40; box-shadow: 0 14px 40px rgba(0,0,0,0.6); }
             .gpt-step2-bottom .text { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
             .gpt-step2-bottom .cursor { width:2px; height:1.05em; background:#2980ff; border-radius:1px; margin-left:8px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
             .gpt-step2-send { width:36px; height:36px; border-radius:999px; background:#eef0f3; display:inline-flex; align-items:center; justify-content:center; margin-left:8px; box-shadow: 0 3px 8px rgba(0,0,0,0.25); border: none; cursor: pointer; }
@@ -87,6 +101,7 @@ export default function GptApplyLesson(){
       posters={posters}
       videoLoop={false}
       textOverlayConfig={textOverlayConfig}
+      tapHintConfig={tapHintConfig}
       extraOverlay={extraOverlay}
     />
   );
