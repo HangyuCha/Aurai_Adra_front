@@ -25,22 +25,7 @@ export default function GptPhotoLesson(){
     setHintStage(2);
   }
 
-  // --- step2 floating text/keyboard sync (copy behavior from GptAskLesson) ---
-  const [isStep2Active, setIsStep2Active] = useState(false);
-  useEffect(() => {
-    let timer;
-    function poll(){
-      try {
-        const spans = Array.from(document.querySelectorAll('span'));
-        const total = (steps || []).length || 3;
-        const active2 = spans.some(sp => (sp.textContent||'').trim() === `2 / ${total}`);
-        setIsStep2Active(active2);
-      } catch {/* ignore */}
-      timer = window.setTimeout(poll, 160);
-    }
-    poll();
-    return () => { if(timer) window.clearTimeout(timer); };
-  }, [steps]);
+  // Note: rely on GenericLesson to provide `answer` + `composePreview` to extraOverlay
 
   // step 1에는 두 개의 힌트를 배열로 전달: 첫번재는 초기, 두번째는 첫 탭 후 활성화
   const tapHintConfig = useMemo(() => ({
@@ -66,21 +51,35 @@ export default function GptPhotoLesson(){
       // no onActivate -> GenericLesson will use its default handler (advance/next)
     }
   }), [hintStage]);
-  const textOverlayConfig = useMemo(() => ({
-    2: { x: '18%', y: '49.5%', width: '88%', transform: 'none', fontSize: '13px', fontWeight: 300, textAlign: 'left', color: '#fff', whiteSpace: 'nowrap', zIndex: 223 }
-  }), []);
+  // disable the default textOverlay for this lesson to avoid duplicating the step2 input
+  const textOverlayConfig = useMemo(() => ({}), []);
 
-  const extraOverlay = (
-    <>
-      {isStep2Active && (
-        <style>{`
-          .${chatInputStyles.chatInputBarAbsolute}, .${chatInputStyles.chatInputBarSticky} { display:none !important; }
-          @keyframes gptAskCursorBlink { 0%{opacity:1;}49.9%{opacity:1;}50%{opacity:0;}100%{opacity:0;} }
-          div[style*='z-index: 223']::after { content:''; display:inline-block; width:2px; height:1.05em; margin-left:2px; vertical-align:text-bottom; background:#2980ff; border-radius:1.5px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
-        `}</style>
-      )}
-    </>
-  );
+  const extraOverlay = ({ step, current, answer, composePreview, submittedText }) => {
+    const show = step === 2 && current && (current.inputPlaceholder || current.forceKeyboard);
+    const value = submittedText || (answer || '') + (typeof composePreview === 'function' ? composePreview() : '');
+    return (
+      <>
+        {show && (
+          <style>{`
+            .${chatInputStyles.chatInputBarAbsolute}, .${chatInputStyles.chatInputBarSticky} { display:none !important; }
+            @keyframes gptAskCursorBlink { 0%{opacity:1;}49.9%{opacity:1;}50%{opacity:0;}100%{opacity:0;} }
+            div[style*='z-index: 223']::after { content:''; display:inline-block; width:2px; height:1.05em; margin-left:2px; vertical-align:text-bottom; background:#2980ff; border-radius:1.5px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
+            /* Step2 floating text bar that mimics GPT input (more transparent) */
+            .gpt-step2-bar { position: absolute; left: 18%; top: 43%; width: 64%; transform: none; font-size: 13px; font-weight: 300; color: #fff; background: rgba(18,20,23,0.38); padding: 10px 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.35); z-index: 230; display:flex; align-items:center; gap:8px; backdrop-filter: blur(6px); }
+            .gpt-step2-text { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity: .98; }
+            .gpt-step2-cursor { width:2px; height:1.05em; background:#2980ff; border-radius:1px; animation:gptAskCursorBlink .9s steps(2,start) infinite; }
+            @media (max-width:800px) { .gpt-step2-bar { left: 8%; width: 84%; } }
+          `}</style>
+        )}
+        {show && (
+          <div className="gpt-step2-bar" aria-hidden>
+            <div className="gpt-step2-text">{value || current?.inputPlaceholder || '무엇이든 물어보세요'}</div>
+            <div className="gpt-step2-cursor" />
+          </div>
+        )}
+      </>
+    );
+  };
   return (
     <GenericLesson
       steps={steps}
