@@ -11,6 +11,7 @@ import gptAsk2 from '../../assets/gptAsk2.png';
 import gptAsk3 from '../../assets/gptAsk3.png';
 import GptApply1 from '../../assets/GptApply1.mp4';
 import GptApply2 from '../../assets/GptApply2.mp4';
+import chatInputStyles from '../../components/ChatInputBar/ChatInputBar.module.css';
 import { useScoringProgress } from '../../lib/useScoringProgress';
 import { getChapterId, ChapterDomain } from '../../lib/chapters';
 import api from '../../lib/api';
@@ -106,31 +107,87 @@ export default function GptApplyPractice(){
           }}
         >
           <PhoneFrame image={imageForStep(step)} videoSrc={videoSrc(step)} videoPoster={imageForStep(step)} screenWidth={'278px'} aspect={'278 / 450'} scale={1}>
-            {/* Step1 hint */}
+            {/* Step1 hint (learn/apply와 동일) */}
             {step===1 && (
-              <TapHint selector={null} x={'89%'} y={'64%'} width={'30px'} height={'30px'} borderRadius={'999px'} offsetX={0} offsetY={80} onActivate={next} invisible={!showHint} ariaLabel={'스텝1 탭힌트'} />
+              <TapHint
+                selector={null}
+                x={'89%'}
+                y={'64%'}
+                width={'30px'}
+                height={'30px'}
+                borderRadius={'999px'}
+                offsetX={0}
+                offsetY={80}
+                onActivate={next}
+                invisible={!showHint}
+                ariaLabel={'스텝1 탭힌트'}
+              />
             )}
-            {/* Step2 hint (early finalize) */}
+            {/* Step2 hint (learn/apply와 동일 위치/크기) */}
             {step===2 && (
-              <TapHint selector={null} x={'83.25%'} y={'51.25%'} width={'40px'} height={'40px'} borderRadius={'999px'} onActivate={()=>submitPractice(true)} invisible={false} ariaLabel={'스텝2 탭힌트'} />
+              <TapHint
+                selector={null}
+                x={'83.25%'}
+                y={'51.25%'}
+                width={'40px'}
+                height={'40px'}
+                borderRadius={'999px'}
+                onActivate={()=>submitPractice(true)}
+                invisible={!showHint}
+                ariaLabel={'전송 버튼 힌트'}
+              />
             )}
-            {/* Step3 send button hint (always visible) */}
+            {/* Step3: 실제 전송 버튼 위치를 따라가는 힌트 */}
             {step===total && (
-              <TapHint selector={'button[aria-label="메시지 보내기"]'} onActivate={submitPractice} invisible={false} ariaLabel={'전송 버튼 힌트'} />
+              <TapHint
+                selector={'button[aria-label="메시지 보내기"]'}
+                onActivate={submitPractice}
+                invisible={false}
+                ariaLabel={'전송 버튼 힌트'}
+              />
             )}
-            {/* Step1 floating bar */}
+            {/* learn/apply와 동일한 floating/bottom bar UI */}
+            {(keyboardVisible && (step===1 || step===2)) && (
+              <style>{`
+                .${chatInputStyles.chatInputBarAbsolute}, .${chatInputStyles.chatInputBarSticky} { display:none !important; }
+                @keyframes gptApplyCursorBlink { 0%{opacity:1;}49.9%{opacity:1;}50%{opacity:0;}100%{opacity:0;} }
+                .gpt-apply-bar { position: absolute; left: 16%; top: 42%; width: 58%; transform: none; font-size: 13px; font-weight: 300; color: #fff; background: rgba(18,20,23,0.6); padding: 10px 14px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.45); z-index: 30; display:flex; align-items:center; gap:8px; backdrop-filter: blur(4px); }
+                .gpt-apply-text { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity: .98; }
+                .gpt-apply-cursor { width:2px; height:1.05em; background:#2980ff; border-radius:1px; animation:gptApplyCursorBlink .9s steps(2,start) infinite; }
+                .gpt-step2-bottom { position: absolute; left: 4%; right: 4%; bottom: 200px; height: 35px; display:flex; align-items:center; padding: 10px 18px; border-radius: 999px; background: rgba(0,0,0,0.96); color:#fff; font-size:15px; z-index:40; box-shadow: 0 14px 40px rgba(0,0,0,0.6); pointer-events: none; }
+                .gpt-step2-bottom .text { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+                .gpt-step2-bottom .cursor { width:2px; height:1.05em; background:#2980ff; border-radius:1px; margin-left:8px; animation:gptApplyCursorBlink .9s steps(2,start) infinite; }
+                .gpt-step2-send { width:36px; height:36px; border-radius:999px; background:#eef0f3; display:inline-flex; align-items:center; justify-content:center; margin-left:8px; box-shadow: 0 3px 8px rgba(0,0,0,0.25); border: none; cursor: pointer; pointer-events: auto; }
+                .gpt-step2-send:active { transform: translateY(1px); }
+                .gpt-step2-send .arrow { width:14px; height:14px; color:#222; transform: translateY(-1px); }
+                @media (max-width:800px) { .gpt-step2-bottom { bottom: 180px; left:3%; right:3%; } .gpt-apply-bar { left:8%; width:84%; } }
+              `}</style>
+            )}
+
+            {/* Step1 floating bar (learn/apply 동일) */}
             {keyboardVisible && step===1 && (
-              <div style={{ position:'absolute', left:'16%', top:'42%', width:'58%', fontSize:'13px', fontWeight:300, color:'#fff', background:'rgba(18,20,23,0.6)', padding:'10px 14px', borderRadius:'12px', boxShadow:'0 8px 20px rgba(0,0,0,0.45)', zIndex:30, display:'flex', alignItems:'center', gap:'8px', backdropFilter:'blur(4px)' }}>
-                <span style={{ flex:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', opacity: (answer+composePreview()).length?1:.8 }}>{(answer+composePreview())||current?.inputPlaceholder||'무엇이든 물어보세요'}</span>
-                <span style={{ width:'2px', height:'1.05em', background:'#2980ff', borderRadius:'1px', animation:'gptApplyCursorBlink .9s steps(2,start) infinite' }} />
-                <style>{`@keyframes gptApplyCursorBlink{0%{opacity:1}49.9%{opacity:1}50%{opacity:0}100%{opacity:0}}`}</style>
+              <div className="gpt-apply-bar" aria-hidden>
+                <div className="gpt-apply-text">{(answer+composePreview()) || current?.inputPlaceholder || '무엇이든 물어보세요'}</div>
+                <div className="gpt-apply-cursor" />
               </div>
             )}
-            {/* Step2 bottom bar */}
+
+            {/* Step2 bottom bar + 전송 버튼 (learn/apply 동일) */}
             {keyboardVisible && step===2 && (
-              <div style={{ position:'absolute', left:'4%', right:'4%', bottom:'200px', height:'35px', display:'flex', alignItems:'center', padding:'10px 18px', borderRadius:'999px', background:'rgba(0,0,0,0.96)', color:'#fff', fontSize:'15px', zIndex:40, boxShadow:'0 14px 40px rgba(0,0,0,0.6)', pointerEvents:'none' }}>
-                <span style={{ flex:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{(answer+composePreview())||current?.inputPlaceholder||'무엇이든 물어보세요'}</span>
-                <span style={{ width:'2px', height:'1.05em', background:'#2980ff', borderRadius:'1px', marginLeft:'8px', animation:'gptApplyCursorBlink .9s steps(2,start) infinite' }} />
+              <div className="gpt-step2-bottom" aria-hidden>
+                <div className="text">{(answer+composePreview()) || current?.inputPlaceholder || '무엇이든 물어보세요'}</div>
+                <div className="cursor" />
+                <button
+                  type="button"
+                  aria-label="메시지 보내기"
+                  className="gpt-step2-send"
+                  onClick={() => submitPractice(true)}
+                >
+                  <svg className="arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                    <path d="M12 4v12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M6 10l6-6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
               </div>
             )}
             {/* keyboard */}

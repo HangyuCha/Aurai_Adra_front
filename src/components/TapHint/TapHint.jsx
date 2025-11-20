@@ -5,7 +5,7 @@ import styles from './TapHint.module.css';
  * TapHint
  * props: x, y, width, height, borderRadius, onActivate, ariaLabel
  */
-export default function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRadius = '10px', onActivate, ariaLabel = 'tap hint', selector, offsetY = 0, offsetX = 0, suppressInitial = false, invisible = false }){
+export default function TapHint({ x = '50%', y = '80%', width = '30%', height = '8%', borderRadius = '10px', onActivate, ariaLabel = 'tap hint', selector, offsetY = 0, offsetX = 0, suppressInitial = false, invisible = false, style: styleOverride }){
   const ref = useRef(null);
   const [computed, setComputed] = useState(null);
 
@@ -135,6 +135,11 @@ export default function TapHint({ x = '50%', y = '80%', width = '30%', height = 
   // If caller asked to suppress initial fallback blink, hide until computed.
   if (suppressInitial && selector && computed === null) {
     style.visibility = 'hidden';
+  }
+
+  // allow caller to override/add inline styles (e.g. zIndex)
+  if (styleOverride && typeof styleOverride === 'object') {
+    Object.assign(style, styleOverride);
   }
 
   return (
