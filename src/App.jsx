@@ -8,7 +8,7 @@ import KakaoCallback from './pages/Login/KakaoCallback.jsx';
 import LoadingPage from './pages/Loading/loading.jsx';
 import SignupPage from './pages/Signup/Signup.jsx';
 import SignupExtraPage from './pages/Signup/SignupStep2.jsx'; // 2단계
-import FindInfoPage from './pages/Find/Findinfo.jsx';
+import FindInfoPage from './pages/Find/FindInfo.jsx';
 import FindInfoResultPage from './pages/Find/FindInfoResult.jsx'; // ✅ Step2
 import Home from './pages/Home/Home.jsx';
 import PostLogin from './pages/PostLogin/PostLogin.jsx';
@@ -29,7 +29,6 @@ import SmsMphotoPractice from './pages/Sms/SmsMphotoPractice.jsx';
 import SmsMdeleteLesson from './pages/Sms/SmsMdeleteLesson.jsx';
 import SmsMdeletePractice from './pages/Sms/SmsMdeletePractice.jsx';
 import SmsMdeliverLesson from './pages/Sms/SmsMdeliverLesson.jsx';
-import SmsMdeliverPractice from './pages/Sms/SmsMdeliverPractice.jsx';
 import SmsMsearchLesson from './pages/Sms/SmsMsearchLesson.jsx';
 import CallCallingLesson from './pages/Call/CallCallingLesson.jsx';
 import CallCallingPractice from './pages/Call/CallCallingPractice.jsx';
@@ -43,6 +42,12 @@ import GptWhatLesson from './pages/Gpt/GptWhatLesson.jsx';
 import GptAskLesson from './pages/Gpt/GptAskLesson.jsx';
 import GptPhotoLesson from './pages/Gpt/GptPhotoLesson.jsx';
 import GptApplyLesson from './pages/Gpt/GptApplyLesson.jsx';
+import GptAskPractice from './pages/Gpt/GptAskPractice.jsx';
+import GptPhotoPractice from './pages/Gpt/GptPhotoPractice.jsx';
+import GptApplyPractice from './pages/Gpt/GptApplyPractice.jsx';
+import GptFollowLesson from './pages/Gpt/GptFollowLesson.jsx';
+import GptSafetyLesson from './pages/Gpt/GptSafetyLesson.jsx';
+import GptLimitsLesson from './pages/Gpt/GptLimitsLesson.jsx';
 import KakaoUiLesson from './pages/Kakao/KakaoUiLesson.jsx';
 import KakaoUiPractice from './pages/Kakao/KakaoUiPractice.jsx';
 import KakaoAddBYldPractice from './pages/Kakao/KakaoAddBYldPractice.jsx';
@@ -60,7 +65,6 @@ import GptPractice from './pages/Gpt/GptPractice.jsx';
 import KakaoLearn from './pages/Kakao/KakaoLearn.jsx';
 import KakaoPractice from './pages/Kakao/KakaoPractice.jsx';
 import AgePreview from './pages/Age/AgePreview.jsx';
-import { markAppProgress } from './lib/appProgressApi.js';
 
 // 인증이 필요한 경로 감싸기
 function PrivateRoute({ children }) {
@@ -84,44 +88,6 @@ function EntryRoute() {
 }
 
 export default function App() {
-  // Global completion capture: when any Learn page's "완료" button is pressed, mark per-session done
-  useEffect(() => {
-    function inferFromPath(pathname){
-      try{
-        const parts = (pathname || '/').split('/').filter(Boolean);
-        const appId = parts[0] || null;
-        const section = parts[1] || null;
-        if(section !== 'learn') return null;
-        const rest = parts.slice(2).join('/');
-        if(!appId || !rest) return null;
-        if(appId === 'kakao'){
-          if(rest === 'friend') return { appId, sessionKeys: ['addById'] };
-          if(rest === 'friend/num') return { appId, sessionKeys: ['addByPhone'] };
-          if(rest === 'room') return { appId, sessionKeys: ['inviteRoom', 'leaveGroup'] };
-          return { appId, sessionKeys: [rest] };
-        }
-        return { appId, sessionKeys: [rest] };
-      } catch { return null; }
-    }
-    async function onPointerDown(e){
-      try{
-        const btn = e.target.closest('button');
-        if(!btn) return;
-        const txt = (btn.textContent || '').trim();
-        if(txt !== '완료') return;
-        const { pathname } = window.location;
-        const info = inferFromPath(pathname);
-        if(!info) return;
-        const { appId, sessionKeys } = info;
-        if(!appId || !Array.isArray(sessionKeys)) return;
-        for(const key of sessionKeys){
-          try { await markAppProgress(appId, 'learn', key, null); } catch { /* ignore */ }
-        }
-      } catch { /* ignore */ }
-    }
-    window.addEventListener('pointerdown', onPointerDown, true);
-    return () => window.removeEventListener('pointerdown', onPointerDown, true);
-  }, []);
   return (
     <Routes>
       <Route path="/" element={<EntryRoute />} />
@@ -170,7 +136,6 @@ export default function App() {
   <Route path="sms/practice/mdelete" element={<SmsMdeletePractice />} />
   <Route path="sms/practice/mphoto" element={<SmsMphotoPractice />} />
   <Route path="sms/learn/mdeliver" element={<SmsMdeliverLesson />} />
-  <Route path="sms/practice/mdeliver" element={<SmsMdeliverPractice />} />
   <Route path="sms/learn/msearch" element={<SmsMsearchLesson />} />
   <Route path="call/learn/calling" element={<CallCallingLesson />} />
   <Route path="call/learn/save" element={<CallSaveLesson />} />
@@ -183,6 +148,9 @@ export default function App() {
   <Route path="gpt/learn/ask" element={<GptAskLesson />} />
   <Route path="gpt/learn/photo" element={<GptPhotoLesson />} />
   <Route path="gpt/learn/apply" element={<GptApplyLesson />} />
+  <Route path="gpt/learn/follow" element={<GptFollowLesson />} />
+  <Route path="gpt/learn/safety" element={<GptSafetyLesson />} />
+  <Route path="gpt/learn/limits" element={<GptLimitsLesson />} />
   <Route path="kakao/learn/ui" element={<KakaoUiLesson />} />
   <Route path="kakao/learn/friend" element={<KakaoFriendLesson />} />
   <Route path="kakao/learn/friend/num" element={<KakaoFriendNumLesson />} />
@@ -199,6 +167,11 @@ export default function App() {
   <Route path="call/practice/:topic" element={<PracticeLesson />} />
   <Route path="gpt/learn" element={<GptLearn />} />
   <Route path="gpt/practice" element={<GptPractice />} />
+  {/* 'what' 연습 제거: 직접 접근 시 목록으로 리다이렉트 */}
+  <Route path="gpt/practice/what" element={<Navigate to="/gpt/practice" replace />} />
+  <Route path="gpt/practice/ask" element={<GptAskPractice />} />
+  <Route path="gpt/practice/photo" element={<GptPhotoPractice />} />
+  <Route path="gpt/practice/apply" element={<GptApplyPractice />} />
   <Route path="gpt/practice/:topic" element={<PracticeLesson />} />
   <Route path="kakao/learn" element={<KakaoLearn />} />
   <Route path="kakao/practice" element={<KakaoPractice />} />
